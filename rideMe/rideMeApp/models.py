@@ -5,14 +5,17 @@ class User(models.Model):
     username = models.CharField(max_length=50)
     firstName = models.CharField(max_length=50)
     lastName = models.CharField(max_length=50)
+    email = models.EmailField()
     numTripsAsDriver = models.IntegerField()
     numTripsAsPassenger = models.IntegerField()
-    averageRating = models.FloatField(default=0.0)
-    registrationTime = models.DateTimeField(default=timezone.now())
+    averageRating = models.FloatField()
+    registrationTime = models.DateTimeField()
 
     # password
-    # email
     # phoneNumber
+
+    def __str__(self):
+        return self.username
 
 
 class Review(models.Model):
@@ -35,7 +38,7 @@ class Posting(models.Model):
     isOpen = models.BooleanField()
     isCancelled = models.BooleanField()
     isComplete = models.BooleanField()
-    tripDateAndTime = models.DateTimeField(default=timezone.now())
+    tripDateAndTime = models.DateTimeField()
     pickupLocation = models.CharField(max_length=50)
     dropoffLocation = models.CharField(max_length=50)
     vehicle = models.CharField(max_length=50)
