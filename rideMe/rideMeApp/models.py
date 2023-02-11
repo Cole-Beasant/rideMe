@@ -1,8 +1,9 @@
 from django.db import models
-from django.utils import timezone
+from passlib.hash import pbkdf2_sha256
 
 class User(models.Model):
     username = models.CharField(max_length=50)
+    password = models.CharField(max_length=256)
     firstName = models.CharField(max_length=50)
     lastName = models.CharField(max_length=50)
     email = models.EmailField()
@@ -10,12 +11,14 @@ class User(models.Model):
     numTripsAsPassenger = models.IntegerField()
     averageRating = models.FloatField()
     registrationTime = models.DateTimeField()
-
-    # password
+    
     # phoneNumber
 
     def __str__(self):
         return self.username
+
+    def verify_password(self, raw_password):
+        return pbkdf2_sha256.verify(raw_password, self.password)
 
 
 class Review(models.Model):
