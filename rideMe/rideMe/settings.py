@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rideMeApp.apps.RidemeappConfig'
 ]
 
 MIDDLEWARE = [
@@ -73,10 +74,33 @@ WSGI_APPLICATION = 'rideMe.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'rideMeDB',
+#         'CLIENT': {
+#             'host': 'mongodb+srv://x2019brj:105carmelcrescent@cluster0.gl8ayuj.mongodb.net/test',
+#             'username': 'x2019brj',
+#             'password': '105carmelcrescent'
+#         }
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'rideMe23',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
