@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 class User(models.Model):
     username = models.CharField(max_length=50)
@@ -6,12 +7,13 @@ class User(models.Model):
     lastName = models.CharField(max_length=50)
     numTripsAsDriver = models.IntegerField()
     numTripsAsPassenger = models.IntegerField()
+    averageRating = models.FloatField(default=0.0)
+    registrationTime = models.DateTimeField(default=timezone.now())
 
     # password
     # email
     # phoneNumber
-    # averageRating
-    # registrationTime = models.DateTimeField('registration date')
+
 
 class Review(models.Model):
     reviewedUserID = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -33,7 +35,7 @@ class Posting(models.Model):
     isOpen = models.BooleanField()
     isCancelled = models.BooleanField()
     isComplete = models.BooleanField()
-    # tripDateAndTime = models.DateTimeField()
+    tripDateAndTime = models.DateTimeField(default=timezone.now())
     pickupLocation = models.CharField(max_length=50)
     dropoffLocation = models.CharField(max_length=50)
     vehicle = models.CharField(max_length=50)
