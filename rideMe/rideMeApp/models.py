@@ -11,14 +11,32 @@ class User(models.Model):
     numTripsAsPassenger = models.IntegerField()
     averageRating = models.FloatField()
     registrationTime = models.DateTimeField()
-    
+
     # phoneNumber
 
     def __str__(self):
         return self.username
 
-    def verify_password(self, raw_password):
+    def verifyPassword(self, raw_password):
         return pbkdf2_sha256.verify(raw_password, self.password)
+
+    def setAverageRating(self):
+        sumOfRatings = 0
+        numRatings = 0
+        for review in Review.objects.all():
+            if self == review.reviewedUserID:
+                sumOfRatings += review.rating
+                numRatings += 1
+        if numRatings == 0:
+            print('This user has not yet been rated.')
+        else:
+            self.averageRating = sumOfRatings / numRatings
+
+    def completedRideAsDriver(self):
+        self.numTripsAsDriver += 1
+
+    def completedRideAsPassenger(self):
+        self.numTripsAsPassenger += 1
 
 
 class Review(models.Model):

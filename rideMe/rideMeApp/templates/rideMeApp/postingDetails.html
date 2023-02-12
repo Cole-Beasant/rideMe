@@ -1,0 +1,36 @@
+{% if posting %}
+
+<table>
+    <tr>
+        <td>Post Owner Name:</td>
+        <td>{{ posting.ownerID.lastName }}, {{ posting.ownerID.firstName }} </td>
+    </tr>
+    <tr>
+        <td>Pickup Location:</td>
+        <td>{{ posting.pickupLocation }}</td>
+    </tr>
+    <tr>
+        <td>Dropoff Location:</td>
+        <td>{{ posting.dropoffLocation }}</td>
+    </tr>
+    <tr>
+        <td>Trip Date and Time:</td>
+        <td>{{ posting.tripDateAndTime }}</td>
+    </tr>
+    <tr>
+        <td>Number of Available Seats:</td>
+        <td>{{ posting.numAvailableSeats }}</td>
+    </tr>
+    <tr>
+        <td>Trip Vehicle:</td>
+        <td>{{ posting.vehicle }}</td>
+    </tr>
+</table>
+
+<button type="button">
+    <a href="{% url 'postings' %}">Back to Postings List</a>
+</button>
+
+{% else %}
+    <p>No posting selected</p>
+{% endif %}
