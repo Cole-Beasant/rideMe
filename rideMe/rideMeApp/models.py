@@ -74,12 +74,15 @@ class User(models.Model):
                     usersToReview.append(user.theInteracter)
         return usersToReview
 
-    '''
     def getConversations(self):
         conversations = []
         for conversation in Conversation.objects.all():
-            if self =    
-    '''
+            if self == conversation.passengerID:
+                conversations.append(conversation)
+            elif self == conversation.postingID.ownerID:
+                conversations.append(conversation)
+        return conversations
+
 
 
 class Review(models.Model):
@@ -110,6 +113,27 @@ class Posting(models.Model):
     dropoffLocation = models.CharField(max_length=50)
     vehicle = models.CharField(max_length=50)
 
+    def getApprovedPassengers(self):
+        approvedPassengers = []
+        for user in ApprovedPassengers.objects.all():
+            if self == user.postingID:
+                approvedPassengers.append(user.userID)
+        return approvedPassengers
+
+    def getUsersInteractedWith(self):
+        usersInteractedWith = []
+        for user in UsersInteractedForPostings.objects.all():
+            if self == user.postingID:
+                usersInteractedWith.append(user.userID)
+        return usersInteractedWith
+
+    def getAssociatedConversations(self):
+        associatedConversations = []
+        for conversation in Conversation.objects.all():
+            if self == conversation.postingID:
+                associatedConversations.append(conversation)
+        return associatedConversations
+
 class ApprovedPassengers(models.Model):
     postingID = models.ForeignKey(Posting, on_delete=models.CASCADE)
     userID = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -127,7 +151,17 @@ class Conversation(models.Model):
     passengerID = models.ForeignKey(User, on_delete=models.CASCADE)
     isClosed = models.BooleanField()
 
+    def getMessages(self):
+        messages = []
+        for message in Message.objects.all():
+            if self == message.conversationID:
+                messages.append((message.senderID.username, message.message))
+        return messages
+
 class Message(models.Model):
     conversationID = models.ForeignKey(Conversation, on_delete=models.CASCADE)
     senderID = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.CharField(max_length=500)
+
+    def __str__(self):
+        return (self.senderID.username, self.message)
