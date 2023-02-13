@@ -20,10 +20,12 @@ from rideMeApp import views
 # app_name = 'rideMeApp'
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path('rideMeApp/', include('rideMeApp.urls')),
     # path('', include('django.contrib.auth.urls')),
-    path('', views.LandingPage, name='landingPage'),
-    path('login/', views.login),
-    # path('signup/', views.createUser, name='signup'),
+    path('', views.LandingPageView.as_view()),
+    path('login/', views.LoginView.as_view()),
+    path('loginsuccess/', views.login),
+    path('signup/', views.SignupView.as_view()),
     path('postings/', views.viewPostings.as_view(), name='postings'),
     path('postings/<int:pk>/postingdetails/', views.viewPostingDetails.as_view())
 ]

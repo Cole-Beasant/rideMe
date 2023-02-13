@@ -38,12 +38,58 @@ class User(models.Model):
     def completedRideAsPassenger(self):
         self.numTripsAsPassenger += 1
 
+    def getReviews(self):
+        reviews = []
+        for review in Review.objects.all():
+            if self == review.reviewedUserID:
+                reviews.append((review.rating, review.description))
+        return reviews
+
+    def getOwnedPostings(self):
+        ownedPostings = []
+        for posting in Posting.objects.all():
+            if self == posting.ownerID:
+                ownedPostings.append(posting)
+        return ownedPostings
+
+    def getApprovedPassengerRides(self):
+        approvedPassengerRides = []
+        for approvedPassenger in ApprovedPassengers.objects.all():
+            if self == approvedPassenger.userID:
+                approvedPassengerRides.append(approvedPassenger.postingID)
+        return approvedPassengerRides 
+
+    def getPostingsInteractedWith(self):
+        postings = [] 
+        for user in UsersInteractedForPostings.objects.all():
+            if self == user.userID:
+                postings.append(user.postingID)
+        return postings
+
+    def getUsersToReview(self):
+        usersToReview = []
+        for user in UsersInteractedForUsers.objects.all():
+            if self == user.theUser:
+                if user.hasReviewed == False:
+                    usersToReview.append(user.theInteracter)
+        return usersToReview
+
+    '''
+    def getConversations(self):
+        conversations = []
+        for conversation in Conversation.objects.all():
+            if self =    
+    '''
+
 
 class Review(models.Model):
     reviewedUserID = models.ForeignKey(User, on_delete=models.CASCADE)
     reviewerID = models.ForeignKey(User, on_delete=models.CASCADE, related_name='leaves')
     rating = models.FloatField(max_length=2)
     description = models.CharField(max_length=500)
+
+    def __str__(self):
+        return (self.rating, self.description)
 
 class UsersInteractedForUsers(models.Model):
     '''

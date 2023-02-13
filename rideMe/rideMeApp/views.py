@@ -50,18 +50,22 @@ def createUser(request):
 
         encryptPassword = pbkdf2_sha256.encrypt(password, rounds=12000, salt_size=32)
 
-        User.objects.create(
-            username = username,
-            password = encryptPassword,
-            firstName = firstName,
-            lastName = lastName,
-            email = email,
-            # phoneNumber = phoneNumber,
-            numTripsAsDriver = 0,
-            numTripsAsPassenger = 0,
-            averageRating = 0.0,
-            registrationTime = timezone.now()
-        )
+        try:
+            User.objects.create(
+                username = username,
+                password = encryptPassword,
+                firstName = firstName,
+                lastName = lastName,
+                email = email,
+                # phoneNumber = phoneNumber,
+                numTripsAsDriver = 0,
+                numTripsAsPassenger = 0,
+                averageRating = 0.0,
+                registrationTime = timezone.now()
+            )
+            return HttpResponseRedirect(reverse(''))
+        except (ValueError):
+            return HttpResponse('No user added')
 
 class viewPostings(generic.ListView):
     template_name = 'rideMeApp/postingsList.html'
@@ -74,3 +78,22 @@ class viewPostingDetails(generic.DetailView):
     model = Posting
     context_object_name = 'posting'
     template_name = 'rideMeApp/postingDetails.html'
+
+class SignupView(generic.edit.CreateView):
+    context_object_name = 'user'
+    model = User
+    fields = ['username', 'password', 'firstName', 'lastName', 'email']
+    template_name = 'rideMeApp/signup.html'
+
+class LoginView(generic.edit.FormView):
+    template_name = 'rideMeApp/login.html'
+    form_class = LoginForm
+
+    success_url = '/loginsuccess'
+
+class LandingPageView(generic.ListView):
+    template = 'landingPage.html'
+    context_object_name = 'users'
+
+    def get_queryset(self):
+        return User.objects.all()
