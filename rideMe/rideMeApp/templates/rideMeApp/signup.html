@@ -1,5 +1,12 @@
+<h1>Welcome to RideMe</h1>
+
+<p>Enter the following information to register</p>
+
 <form method="post" >
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="save">
+    <input type="submit" value="submit">
 </form>
+
+<p>Already have an account?</p>
+<button type="button"><a href="{% url 'landingPage' %}">Login</a></button>

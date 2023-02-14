@@ -1,0 +1,78 @@
+<button type="button">
+    <a href="{% url 'postings' %}">Back to Postings List</a>
+</button>
+
+<h1>User Details</h1>
+
+{% if user %}
+
+<table>
+    <tr>
+        <td>Username:</td>
+        <td>{{ user.username }}</td>
+    </tr>
+    <tr>
+        <td>User's Name:</td>
+        <td>{{ user.lastName }}, {{ user.firstName }} </td>
+    </tr>
+    <tr>
+        <td>User's Email:</td>
+        <td>{{ user.email }}</td>
+    </tr>
+    <tr>
+        <td>RideMe member since:</td>
+        <td>{{ user.registrationTime }}</td>
+    </tr>
+    <tr>
+        <td>Number of Trips as Driver:</td>
+        <td>{{ user.numTripsAsDriver }}</td>
+    </tr>
+    <tr>
+        <td>Number of Trips as Passenger:</td>
+        <td>{{ user.numTripsAsPassenger }}</td>
+    </tr>
+    <tr>
+        <td>Average Rating:</td>
+        <td>{{ user.averageRating }}</td>
+    </tr>
+</table>
+
+<h2>User Reviews</h2>
+
+{% if user.getReviews %}
+<table>
+    {% for review in user.getReviews %}
+    <tr>
+        <td>{{ review }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+    <p>{{ user.lastName }}, {{ user.firstName }} has not been reviewed yet</p>
+{% endif %}
+
+<h2>User Postings</h2>
+
+{% if user.getOwnedPostings %}
+<table>
+    {% for posting in user.getOwnedPostings %}
+    <tr>
+        <td>{{ posting.pickupLocation }}</td>
+        <td>{{ posting.dropoffLocation }}</td>
+        <td>{{ posting.tripDateAndTime }}</td>
+        <td>
+            <button type="button">
+                <a href="{% url 'postingdetails' posting.id %}" >View Posting </a>                 
+            </button>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% else %}
+<p>{{ user.lastName }}, {{ user.firstName }} does not own any postings</p>
+{% endif %}
+
+{% else %}
+    <p>No user selected</p>
+{% endif %}

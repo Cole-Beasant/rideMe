@@ -1,0 +1,8 @@
+Priority of Things to do:
+
+1. Figure out how to hold the registered user object throughout the viewing of the website
+2. Add 'Add new posting' page 
+3. Add 'Message Post Owner' to postingDetails page
+4. Add 'Add Review' pages 
+5. Add posting management for post owners
+6. Add 'Edit Profile' page

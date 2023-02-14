@@ -1,9 +1,15 @@
+<h1>Posting Details</h1>
+
 {% if posting %}
 
 <table>
     <tr>
         <td>Post Owner Name:</td>
-        <td>{{ posting.ownerID.lastName }}, {{ posting.ownerID.firstName }} </td>
+        <td>
+            <a href="{% url 'userdetails' posting.ownerID.id %}" > 
+                {{ posting.ownerID.lastName }}, {{ posting.ownerID.firstName }}  
+            </a>
+        </td>
     </tr>
     <tr>
         <td>Pickup Location:</td>

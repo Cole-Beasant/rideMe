@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from passlib.hash import pbkdf2_sha256
 
 class User(models.Model):
@@ -7,10 +8,10 @@ class User(models.Model):
     firstName = models.CharField(max_length=50)
     lastName = models.CharField(max_length=50)
     email = models.EmailField()
-    numTripsAsDriver = models.IntegerField()
-    numTripsAsPassenger = models.IntegerField()
-    averageRating = models.FloatField()
-    registrationTime = models.DateTimeField()
+    numTripsAsDriver = models.IntegerField(default=0)
+    numTripsAsPassenger = models.IntegerField(default=0)
+    averageRating = models.FloatField(default=0.0)
+    registrationTime = models.DateTimeField(default=timezone.now())
 
     # phoneNumber
 
@@ -42,7 +43,7 @@ class User(models.Model):
         reviews = []
         for review in Review.objects.all():
             if self == review.reviewedUserID:
-                reviews.append((review.rating, review.description))
+                reviews.append((review.reviewerID.username, review.rating, review.description))
         return reviews
 
     def getOwnedPostings(self):
@@ -92,7 +93,7 @@ class Review(models.Model):
     description = models.CharField(max_length=500)
 
     def __str__(self):
-        return (self.rating, self.description)
+        return (self.reviewerID.username, self.rating, self.description)
 
 class UsersInteractedForUsers(models.Model):
     '''
@@ -100,14 +101,14 @@ class UsersInteractedForUsers(models.Model):
     '''
     theUser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='has')
     theInteracter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='interacts_with')
-    hasReviewed = models.BooleanField()
+    hasReviewed = models.BooleanField(default=False)
 
 class Posting(models.Model):
     ownerID = models.ForeignKey(User, on_delete=models.CASCADE)
     numAvailableSeats = models.IntegerField()
-    isOpen = models.BooleanField()
-    isCancelled = models.BooleanField()
-    isComplete = models.BooleanField()
+    isOpen = models.BooleanField(default=True)
+    isCancelled = models.BooleanField(default=False)
+    isComplete = models.BooleanField(default=False)
     tripDateAndTime = models.DateTimeField()
     pickupLocation = models.CharField(max_length=50)
     dropoffLocation = models.CharField(max_length=50)
@@ -147,9 +148,8 @@ class UsersInteractedForPostings(models.Model):
 
 class Conversation(models.Model):
     postingID = models.ForeignKey(Posting, on_delete=models.CASCADE)
-    # postOwnerID = models.ForeignKey(User, on_delete=models.CASCADE)
     passengerID = models.ForeignKey(User, on_delete=models.CASCADE)
-    isClosed = models.BooleanField()
+    isClosed = models.BooleanField(default=False)
 
     def getMessages(self):
         messages = []

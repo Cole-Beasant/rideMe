@@ -8,64 +8,64 @@ from django.views import generic
 from .forms import LoginForm
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy, reverse
+from .forms import SignUpForm, LoginForm
 
-
-def LandingPage(request):
-    return HttpResponse('Welcome to RideMe')
-
-
-'''
-class SignUpView(generic.CreateView):
-    form_class = UserCreationForm
-    success_url = reverse_lazy('login')
-    template_name = 'registration/signup.html'
-'''
 
 def login(request):
-    # render(request, 'rideMeApp/landingPage.html')
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-    # user = get_object_or_404(User, username=username)
+    submitted = False
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        
+        username = request.POST['username']
+        password = request.POST['password']
 
-    try:
-        user = User.objects.get(username = username)
-        try:
-            password == user.password
-            return HttpResponseRedirect(reverse('postings'))
-        except User.DoesNotExist:
-            return HttpResponse('The username and password do not match')
-    except User.DoesNotExist:
-        return HttpResponse('There is no user with this username')
+        if form.is_valid():
+            try:
+                User.objects.get(username=username)
+            except(ValueError):
+                return HttpResponse('This username does not exist')
+            user = User.objects.get(username=username)
+            if user.verifyPassword(password) == True:
+                submitted = True
+                return HttpResponseRedirect(reverse('postings'))
+            else:
+                return HttpResponse('Credentials do not match')
+
+    return render(request, 'rideMeApp/landingPage.html', {'form': LoginForm})
         
 
-
 def createUser(request):
-    if request.method == 'POST':
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        for user in User.objects.all():
+            if request.POST['username'] == user.username:
+                return HttpResponse('There is already a RideMe user with this username. Please enter a different username')
+
         username = request.POST['username']
         password = request.POST['password']
         firstName = request.POST['firstName']
         lastName = request.POST['lastName']
         email = request.POST['email']
-        # phoneNumber = request.POST['phoneNumber']
-
         encryptPassword = pbkdf2_sha256.encrypt(password, rounds=12000, salt_size=32)
 
-        try:
-            User.objects.create(
-                username = username,
-                password = encryptPassword,
-                firstName = firstName,
-                lastName = lastName,
-                email = email,
-                # phoneNumber = phoneNumber,
-                numTripsAsDriver = 0,
-                numTripsAsPassenger = 0,
-                averageRating = 0.0,
-                registrationTime = timezone.now()
-            )
-            return HttpResponseRedirect(reverse(''))
-        except (ValueError):
-            return HttpResponse('No user added')
+        if form.is_valid():
+            try:
+                User.objects.create(
+                    username = username,
+                    password = encryptPassword,
+                    firstName = firstName,
+                    lastName = lastName,
+                    email = email,
+                    numTripsAsDriver = 0,
+                    numTripsAsPassenger = 0,
+                    averageRating = 0.0,
+                    registrationTime = timezone.now()
+                )
+                return HttpResponseRedirect(reverse('postings'))
+            except (ValueError):
+                return HttpResponse('No user added')
+
+    return render(request, 'rideMeApp/signup.html', {'form': SignUpForm})
 
 class viewPostings(generic.ListView):
     template_name = 'rideMeApp/postingsList.html'
@@ -79,21 +79,7 @@ class viewPostingDetails(generic.DetailView):
     context_object_name = 'posting'
     template_name = 'rideMeApp/postingDetails.html'
 
-class SignupView(generic.edit.CreateView):
-    context_object_name = 'user'
+class viewUserDetails(generic.DetailView):
     model = User
-    fields = ['username', 'password', 'firstName', 'lastName', 'email']
-    template_name = 'rideMeApp/signup.html'
-
-class LoginView(generic.edit.FormView):
-    template_name = 'rideMeApp/login.html'
-    form_class = LoginForm
-
-    success_url = '/loginsuccess'
-
-class LandingPageView(generic.ListView):
-    template = 'landingPage.html'
-    context_object_name = 'users'
-
-    def get_queryset(self):
-        return User.objects.all()
+    context_object_name = 'user'
+    template_name = 'rideMeApp/userDetails.html'

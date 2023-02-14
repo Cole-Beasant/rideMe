@@ -1,30 +1,29 @@
 <h1>Open Postings</h1>
 
-<h2>NEED TO FIGURE OUT HOW TO GET THE BUTTON LINK TO WORK!!!!!</h2>
-
 {% if postingsList %}
 <table>
-    <ul>
+    <tr>
+        <td>Pickup Location</td>
+        <td>Dropoff Location</td>
+        <td>Trip Date and Pickup Time</td>
+        <td></td>
+    </tr>
         {% for posting in postingsList %}
+        {% if posting.isOpen == True %}
         <tr>
-            <td>
-                <li>{{ posting.pickupLocation }}</li>
-            </td>
-            <td>
-                <li>{{ posting.dropoffLocation }}</li>
-            </td>
-            <td>
-                <li>{{ posting.tripDateAndTime }}</li>
-            </td>
+            <td>{{ posting.pickupLocation }}</td>
+            <td>{{ posting.dropoffLocation }}</td>
+            <td>{{ posting.tripDateAndTime }}</td>
             <td>
                 <button type="button">
-                    View Posting                  
+                    <a href="{% url 'postingdetails' posting.id %}" >View Posting </a>                 
                 </button>
             </td>
 
         </tr>
+        {% else %}
+        {% endif %}
         {% endfor %}
-    </ul>
 </table>
 {% else %}
     <p>No open postings</p>
