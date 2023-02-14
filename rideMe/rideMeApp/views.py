@@ -61,7 +61,7 @@ def createUser(request):
                     averageRating = 0.0,
                     registrationTime = timezone.now()
                 )
-                return HttpResponseRedirect(reverse('postings'))
+                return HttpResponseRedirect(reverse('landingPage'))
             except (ValueError):
                 return HttpResponse('No user added')
 

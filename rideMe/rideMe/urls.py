@@ -23,10 +23,7 @@ urlpatterns = [
     # path('rideMeApp/', include('rideMeApp.urls')),
     # path('', include('django.contrib.auth.urls')),
     path('', views.login, name='landingPage'),
-    # path('login/', views.LoginView.as_view(), name='login'),
-    # path('loginsuccess/', views.login),
     path('signup/', views.createUser, name='signup'),
-    # path('signupsuccess/', views.signupSuccess.as_view(), name='signupsuccess'),
     path('postings?submitted=True/', views.viewPostings.as_view(), name='postings'),
     path('<int:pk>/postingdetails?submitted=True/', views.viewPostingDetails.as_view(), name='postingdetails'),
     path('<int:pk>/userdetails?submitted=True/', views.viewUserDetails.as_view(), name='userdetails')
