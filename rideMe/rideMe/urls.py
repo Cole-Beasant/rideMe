@@ -28,6 +28,6 @@ urlpatterns = [
     path('signup/', views.createUser, name='signup'),
     # path('signupsuccess/', views.signupSuccess.as_view(), name='signupsuccess'),
     path('postings?submitted=True/', views.viewPostings.as_view(), name='postings'),
-    path('<int:pk>/postingdetails/', views.viewPostingDetails.as_view(), name='postingdetails'),
-    path('<int:pk>/userdetails/', views.viewUserDetails.as_view(), name='userdetails')
+    path('<int:pk>/postingdetails?submitted=True/', views.viewPostingDetails.as_view(), name='postingdetails'),
+    path('<int:pk>/userdetails?submitted=True/', views.viewUserDetails.as_view(), name='userdetails')
 ]
