@@ -2,6 +2,10 @@
     <a href="{% url 'landingPage' %}" >Logout </a>                 
 </button>
 
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
+
 <h1>Open Postings</h1>
 
 {% if postingsList %}

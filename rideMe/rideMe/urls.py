@@ -24,6 +24,7 @@ urlpatterns = [
     # path('', include('django.contrib.auth.urls')),
     path('', views.login, name='landingPage'),
     path('signup/', views.createUser, name='signup'),
+    # path('getLoggedInUser/', views.getLoggedInUser, name='getLoggedInUser'),
     path('postings?submitted=True/', views.viewPostings.as_view(), name='postings'),
     path('<int:pk>/postingdetails?submitted=True/', views.viewPostingDetails.as_view(), name='postingdetails'),
     path('<int:pk>/userdetails?submitted=True/', views.viewUserDetails.as_view(), name='userdetails')

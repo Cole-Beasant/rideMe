@@ -9,6 +9,7 @@ from .forms import LoginForm
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy, reverse
 from .forms import SignUpForm, LoginForm
+from django.contrib import messages
 
 
 def login(request):
@@ -22,14 +23,17 @@ def login(request):
         if form.is_valid():
             try:
                 User.objects.get(username=username)
-            except(ValueError):
-                return HttpResponse('This username does not exist')
+            except:
+                messages.error(request, 'This username does not exist')
+                return render(request, 'rideMeApp/landingPage.html', {'form': LoginForm})
             user = User.objects.get(username=username)
             if user.verifyPassword(password) == True:
                 submitted = True
+                messages.success(request, 'Successfully signed in!')
                 return HttpResponseRedirect(reverse('postings'))
             else:
-                return HttpResponse('Credentials do not match')
+                messages.error(request, 'Login credentials do not match')
+                return render(request, 'rideMeApp/landingPage.html', {'form': LoginForm})
 
     return render(request, 'rideMeApp/landingPage.html', {'form': LoginForm})
         
@@ -39,7 +43,8 @@ def createUser(request):
         form = SignUpForm(request.POST)
         for user in User.objects.all():
             if request.POST['username'] == user.username:
-                return HttpResponse('There is already a RideMe user with this username. Please enter a different username')
+                messages.error(request, 'There is already a RideMe user with this username. Please enter a different username')
+                return render(request, 'rideMeApp/signup.html', {'form': SignUpForm})
 
         username = request.POST['username']
         password = request.POST['password']
@@ -61,9 +66,11 @@ def createUser(request):
                     averageRating = 0.0,
                     registrationTime = timezone.now()
                 )
+                messages.success(request, 'Successfully signed up!')
                 return HttpResponseRedirect(reverse('landingPage'))
             except (ValueError):
-                return HttpResponse('No user added')
+                messages.error(request, 'No user added')
+                return render(request, 'rideMeApp/signup.html', {'form': SignUpForm})
 
     return render(request, 'rideMeApp/signup.html', {'form': SignUpForm})
 
