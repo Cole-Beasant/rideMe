@@ -25,6 +25,7 @@ urlpatterns = [
     path('', views.login, name='landingPage'),
     path('signup/', views.createUser, name='signup'),
     path('resetPassword/', views.resetPassword, name='resetPassword'),
+    path('logout/', views.logout, name='logout'),
     # path('getLoggedInUser/', views.getLoggedInUser, name='getLoggedInUser'),
     path('postings?submitted=True/', views.viewPostings, name='postings'),
     path('<int:pk>/postingdetails?submitted=True/', views.viewPostingDetails, name='postingdetails'),

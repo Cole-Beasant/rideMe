@@ -11,15 +11,13 @@ from django.urls import reverse_lazy, reverse
 from .forms import SignUpForm, LoginForm, AddPostingForm, StartConversation
 from django.contrib import messages
 
-'''
+
 def logout(request):
     try:
         del request.session['loggedInUser']
     except KeyError:
         pass
     return HttpResponseRedirect(reverse('landingPage'))
-'''
-
 
 def login(request):
     submitted = False
