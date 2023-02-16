@@ -8,7 +8,7 @@ from django.views import generic
 from .forms import LoginForm, SignUpForm, ResetPasswordForm
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy, reverse
-from .forms import SignUpForm, LoginForm, AddPostingForm, StartConversation
+from .forms import SignUpForm, LoginForm, AddPostingForm, StartConversation, AddReviewForm
 from django.contrib import messages
 
 
@@ -17,6 +17,7 @@ def logout(request):
         del request.session['loggedInUser']
     except KeyError:
         pass
+    messages.success(request, 'Successfully logged out!')
     return HttpResponseRedirect(reverse('landingPage'))
 
 def login(request):
@@ -117,18 +118,19 @@ def resetPassword(request):
 
 def viewPostings(request):
     postingsList = Posting.objects.filter(isOpen=True).order_by('-tripDate') # add to the filter tripDate__gt=timezone.now()
+    user = User.objects.get(username=request.session['loggedInUser'])
 
-    context = {'postingsList': postingsList}
+    numUnreadConversations = user.getNumUnreadConversations()
+    if numUnreadConversations > 0:
+        messages.info(request, 'You have ' + str(numUnreadConversations) + ' unread messages')
+
+    numUsersToReview = user.getNumUsersToReview()
+    if numUsersToReview > 0:
+        messages.info(request, 'You have ' + str(numUsersToReview) + ' users to review')
+
+    context = {'postingsList': postingsList, 'user': user}
 
     return render(request, 'rideMeApp/postingsList.html', context)
-
-class viewPostingsView(generic.ListView):
-    template_name = 'rideMeApp/postingsList.html'
-    context_object_name = 'postingsList'
-
-    def get_queryset(self):
-        return Posting.objects.filter(isOpen=True).order_by('-tripDate') # add to the filter tripDate__gt=timezone.now()
-
 
 def viewPostingDetails(request, pk):
     posting = Posting.objects.get(pk=pk)
@@ -138,7 +140,18 @@ def viewPostingDetails(request, pk):
 def messagePostOwner(request, pk):
     posting = Posting.objects.get(pk=pk)
     user = User.objects.get(username = request.session['loggedInUser'])
-    if request.method == 'POST':
+
+    if user == posting.ownerID:
+        messages.error(request, 'You cannot message yourself')
+        return HttpResponseRedirect(reverse('postings'))
+
+    for conversation in posting.getAssociatedConversations():
+        if user == conversation.passengerID:
+            messages.error(request, 'You have already messaged this post owner regarding this posting. Go to your conversations page to view the conversation.')
+            return HttpResponseRedirect(reverse('postings'))
+
+    if request.method == 'POST':             
+
         newConversation = Conversation(postingID = posting, passengerID = user, isClosed = False)
         newConversation.save()
         message = request.POST['message']
@@ -166,11 +179,12 @@ def messagePostOwner(request, pk):
 
     return render(request, 'rideMeApp/messagePostOwner.html', {'form': StartConversation})
 
-
+'''
 class viewPostingDetailsView(generic.DetailView):
     model = Posting
     context_object_name = 'posting'
     template_name = 'rideMeApp/postingDetails.html'
+'''
 
 class viewUserDetails(generic.DetailView):
     model = User
@@ -182,6 +196,10 @@ def addPosting(request):
         form = AddPostingForm(request.POST)
         if int != type(request.POST['numAvailableSeats']):
             messages.error(request, 'The number of available seats must be an integer.')
+            return render(request, 'rideMeApp/addPosting.html', {'form': AddPostingForm})
+
+        if request.POST['numAvailableSeats'] < 1:
+            messages.error(request, 'You must have available seats in order to list the posting')
             return render(request, 'rideMeApp/addPosting.html', {'form': AddPostingForm})
 
         if timezone.now() > request.POST['tripDate']:
@@ -224,3 +242,46 @@ def usersToReview(request):
     )
     context = {'usersToReview': usersToReview}
     return render(request, 'rideMeApp/usersToReview.html', context)
+
+def addReview(request, pk):
+    userToReview = User.objects.get(pk=pk)
+    reviewer = User.objects.get(username=request.session['loggedInUser'])
+    if request.method == 'POST':
+        form = AddReviewForm(request.POST)
+        if form.is_valid():
+            Review.objects.create(
+                reviewedUserID = userToReview,
+                reviewerID = reviewer,
+                rating = request.POST['rating'],
+                description = request.POST['description']
+            )
+
+            for usersInteractedObject in UsersInteractedForUsers.objects.all():
+                if usersInteractedObject.theUser == reviewer:
+                    if usersInteractedObject.theInteracter == userToReview:
+                        usersInteractedObject.hasReviewed = True
+                        usersInteractedObject.delete()
+                        break
+
+            messages.success(request, 'Review posted successfully!')
+            return HttpResponseRedirect(reverse('postings'))
+
+        else:
+            messages.error('Your rating may not be between 0 and 5 or your description may be too long.')
+            return render(request, 'rideMeApp/addReview.html', {'form': AddReviewForm})
+    
+    messages.info(request, 'Leave a review for ' + userToReview.lastName + ', ' + userToReview.firstName)
+    return render(request, 'rideMeApp/addReview.html', {'form': AddReviewForm})
+
+def dismissReview(request, pk):
+    userToReview = User.objects.get(pk=pk)
+    reviewer = User.objects.get(username=request.session['loggedInUser'])
+    for usersInteractedObject in UsersInteractedForUsers.objects.all():
+        if usersInteractedObject.theUser == reviewer:
+            if usersInteractedObject.theInteracter == userToReview:
+                usersInteractedObject.hasReviewed = True
+                usersInteractedObject.delete()
+                break
+
+    messages.success(request, 'Successfully dismissed')
+    return HttpResponseRedirect(reverse('postings'))
