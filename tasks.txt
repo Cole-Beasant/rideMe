@@ -1,6 +1,9 @@
 Priority of Things to do:
 
 1. Figure out how to hold the registered user object throughout the viewing of the website
+    - Option One: require the user to enter their username and password whenever they want
+                  to make an edit to the DB 
+    - Option Two: try to figure out how to make every view a function that takes a request
 2. Add 'Add new posting' page 
 3. Add 'Message Post Owner' to postingDetails page
 4. Add 'Add Review' pages 

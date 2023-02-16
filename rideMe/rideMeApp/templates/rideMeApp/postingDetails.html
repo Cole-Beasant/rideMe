@@ -2,6 +2,10 @@
     <a href="{% url 'landingPage' %}" >Logout </a>                 
 </button>
 
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
+
 <h1>Posting Details</h1>
 
 {% if posting %}
@@ -24,8 +28,12 @@
         <td>{{ posting.dropoffLocation }}</td>
     </tr>
     <tr>
-        <td>Trip Date and Time:</td>
-        <td>{{ posting.tripDateAndTime }}</td>
+        <td>Trip Date:</td>
+        <td>{{ posting.tripDate }}</td>
+    </tr>
+    <tr>
+        <td>Trip Time:</td>
+        <td>{{ posting.tripTime }}</td>
     </tr>
     <tr>
         <td>Number of Available Seats:</td>
@@ -38,9 +46,13 @@
 </table>
 
 <button type="button">
-    <a href="{% url 'postings' %}">Back to Postings List</a>
+    <a href="{% url 'messagePostOwner' posting.id %}">Message Post Owner</a>
 </button>
 
 {% else %}
     <p>No posting selected</p>
 {% endif %}
+
+<button type="button">
+    <a href="{% url 'postings' %}">Back to Postings List</a>
+</button>

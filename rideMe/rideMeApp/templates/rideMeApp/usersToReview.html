@@ -1,0 +1,36 @@
+<button type="button">
+    <a href="{% url 'landingPage' %}" >Logout </a>                 
+</button>
+
+<button type="button">
+    <a href="{% url 'postings' %}">Back to Postings List</a>
+</button>
+
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+<h1>Users to Review</h1>
+
+{% if usersToReview %}
+
+<table>
+    <tr>
+        <td>User</td>
+        <td></td>
+    </tr>
+        {% for user in usersToReview %}
+        <tr>
+            <td>{{ user.theInteracter.lastName }}, {{ user.theInteracter.firstName }}</td>
+            <td>
+                <button type="button">
+                    Review                
+                </button>
+            </td>
+
+        </tr>
+        {% endfor %}
+
+{% else %}
+<p>You have already reviewed all users you have interacted with.</p>
+{% endif %}

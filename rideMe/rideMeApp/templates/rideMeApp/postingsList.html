@@ -1,6 +1,12 @@
 <button type="button">
     <a href="{% url 'landingPage' %}" >Logout </a>                 
 </button>
+<button type="button">
+    <a href="{% url 'addPosting' %}" >Add Posting </a>                 
+</button>
+<button type="button">
+    <a href="{% url 'usersToReview' %}" >Leave a Review </a>                 
+</button>
 
 {% for message in messages %}
     <p>{{ message }}</p>
@@ -13,7 +19,8 @@
     <tr>
         <td>Pickup Location</td>
         <td>Dropoff Location</td>
-        <td>Trip Date and Pickup Time</td>
+        <td>Trip Date</td>
+        <td>Pickup Time</td>
         <td></td>
     </tr>
         {% for posting in postingsList %}
@@ -21,7 +28,8 @@
         <tr>
             <td>{{ posting.pickupLocation }}</td>
             <td>{{ posting.dropoffLocation }}</td>
-            <td>{{ posting.tripDateAndTime }}</td>
+            <td>{{ posting.tripDate }}</td>
+            <td>{{ posting.tripTime }}</td>
             <td>
                 <button type="button">
                     <a href="{% url 'postingdetails' posting.id %}" >View Posting </a>                 

@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from passlib.hash import pbkdf2_sha256
+import datetime
 
 class User(models.Model):
     username = models.CharField(max_length=50)
@@ -109,10 +110,12 @@ class Posting(models.Model):
     isOpen = models.BooleanField(default=True)
     isCancelled = models.BooleanField(default=False)
     isComplete = models.BooleanField(default=False)
-    tripDateAndTime = models.DateTimeField()
+    tripDate = models.DateField(default=datetime.date(2023,2,15))
+    tripTime = models.TimeField(default=datetime.time(10,30,0))
     pickupLocation = models.CharField(max_length=50)
     dropoffLocation = models.CharField(max_length=50)
     vehicle = models.CharField(max_length=50)
+    submissionTime = models.DateTimeField()
 
     def getApprovedPassengers(self):
         approvedPassengers = []
@@ -164,4 +167,4 @@ class Message(models.Model):
     message = models.CharField(max_length=500)
 
     def __str__(self):
-        return (self.senderID.username, self.message)
+        return self.senderID.username + ',' + self.message

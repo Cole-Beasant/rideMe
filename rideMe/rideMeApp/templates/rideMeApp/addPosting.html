@@ -1,0 +1,23 @@
+<button type="button">
+    <a href="{% url 'landingPage' %}" >Logout </a>                 
+</button>
+
+<button type="button">
+    <a href="{% url 'postings' %}">Back to Postings List</a>
+</button>
+
+<h1>Add Posting</h1>
+
+<h2>SOMETHING IS WRONG!!! TRIP DATE FIELD AINT SHOWIN UP!!!</h2>
+
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+<p>Enter the following information to add a new posting</p>
+
+<form method="post" >
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="submit">
+</form>
