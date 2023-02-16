@@ -8,6 +8,8 @@
     <a href="{% url 'usersToReview' %}" >Leave a Review </a>                 
 </button>
 
+<h2>Hello {{ user.firstName }} </h2>
+
 {% for message in messages %}
     <p>{{ message }}</p>
 {% endfor %}

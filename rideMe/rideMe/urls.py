@@ -32,5 +32,7 @@ urlpatterns = [
     path('<int:pk>/postingdetails/messagePostOwner?submitted=True/', views.messagePostOwner, name='messagePostOwner'),
     path('<int:pk>/userdetails?submitted=True/', views.viewUserDetails.as_view(), name='userdetails'),
     path('postings/addPostings?submitted=True/', views.addPosting, name='addPosting'),
-    path('usersToReview', views.usersToReview, name='usersToReview')
+    path('usersToReview', views.usersToReview, name='usersToReview'),
+    path('<int:pk>/addReview', views.addReview, name='addReview'),
+    path('<int:pk>/dismissReview', views.dismissReview, name='dismissReview')
 ]

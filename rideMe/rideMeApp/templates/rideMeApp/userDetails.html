@@ -37,7 +37,7 @@
     </tr>
     <tr>
         <td>Average Rating:</td>
-        <td>{{ user.averageRating }}</td>
+        <td>{{ user.getAverageRating }}</td>
     </tr>
 </table>
 
@@ -59,11 +59,19 @@
 
 {% if user.getOwnedPostings %}
 <table>
+    <tr>
+        <td>Pickup Location</td>
+        <td>Dropoff Location</td>
+        <td>Trip Date</td>
+        <td>Pickup Time</td>
+        <td></td>
+    </tr>
     {% for posting in user.getOwnedPostings %}
     <tr>
         <td>{{ posting.pickupLocation }}</td>
         <td>{{ posting.dropoffLocation }}</td>
-        <td>{{ posting.tripDateAndTime }}</td>
+        <td>{{ posting.tripDate }}</td>
+        <td>{{ posting.tripTime }}</td>
         <td>
             <button type="button">
                 <a href="{% url 'postingdetails' posting.id %}" >View Posting </a>                 

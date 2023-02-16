@@ -32,3 +32,7 @@ class AddPostingForm(forms.Form):
 
 class StartConversation(forms.Form):
     message = forms.CharField(label='Enter the message you would like to send to the post owner')
+
+class AddReviewForm(forms.Form):
+    rating = forms.FloatField(min_value=0, max_value=5, label='Enter a rating of your experience with this user from 0 to 5 with 5 being the best:')
+    description = forms.CharField(max_length=500, label='Enter a description of your experience with this user (max 500 characters):')

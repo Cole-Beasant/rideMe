@@ -1,0 +1,19 @@
+<button type="button">
+    <a href="{% url 'logout' %}" >Logout </a>                 
+</button>
+
+<button type="button">
+    <a href="{% url 'postings' %}">Back to Postings List</a>
+</button>
+
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+<p>Enter the following to leave the review</p>
+
+<form method="post" >
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="submit">
+</form>

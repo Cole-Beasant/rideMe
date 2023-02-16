@@ -18,13 +18,19 @@
     <tr>
         <td>User</td>
         <td></td>
+        <td></td>
     </tr>
         {% for user in usersToReview %}
         <tr>
             <td>{{ user.theInteracter.lastName }}, {{ user.theInteracter.firstName }}</td>
             <td>
                 <button type="button">
-                    Review                
+                    <a href="{% url 'addReview' user.theInteracter.id %}" >Leave Review</a>                
+                </button>
+            </td>
+            <td>
+                <button type="button">
+                    <a href="{ url 'dismissReview' user.theInteractor.id }">Dismiss</a>
                 </button>
             </td>
 

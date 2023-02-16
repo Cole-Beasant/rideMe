@@ -22,7 +22,7 @@ class User(models.Model):
     def verifyPassword(self, raw_password):
         return pbkdf2_sha256.verify(raw_password, self.password)
 
-    def setAverageRating(self):
+    def getAverageRating(self):
         sumOfRatings = 0
         numRatings = 0
         for review in Review.objects.all():
@@ -32,7 +32,7 @@ class User(models.Model):
         if numRatings == 0:
             print('This user has not yet been rated.')
         else:
-            self.averageRating = sumOfRatings / numRatings
+            return sumOfRatings / numRatings
 
     def completedRideAsDriver(self):
         self.numTripsAsDriver += 1
@@ -76,6 +76,14 @@ class User(models.Model):
                     usersToReview.append(user.theInteracter)
         return usersToReview
 
+    def getNumUsersToReview(self):
+        numUsersToReview = 0
+        for user in UsersInteractedForUsers.objects.all():
+            if self == user.theUser:
+                if user.hasReviewed == False:
+                    numUsersToReview += 1
+        return numUsersToReview
+
     def getConversations(self):
         conversations = []
         for conversation in Conversation.objects.all():
@@ -85,6 +93,22 @@ class User(models.Model):
                 conversations.append(conversation)
         return conversations
 
+    def getNumUnreadConversations(self):
+        numUnreadConversations = 0
+        for conversation in Conversation.objects.all():
+            if self == conversation.passengerID:
+                if conversation.hasUnreadMessages() == True:
+                    for message in conversation.getMessages():
+                        if message.hasRead == False:
+                            if self != message.senderID:
+                                numUnreadConversations += 1
+            elif self == conversation.postingID.ownerID:
+                if conversation.hasUnreadMessages() == True:
+                    for message in conversation.getMessages():
+                        if message.hasRead == False:
+                            if self != message.senderID:
+                                numUnreadConversations += 1
+        return numUnreadConversations
 
 
 class Review(models.Model):
@@ -158,13 +182,21 @@ class Conversation(models.Model):
         messages = []
         for message in Message.objects.all():
             if self == message.conversationID:
-                messages.append((message.senderID.username, message.message))
+                messages.append(message)
         return messages
+
+    def hasUnreadMessages(self):
+        for message in Message.objects.all():
+            if self == message.conversationID:
+                if message.hasRead == False:
+                    return True
+        return False
 
 class Message(models.Model):
     conversationID = models.ForeignKey(Conversation, on_delete=models.CASCADE)
     senderID = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.CharField(max_length=500)
+    hasRead = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.senderID.username + ',' + self.message
+        return self.senderID.username + ', ' + self.message
