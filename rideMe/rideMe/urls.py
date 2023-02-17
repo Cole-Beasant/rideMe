@@ -31,12 +31,13 @@ urlpatterns = [
     path('<int:pk>/postingdetails/messagePostOwner?submitted=True/', views.messagePostOwner, name='messagePostOwner'),
     path('<int:pk>/userdetails?submitted=True/', views.viewUserDetails.as_view(), name='userdetails'),
     path('postings/addPostings?submitted=True/', views.addPosting, name='addPosting'),
-    path('usersToReview', views.usersToReview, name='usersToReview'),
-    path('<int:pk>/addReview', views.addReview, name='addReview'),
-    path('<int:pk>/dismissReview', views.dismissReview, name='dismissReview'),
-    path('viewConversations', views.viewConversations, name='viewConversations'),
-    path('<int:pk>/viewMessages', views.viewMessages, name='viewMessages'),
-    path('<int:pk>/sendMessages', views.sendMessage, name='sendMessage'),
-    path('<int:pk>/addApprovedPassenger', views.addApprovedPassenger, name='addApprovedPassenger'),
-    path('myProfile', views.viewMyProfile, name='myProfile')
+    path('usersToReview?submitted=True/', views.usersToReview, name='usersToReview'),
+    path('<int:pk>/addReview?submitted=True/', views.addReview, name='addReview'),
+    path('<int:pk>/dismissReview?submitted=True/', views.dismissReview, name='dismissReview'),
+    path('viewConversations?submitted=True/', views.viewConversations, name='viewConversations'),
+    path('<int:pk>/viewMessages?submitted=True/', views.viewMessages, name='viewMessages'),
+    path('<int:pk>/sendMessages?submitted=True/', views.sendMessage, name='sendMessage'),
+    path('<int:pk>/addApprovedPassenger?submitted=True/', views.addApprovedPassenger, name='addApprovedPassenger'),
+    path('myProfile?submitted=True/', views.viewMyProfile, name='myProfile'),
+    path('deleteProfile?submitted=True/', views.deleteProfile, name='deleteProfile')
 ]

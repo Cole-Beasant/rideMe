@@ -144,10 +144,7 @@ class Posting(models.Model):
 
     def getApprovedPassengers(self):
         approvedPassengers = []
-        # FOR SOME RZN IT DONT LIKE QUERYING APPROVED PASSENGERS
-        # IT SAYS THEY DONT EXIST
         for object in ApprovedPassengers.objects.filter(postingID=self):
-            # if self == user.postingID:
             approvedPassengers.append(object.userID)
         return approvedPassengers
 

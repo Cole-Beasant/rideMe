@@ -345,7 +345,7 @@ def sendMessage(request, pk):
                 hasRead = False,
                 timeSent = timezone.now()
             )
-            return HttpResponseRedirect('viewMessages')
+            return HttpResponseRedirect(reverse('viewConversations'))
         else:
             messages.error('The message was too long')
             return render(request, 'rideMeApp/sendMessage.html', {'form': SendMessageForm})
@@ -361,7 +361,6 @@ def addApprovedPassenger(request, pk):
     conversation = Conversation.objects.get(pk=pk)
     posting = conversation.postingID
     approvedPassenger = conversation.passengerID
-    # Issue is Here
     for user in posting.getApprovedPassengers():
         if user == approvedPassenger:
             messages.error(request, approvedPassenger.username + ' is already an approved passenger for this trip.')
@@ -371,6 +370,7 @@ def addApprovedPassenger(request, pk):
         toDelete.delete()
     except:
         pass
+    # Issue is Here
     ApprovedPassengers.objects.create(postingID=posting, userID=approvedPassenger)
     Message.objects.create(
         conversationID = conversation,
@@ -382,4 +382,14 @@ def addApprovedPassenger(request, pk):
     messages.success(request, approvedPassenger.username + ' is now an approved passenger for this trip')
     return HttpResponseRedirect(reverse('viewConversations'))
 
+
+def deleteProfile(request):
+    user = User.objects.get(username=request.session['loggedInUser'])
+    try:
+        user.delete()
+        messages.success(request, 'Successfully deleted profile')
+        return HttpResponseRedirect(reverse('landingPage'))
+    except:
+        messages.error(request, 'Profile was not deleted')
+        return HttpResponseRedirect(reverse('myProfile'))
 

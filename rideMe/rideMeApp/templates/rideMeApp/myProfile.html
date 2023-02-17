@@ -88,8 +88,9 @@
 <p>{{ user.lastName }}, {{ user.firstName }} does not own any postings</p>
 {% endif %}
 
-<button type="button">Edit Profile</button>
-<button type="button">Delete Profile</button>
+<button type="button">
+    <a href="{% url 'deleteProfile' %}">Delete Profile</a>
+</button>
 
 {% else %}
     <p>No user selected</p>
