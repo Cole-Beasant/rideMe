@@ -55,6 +55,22 @@
     <a href="{% url 'messagePostOwner' posting.id %}">Message Post Owner</a>
 </button>
 
+<h3>Approved Passengers</h3>
+<table>
+    {% for user in posting.getApprovedPassengers %}
+    <tr>
+        <td>
+            <a href="{% url 'userdetails' user.id %}">{{ user.username }}</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% if posting.getApprovedPassengers %}
+{% else %}
+<p>There are no approved passengers for this posting</p>
+{% endif %}
+
 {% else %}
     <p>No posting selected</p>
 {% endif %}

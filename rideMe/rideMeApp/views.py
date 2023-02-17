@@ -11,6 +11,7 @@ from .forms import LoginForm, SignUpForm, ResetPasswordForm
 from django.urls import reverse_lazy, reverse
 from .forms import SignUpForm, LoginForm, AddPostingForm, StartConversation, AddReviewForm, SendMessageForm
 from django.contrib import messages
+import random
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -397,8 +398,17 @@ def addApprovedPassenger(request, pk):
         toDelete.delete()
     except:
         pass
-    # Issue is Here
-    ApprovedPassengers.objects.create(postingID=posting, userID=approvedPassenger)
+
+    isIDUnique = False
+    while isIDUnique == False:
+        isIDUnique = True
+        objectID = random.randint(1, 1000000)
+        for object in ApprovedPassengers.objects.all():
+            if object.id == objectID:
+                isIDUnique = False
+                break
+    ApprovedPassengers.objects.create(id=objectID, postingID=posting, userID=approvedPassenger)
+
     Message.objects.create(
         conversationID = conversation,
         senderID = posting.ownerID,
@@ -409,7 +419,7 @@ def addApprovedPassenger(request, pk):
     conversation.setLatestMessageSentTime(timezone.now())
     conversation.save()
     posting.numAvailableSeats -= 1
-    posting.numAvailableSeats.save()
+    posting.save()
 
     if posting.numAvailableSeats == 0:
         posting.isOpen = False

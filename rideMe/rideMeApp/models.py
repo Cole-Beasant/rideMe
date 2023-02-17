@@ -231,6 +231,9 @@ class ApprovedPassengers(models.Model):
     postingID = models.ForeignKey(Posting, on_delete=models.CASCADE)
     userID = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.postingID.ownerID.username + ', ' + self.userID.username
+
 class UsersInteractedForPostings(models.Model):
     '''
     For notification purposes

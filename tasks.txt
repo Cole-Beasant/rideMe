@@ -2,45 +2,57 @@ Priority of Things to do:
 
 1. Fix trip date field bug on addPosting form 
 
-2. Fix approvedPassenger create after discussing w othman
-
-3. Discuss if we want to edit profile information
+2. Discuss if we want to edit profile information
     - I think no, info should be locked but see what others think
     - wont be difficult to implement anyway
 
-4. My Postings page
-    I think it should look like this:
+3. My Postings 
+    Should be two pages, driver trips and passenger trips, both available 
+    on the navbar
 
-    UPCOMING TRIPS (these will be trips where posting.tripDate is in the future)
+    DRIVER TRIPS
 
-    - My owned postings
-    - Postings where I am approved passenger
-    - Postings where I messaged the post owner
+    - Upcoming Trips
+        - NOTI FOR UPCOMING DRIVER TRIPS
+    - Past trips that need action 
+        - NOTI IF THESE EXIST
+        - Two options:
+            1. mark as complete -> tripComplete workflow
+            2. trip did not occur -> tripCancelled workflow
+    - Past trips (no action needed)
 
-    (note the different states of postings, isOpen, isCancelled, and isComplete
-     and discuss how these states may affect this query)
+    PASSENGER TRIPS
 
-    PAST TRIPS (if not upcoming, then its in the past)
-    - My owned postings
-    - Postings where I am approved passenger
-    - Postings where I messaged the post owner
+    - Upcoming Trips
+        - Approved Passenger
+            - NOTI FOR UPCOMING APPROVED PASSENGER TRIPS
+        - Messaged Post owner
+    - Past Trips as Approved Passenger
 
-    (note the different states of postings, isOpen, isCancelled, and isComplete
-     and discuss how these states may affect this query)
 
-5. Posting management functionality for post owners 
+4. Posting management functionality for post owners 
     - flipping states isCancelled and isComplete and their consequences
     - changing numAvailableSeats and the consequence to the state isOpen
     - changing trip information and notifying users through messages
+    - do we want to let post owners be able to modify approved passengers
+      list thru here or just thru conversations???
 
-6. Removing urself from the approvedPassenger list and its consequences
+5. Removing urself from the approvedPassenger list and its consequences
     
-7. Maybe add some built in functionality that automatically closes and completes 
+6. Maybe add some built in functionality that automatically closes and completes 
    a trip after the trip date
     - need to discuss tho as what if the driver bailed and the trip didnt actually
       happen
 
-8. Fix back bug regarding logout and delete account
+7. Fix back bug regarding logout and delete account
     - rn users can hit back and it will appear they are logged in
       but their session is deleted and therefore if they try and
       do anything an error arises saying session does not exist
+
+9. When functionality is complete and webiste has been style Cole and I will 
+   engineer test cases (this is because I implemented the system so I know it
+   best and Cole helped design it so he has some knowledge). Test Cases will 
+   be entered into Jira with detailed steps and intended result. Devon and 
+   Goutham will then decide who does which test cases, then I will show them
+   how to do the test cases, mark them as complete in Jira if there are no 
+   issues and list issues if there are any.
