@@ -30,7 +30,7 @@ class User(models.Model):
                 sumOfRatings += review.rating
                 numRatings += 1
         if numRatings == 0:
-            print('This user has not yet been rated.')
+            return 0
         else:
             return sumOfRatings / numRatings
 
@@ -40,20 +40,24 @@ class User(models.Model):
     def completedRideAsPassenger(self):
         self.numTripsAsPassenger += 1
 
-    def getReviews(self):
+    def getReviewsAsDriver(self):
         reviews = []
         for review in Review.objects.all():
             if self == review.reviewedUserID:
-                reviews.append((review.reviewerID.username, review.rating, review.description))
+                if review.reviewedUserType == 'driver':
+                    reviews.append((review.reviewerID.username, review.rating, review.description))
+        return reviews
+
+    def getReviewsAsPassenger(self):
+        reviews = []
+        for review in Review.objects.all():
+            if self == review.reviewedUserID:
+                if review.reviewedUserType == 'passenger':
+                    reviews.append((review.reviewerID.username, review.rating, review.description))
         return reviews
 
     def getOwnedPostings(self):
         return Posting.objects.filter(ownerID=self).order_by('-tripDate')
-        ownedPostings = []
-        for posting in Posting.objects.all():
-            if self == posting.ownerID:
-                ownedPostings.append(posting)
-        return ownedPostings
 
     def getApprovedPassengerRides(self):
         approvedPassengerRides = []
@@ -114,6 +118,7 @@ class User(models.Model):
 
 class Review(models.Model):
     reviewedUserID = models.ForeignKey(User, on_delete=models.CASCADE)
+    reviewedUserType = models.CharField(max_length=20, default='passenger')
     reviewerID = models.ForeignKey(User, on_delete=models.CASCADE, related_name='leaves')
     rating = models.FloatField(max_length=2)
     description = models.CharField(max_length=500)
@@ -127,6 +132,7 @@ class UsersInteractedForUsers(models.Model):
     '''
     theUser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='has')
     theInteracter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='interacts_with')
+    InteractionType = models.CharField(max_length=20, default='passenger')
     hasReviewed = models.BooleanField(default=False)
 
 class Posting(models.Model):
@@ -163,6 +169,7 @@ class Posting(models.Model):
         return associatedConversations
 
 class ApprovedPassengers(models.Model):
+    id = models.AutoField(primary_key=True)
     postingID = models.ForeignKey(Posting, on_delete=models.CASCADE)
     userID = models.ForeignKey(User, on_delete=models.CASCADE)
 

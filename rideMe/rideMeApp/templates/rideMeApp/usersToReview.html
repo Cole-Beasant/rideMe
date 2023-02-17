@@ -17,15 +17,21 @@
 <table>
     <tr>
         <td>User</td>
+        <td>Interaction Type</td>
         <td></td>
         <td></td>
     </tr>
         {% for user in usersToReview %}
         <tr>
             <td>{{ user.theInteracter.lastName }}, {{ user.theInteracter.firstName }}</td>
+            {% if user.InteractionType == 'driver' %}
+            <td>My Driver</td>
+            {% else %}
+            <td>My Passenger</td>
+            {% endif %}
             <td>
                 <button type="button">
-                    <a href="{% url 'addReview' user.theInteracter.id %}" >Leave Review</a>                
+                    <a href="{% url 'addReview' user.id %}" >Leave Review</a>                
                 </button>
             </td>
             <td>

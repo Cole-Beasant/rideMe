@@ -46,16 +46,32 @@
 
 <h2>User Reviews</h2>
 
-{% if user.getReviews %}
+<h3>As a Driver</h3>
+
+{% if user.getReviewsAsDriver %}
 <table>
-    {% for review in user.getReviews %}
+    {% for review in user.getReviewsAsDriver %}
     <tr>
         <td>{{ review }}</td>
     </tr>
     {% endfor %}
 </table>
 {% else %}
-    <p>{{ user.lastName }}, {{ user.firstName }} has not been reviewed yet</p>
+    <p>{{ user.lastName }}, {{ user.firstName }} has not been reviewed as a driver yet</p>
+{% endif %}
+
+<h3>As a Passenger</h3>
+
+{% if user.getReviewsAsPassenger %}
+<table>
+    {% for review in user.getReviewsAsPassenger %}
+    <tr>
+        <td>{{ review }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+    <p>{{ user.lastName }}, {{ user.firstName }} has not been reviewed as a passenger yet</p>
 {% endif %}
 
 <h2>User Postings</h2>

@@ -10,8 +10,49 @@
 
 <h1>Messages</h1>
 
+<h2>Associated Posting Details</h2>
+<table>
+    <tr>
+        <td>Post Owner Name:</td>
+        <td>
+            <a href="{% url 'userdetails' posting.ownerID.id %}" > 
+                {{ posting.ownerID.lastName }}, {{ posting.ownerID.firstName }}  
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>Pickup Location:</td>
+        <td>{{ posting.pickupLocation }}</td>
+    </tr>
+    <tr>
+        <td>Dropoff Location:</td>
+        <td>{{ posting.dropoffLocation }}</td>
+    </tr>
+    <tr>
+        <td>Trip Date:</td>
+        <td>{{ posting.tripDate }}</td>
+    </tr>
+    <tr>
+        <td>Trip Time:</td>
+        <td>{{ posting.tripTime }}</td>
+    </tr>
+    <tr>
+        <td>Number of Available Seats:</td>
+        <td>{{ posting.numAvailableSeats }}</td>
+    </tr>
+    <tr>
+        <td>Trip Vehicle:</td>
+        <td>{{ posting.vehicle }}</td>
+    </tr>
+</table>
+<button type="button">
+    <a href="{% url 'postingdetails' posting.id %}">View Associated Posting</a>
+</button>
+
 {% if user == conversation.postingID.ownerID %}
-<p>Add {{ conversation.passengerID.username }} as an approved Passenger</p>
+<p>Add 
+<a href="{% url 'userdetails' conversation.passengerID.id %}">{{ conversation.passengerID.username }} </a>
+as an approved passenger</p>
 <button type="button">
     <a href="{% url 'addApprovedPassenger' conversation.id %}">Add</a>
 </button>

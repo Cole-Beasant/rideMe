@@ -189,6 +189,7 @@ def messagePostOwner(request, pk):
             UsersInteractedForUsers.objects.create(
                 theUser = user,
                 theInteracter = posting.ownerID,
+                InteractionType = 'driver',
                 hasReviewed = False
             )
         except:
@@ -198,6 +199,7 @@ def messagePostOwner(request, pk):
             UsersInteractedForUsers.objects.create(
                 theUser = posting.ownerID,
                 theInteracter = user,
+                InteractionType = 'passenger',
                 hasReviewed = False
             )
         except:
@@ -267,7 +269,9 @@ def usersToReview(request):
     return render(request, 'rideMeApp/usersToReview.html', context)
 
 def addReview(request, pk):
-    userToReview = User.objects.get(pk=pk)
+    object = UsersInteractedForUsers.objects.get(pk=pk)
+    userToReview = object.theInteracter
+    reviewedUserType = object.InteractionType
     reviewer = User.objects.get(username=request.session['loggedInUser'])
     if request.method == 'POST':
         form = AddReviewForm(request.POST)
@@ -275,6 +279,7 @@ def addReview(request, pk):
             Review.objects.create(
                 reviewedUserID = userToReview,
                 reviewerID = reviewer,
+                reviewedUserType = reviewedUserType,
                 rating = request.POST['rating'],
                 description = request.POST['description']
             )
@@ -309,6 +314,20 @@ def dismissReview(request, pk):
     messages.success(request, 'Successfully dismissed')
     return HttpResponseRedirect(reverse('usersToReview'))
 
+def myPostings(request):
+    # NEED DISCUSSION W THIS QUERY CUZ RN IT HAS BOTH OPEN AND CLOSED!!!!
+    user = User.objects.get(username = request.session['loggedInUser'])
+    ownedPostings = user.getOwnedPostings()
+    approvedPassengerPostings = user.getApprovedPassengerRides()
+    messagedPostOwnerPostings = user.getPostingsInteractedWith()
+
+    context = {
+        'user': user,
+        'ownedPostings': ownedPostings,
+        'approvedPassengerPostings': approvedPassengerPostings,
+        'messagedPostOwnerPostings': messagedPostOwnerPostings
+    }
+
 def viewConversations(request):
     user = User.objects.get(username = request.session['loggedInUser'])
     conversations = user.getConversations()
@@ -321,6 +340,7 @@ def viewConversations(request):
 
 def viewMessages(request, pk):
     conversation = Conversation.objects.get(pk=pk)
+    posting = conversation.postingID
     messages = Message.objects.filter(conversationID = conversation).order_by('-timeSent')
     user = User.objects.get(username=request.session['loggedInUser'])
     for message in messages:
@@ -328,7 +348,7 @@ def viewMessages(request, pk):
             if message.hasRead == False:
                 message.hasRead = True
                 message.save()
-    context = {'messages': messages, 'conversation': conversation, 'user': user}
+    context = {'messages': messages, 'conversation': conversation, 'user': user, 'posting': posting}
     return render(request, 'rideMeApp/viewMessages.html', context)
 
 def sendMessage(request, pk):
@@ -360,6 +380,11 @@ def viewMyProfile(request):
 def addApprovedPassenger(request, pk):
     conversation = Conversation.objects.get(pk=pk)
     posting = conversation.postingID
+
+    if posting.isOpen == False:
+        messages.error(request, 'All the seats for this trip have already been filled')
+        return HttpResponseRedirect(reverse('viewConversations'))
+
     approvedPassenger = conversation.passengerID
     for user in posting.getApprovedPassengers():
         if user == approvedPassenger:
@@ -379,6 +404,13 @@ def addApprovedPassenger(request, pk):
         hasRead = False,
         timeSent = timezone.now()
     )
+    posting.numAvailableSeats -= 1
+    posting.numAvailableSeats.save()
+
+    if posting.numAvailableSeats == 0:
+        posting.isOpen = False
+        posting.save()
+
     messages.success(request, approvedPassenger.username + ' is now an approved passenger for this trip')
     return HttpResponseRedirect(reverse('viewConversations'))
 
