@@ -39,5 +39,6 @@ urlpatterns = [
     path('<int:pk>/sendMessages?submitted=True/', views.sendMessage, name='sendMessage'),
     path('<int:pk>/addApprovedPassenger?submitted=True/', views.addApprovedPassenger, name='addApprovedPassenger'),
     path('myProfile?submitted=True/', views.viewMyProfile, name='myProfile'),
+    path('confirmDeleteProfile?submitted=True', views.confirmDeleteProfile, name='confirmDeleteProfile'),
     path('deleteProfile?submitted=True/', views.deleteProfile, name='deleteProfile')
 ]

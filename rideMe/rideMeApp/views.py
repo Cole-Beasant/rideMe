@@ -383,6 +383,9 @@ def addApprovedPassenger(request, pk):
     return HttpResponseRedirect(reverse('viewConversations'))
 
 
+def confirmDeleteProfile(request):
+    return render(request, 'rideMeApp/confirmDeleteProfile.html')
+
 def deleteProfile(request):
     user = User.objects.get(username=request.session['loggedInUser'])
     try:
