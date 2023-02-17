@@ -11,7 +11,6 @@ class User(models.Model):
     email = models.EmailField()
     numTripsAsDriver = models.IntegerField(default=0)
     numTripsAsPassenger = models.IntegerField(default=0)
-    averageRating = models.FloatField(default=0.0)
     registrationTime = models.DateTimeField(default=timezone.now())
 
     # phoneNumber
@@ -22,13 +21,27 @@ class User(models.Model):
     def verifyPassword(self, raw_password):
         return pbkdf2_sha256.verify(raw_password, self.password)
 
-    def getAverageRating(self):
+    def getAverageRatingAsDriver(self):
         sumOfRatings = 0
         numRatings = 0
         for review in Review.objects.all():
             if self == review.reviewedUserID:
-                sumOfRatings += review.rating
-                numRatings += 1
+                if review.reviewedUserType == 'driver':
+                    sumOfRatings += review.rating
+                    numRatings += 1
+        if numRatings == 0:
+            return 0
+        else:
+            return sumOfRatings / numRatings
+
+    def getAverageRatingAsPassenger(self):
+        sumOfRatings = 0
+        numRatings = 0
+        for review in Review.objects.all():
+            if self == review.reviewedUserID:
+                if review.reviewedUserType == 'passenger':
+                    sumOfRatings += review.rating
+                    numRatings += 1
         if numRatings == 0:
             return 0
         else:
