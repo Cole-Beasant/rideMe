@@ -1,6 +1,6 @@
 Priority of Things to do:
 
-1. Fix trip date field bug on addPosting form 
+1. Can add posts in the past and i dont like tight the format for the tripTime is
 
 2. Discuss if we want to edit profile information
     - I think no, info should be locked but see what others think
@@ -38,18 +38,13 @@ Priority of Things to do:
       list thru here or just thru conversations???
 
 5. Removing urself from the approvedPassenger list and its consequences
-    
-6. Maybe add some built in functionality that automatically closes and completes 
-   a trip after the trip date
-    - need to discuss tho as what if the driver bailed and the trip didnt actually
-      happen
 
-7. Fix back bug regarding logout and delete account
+6. Fix back bug regarding logout and delete account
     - rn users can hit back and it will appear they are logged in
       but their session is deleted and therefore if they try and
       do anything an error arises saying session does not exist
 
-9. When functionality is complete and webiste has been style Cole and I will 
+7. When functionality is complete and webiste has been style Cole and I will 
    engineer test cases (this is because I implemented the system so I know it
    best and Cole helped design it so he has some knowledge). Test Cases will 
    be entered into Jira with detailed steps and intended result. Devon and 

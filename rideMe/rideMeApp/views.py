@@ -220,17 +220,15 @@ class viewUserDetails(generic.DetailView):
 def addPosting(request):
     if request.method == 'POST':
         form = AddPostingForm(request.POST)
-        if int != type(request.POST['numAvailableSeats']):
+        try:
+            numAvailableSeats = int(request.POST['numAvailableSeats'])
+        except:
             messages.error(request, 'The number of available seats must be an integer.')
             return render(request, 'rideMeApp/addPosting.html', {'form': AddPostingForm})
 
-        if request.POST['numAvailableSeats'] < 1:
+        if numAvailableSeats < 1:
             messages.error(request, 'You must have available seats in order to list the posting')
             return render(request, 'rideMeApp/addPosting.html', {'form': AddPostingForm})
-
-        if timezone.now() > request.POST['tripDate']:
-            messages.error(request, 'The trip must occur in the future.')
-            return render(request, 'rideMeApp/addPosting.html', {'form': AddPostingForm}) 
 
         if form.is_valid():
             try:
@@ -254,6 +252,9 @@ def addPosting(request):
             except:
                 messages.error(request, 'No posting added')
                 return render(request, 'rideMeApp/addPosting.html', {'form': AddPostingForm})
+        else:
+            messages.error(request, 'Inputted time incorrectly. Please follow the format listed below')
+            return render(request, 'rideMeApp/addPosting.html', {'form': AddPostingForm})
         
 
     return render(request, 'rideMeApp/addPosting.html', {'form': AddPostingForm})

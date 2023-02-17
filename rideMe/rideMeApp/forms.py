@@ -1,7 +1,5 @@
 from django import forms
 
-from .models import User
-
 class SignUpForm(forms.Form):
     # class Meta:
         # model = User
@@ -10,22 +8,26 @@ class SignUpForm(forms.Form):
     firstName = forms.CharField(label='Enter your First Name:')
     lastName = forms.CharField(label='Enter your Last Name:')
     email = forms.EmailField(label="Enter your email address:")
-    password = forms.CharField(label='Enter your password:')
-    confirmPassword = forms.CharField(label='Confirm you password:')
+    password = forms.CharField(label='Enter your password:', widget=forms.PasswordInput())
+    confirmPassword = forms.CharField(label='Confirm you password:', widget=forms.PasswordInput())
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Enter your username')
-    password = forms.CharField(label='Enter your password')
+    password = forms.CharField(label='Enter your password', widget=forms.PasswordInput)
 
 class ResetPasswordForm(forms.Form):
     username = forms.CharField(label='Enter your username:')
-    newPassword = forms.CharField(label='Enter your new password:')
-    confirmNewPassword = forms.CharField(label='Confirm your new password:')
+    newPassword = forms.CharField(label='Enter your new password:', widget=forms.PasswordInput)
+    confirmNewPassword = forms.CharField(label='Confirm your new password:', widget=forms.PasswordInput)
 
 class AddPostingForm(forms.Form):
     numAvailableSeats = forms.IntegerField(label='Enter the number of available seats for your trip:')
-    tripDate = forms.DateField(label='Enter the date the trip will be occuring:', widget=forms.DateInput()),
-    tripTime = forms.TimeField(label='Enter the time the trip will be occuring:', widget=forms.TimeInput(format='%H:%M'))
+    tripDate = forms.DateTimeField(label='Enter the date the trip will be occuring:', widget=forms.DateInput(
+        attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd', 'class': 'form-control'}
+    ))   
+    tripTime = forms.TimeField(label='Enter the time the trip will be occuring in the format HH:MM in military time:', widget=forms.DateInput(
+        attrs={'class': 'timepicker'}
+    ))
     pickupLocation = forms.CharField(label='Enter the general location of where you can pick up passengers:', max_length=50)
     dropoffLocation = forms.CharField(label='Enter the general location where you can drop off passenger:', max_length=50)
     vehicle = forms.CharField(label='Enter the make and model of the vehicle you will be making the trip with:', max_length=50)
