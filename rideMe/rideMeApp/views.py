@@ -365,6 +365,8 @@ def sendMessage(request, pk):
                 hasRead = False,
                 timeSent = timezone.now()
             )
+            conversation.setLatestMessageSentTime(timezone.now())
+            conversation.save()
             return HttpResponseRedirect(reverse('viewConversations'))
         else:
             messages.error('The message was too long')
@@ -404,12 +406,15 @@ def addApprovedPassenger(request, pk):
         hasRead = False,
         timeSent = timezone.now()
     )
+    conversation.setLatestMessageSentTime(timezone.now())
+    conversation.save()
     posting.numAvailableSeats -= 1
     posting.numAvailableSeats.save()
 
     if posting.numAvailableSeats == 0:
         posting.isOpen = False
         posting.save()
+        posting.sendTripClosedNotification()
 
     messages.success(request, approvedPassenger.username + ' is now an approved passenger for this trip')
     return HttpResponseRedirect(reverse('viewConversations'))

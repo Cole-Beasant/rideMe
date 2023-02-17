@@ -1,5 +1,46 @@
 Priority of Things to do:
 
-1. Add 'Add new posting' page 
-3. Add posting management for post owners
-4. Add 'Edit Profile' page with delete account functionality
+1. Fix trip date field bug on addPosting form 
+
+2. Fix approvedPassenger create after discussing w othman
+
+3. Discuss if we want to edit profile information
+    - I think no, info should be locked but see what others think
+    - wont be difficult to implement anyway
+
+4. My Postings page
+    I think it should look like this:
+
+    UPCOMING TRIPS (these will be trips where posting.tripDate is in the future)
+
+    - My owned postings
+    - Postings where I am approved passenger
+    - Postings where I messaged the post owner
+
+    (note the different states of postings, isOpen, isCancelled, and isComplete
+     and discuss how these states may affect this query)
+
+    PAST TRIPS (if not upcoming, then its in the past)
+    - My owned postings
+    - Postings where I am approved passenger
+    - Postings where I messaged the post owner
+
+    (note the different states of postings, isOpen, isCancelled, and isComplete
+     and discuss how these states may affect this query)
+
+5. Posting management functionality for post owners 
+    - flipping states isCancelled and isComplete and their consequences
+    - changing numAvailableSeats and the consequence to the state isOpen
+    - changing trip information and notifying users through messages
+
+6. Removing urself from the approvedPassenger list and its consequences
+    
+7. Maybe add some built in functionality that automatically closes and completes 
+   a trip after the trip date
+    - need to discuss tho as what if the driver bailed and the trip didnt actually
+      happen
+
+8. Fix back bug regarding logout and delete account
+    - rn users can hit back and it will appear they are logged in
+      but their session is deleted and therefore if they try and
+      do anything an error arises saying session does not exist

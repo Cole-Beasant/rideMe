@@ -176,10 +176,55 @@ class Posting(models.Model):
 
     def getAssociatedConversations(self):
         associatedConversations = []
-        for conversation in Conversation.objects.all():
+        for conversation in Conversation.objects.filter(isClosed=False).order_by('-latestMessageSentTime'):
             if self == conversation.postingID:
                 associatedConversations.append(conversation)
         return associatedConversations
+
+    def sendTripClosedNotification(self):
+        for conversation in self.getAssociatedConversations():
+            Message.objects.create(
+                conversationID=conversation,
+                senderID = self.ownerID,
+                message = 'This is an automated message stating that the posting is now closed. If you are not an approved passenger, you cannot be added to the approved passenger list unless an existing approved passenger cancels.',
+                hasRead = False,
+                timeSent = timezone.now()
+            )
+
+    def sendTripReopenNotification(self):
+        for conversation in self.getAssociatedConversations():
+            Message.objects.create(
+                conversationID=conversation,
+                senderID = self.ownerID,
+                message = 'This is an automated message stating that the posting has reopened. If you are not an approved passenger, the post owner is now able to add you to the approved passenger list.',
+                hasRead = False,
+                timeSent = timezone.now()
+            )
+
+    def sendTripCancelledNotification(self):
+        for conversation in self.getAssociatedConversations():
+            Message.objects.create(
+                conversationID=conversation,
+                senderID = self.ownerID,
+                message = 'This is an automated message stating that the trip has been cancelled. RideMe apologizes for any inconvenience.',
+                hasRead = False,
+                timeSent = timezone.now()
+            )
+
+    def sendTripInfoUpdatedNotification(self):
+        for conversation in self.getAssociatedConversations():
+            Message.objects.create(
+                conversationID=conversation,
+                senderID = self.ownerID,
+                message = 'This is an automated message stating that the trip information has been updated. If you are an approved passenger for this trip, you should verify that the trip still fits your schedule and if not, you should remove yourself from the list.',
+                hasRead = False,
+                timeSent = timezone.now()
+            )
+
+    def tripCompleted(self):
+        for conversation in self.getAssociatedConversations():
+            conversation.isClosed = True
+            conversation.save()
 
 class ApprovedPassengers(models.Model):
     id = models.AutoField(primary_key=True)
@@ -225,6 +270,9 @@ class Conversation(models.Model):
                         self.hasUnreadMessagesCurUser = True
                         return
         self.hasUnreadMessagesCurUser = False
+
+    def setLatestMessageSentTime(self, time):
+        self.latestMessageSentTime = time
 
 class Message(models.Model):
     conversationID = models.ForeignKey(Conversation, on_delete=models.CASCADE)
