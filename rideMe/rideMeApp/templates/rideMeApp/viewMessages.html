@@ -1,0 +1,62 @@
+<button type="button">
+    <a href="{% url 'logout' %}" >Logout </a>                 
+</button>
+<button type="button">
+    <a href="{% url 'postings' %}">Back to Postings List</a>
+</button>
+<button type="button">
+    <a href="{% url 'viewConversations' %}">Back to Conversations</a>
+</button>
+
+<h1>Messages</h1>
+
+{% if user == conversation.postingID.ownerID %}
+<p>Add {{ conversation.passengerID.username }} as an approved Passenger</p>
+<button type="button">
+    <a href="{% url 'addApprovedPassenger' conversation.id %}">Add</a>
+</button>
+<p>Send a message to {{ conversation.passengerID.username }}</p>
+<button type="button">
+    <a href="{% url 'sendMessage' conversation.id %}">Send Message</a>
+</button>
+{% else %}
+<p>Send a message to {{ conversation.postingID.ownerID.username }}</p>
+<button type="button">
+    <a href="{% url 'sendMessage' conversation.id %}">Send Message</a>
+</button>
+{% endif %}
+
+
+
+
+{% if messages %}
+<table>
+    <tr>
+        <td>Sender</td>
+        <td>Message</td>
+        <td>Time Sent</td>
+    </tr>
+        {% for message in messages %}
+        {% if message.senderID == user %}
+        <tr>
+            <td>
+                <a href="{% url 'myProfile' %}">{{ message.senderID.username }}</a> 
+            </td>
+            <td>{{ message.message }}</td>
+            <td>{{ message.timeSent }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td>
+                <a href="{% url 'userdetails' message.senderID.id %}">{{ message.senderID.username }}</a> 
+            </td>
+            <td>{{ message.message }}</td>
+            <td>{{ message.timeSent }}</td>
+        </tr>        
+        {% endif %}
+        {% endfor %}
+</table>
+
+{% else %}
+    <p>There are no messages in this conversation</p>
+{% endif %}

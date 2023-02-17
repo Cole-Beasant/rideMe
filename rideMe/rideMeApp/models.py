@@ -48,6 +48,7 @@ class User(models.Model):
         return reviews
 
     def getOwnedPostings(self):
+        return Posting.objects.filter(ownerID=self).order_by('-tripDate')
         ownedPostings = []
         for posting in Posting.objects.all():
             if self == posting.ownerID:
@@ -86,7 +87,7 @@ class User(models.Model):
 
     def getConversations(self):
         conversations = []
-        for conversation in Conversation.objects.all():
+        for conversation in Conversation.objects.filter(isClosed=False).order_by('-latestMessageSentTime'):
             if self == conversation.passengerID:
                 conversations.append(conversation)
             elif self == conversation.postingID.ownerID:
@@ -95,7 +96,7 @@ class User(models.Model):
 
     def getNumUnreadConversations(self):
         numUnreadConversations = 0
-        for conversation in Conversation.objects.all():
+        for conversation in Conversation.objects.filter(isClosed=False).order_by('-latestMessageSentTime'):
             if self == conversation.passengerID:
                 if conversation.hasUnreadMessages() == True:
                     for message in conversation.getMessages():
@@ -143,9 +144,11 @@ class Posting(models.Model):
 
     def getApprovedPassengers(self):
         approvedPassengers = []
-        for user in ApprovedPassengers.objects.all():
-            if self == user.postingID:
-                approvedPassengers.append(user.userID)
+        # FOR SOME RZN IT DONT LIKE QUERYING APPROVED PASSENGERS
+        # IT SAYS THEY DONT EXIST
+        for object in ApprovedPassengers.objects.filter(postingID=self):
+            # if self == user.postingID:
+            approvedPassengers.append(object.userID)
         return approvedPassengers
 
     def getUsersInteractedWith(self):
@@ -173,10 +176,15 @@ class UsersInteractedForPostings(models.Model):
     postingID = models.ForeignKey(Posting, on_delete=models.CASCADE)
     userID = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.postingID.ownerID.username + ', ' + self.userID.username
+
 class Conversation(models.Model):
     postingID = models.ForeignKey(Posting, on_delete=models.CASCADE)
     passengerID = models.ForeignKey(User, on_delete=models.CASCADE)
     isClosed = models.BooleanField(default=False)
+    latestMessageSentTime = models.DateTimeField(default=timezone.now())
+    hasUnreadMessagesCurUser = models.BooleanField(default=False)
 
     def getMessages(self):
         messages = []
@@ -192,11 +200,21 @@ class Conversation(models.Model):
                     return True
         return False
 
+    def setHasUnreadMessagesCurUser(self, user):
+        for message in Message.objects.all():
+            if self == message.conversationID:
+                if message.hasRead == False:
+                    if message.senderID != user:
+                        self.hasUnreadMessagesCurUser = True
+                        return
+        self.hasUnreadMessagesCurUser = False
+
 class Message(models.Model):
     conversationID = models.ForeignKey(Conversation, on_delete=models.CASCADE)
     senderID = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.CharField(max_length=500)
     hasRead = models.BooleanField(default=True)
+    timeSent = models.DateTimeField(default=timezone.now())
 
     def __str__(self):
         return self.senderID.username + ', ' + self.message

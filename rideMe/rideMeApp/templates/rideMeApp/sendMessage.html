@@ -3,18 +3,14 @@
 </button>
 
 <button type="button">
-    <a href="{% url 'postings' %}">Back to Postings List</a>
+    <a href="{% url 'postings' %}" >Back to Postings</a>                 
 </button>
 
 <button type="button">
-    <a href="{% url 'usersToReview' %}">Back to Users To Review</a>
+    <a href="{% url 'viewConversations' %}" >Back to Conversations</a>                 
 </button>
 
-{% for message in messages %}
-    <p>{{ message }}</p>
-{% endfor %}
-
-<p>Enter the following to leave the review</p>
+<h2>Send Message</h2>
 
 <form method="post" >
     {% csrf_token %}

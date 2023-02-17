@@ -5,9 +5,8 @@
 <button type="button">
     <a href="{% url 'postings' %}">Back to Postings List</a>
 </button>
-
 <button type="button">
-    <a href="{% url 'viewConversations' %}">View Conversations</a>
+    <a href="{% url 'viewConversations' %}">Back to Conversations</a>
 </button>
 
 <h1>User Details</h1>
@@ -88,6 +87,9 @@
 {% else %}
 <p>{{ user.lastName }}, {{ user.firstName }} does not own any postings</p>
 {% endif %}
+
+<button type="button">Edit Profile</button>
+<button type="button">Delete Profile</button>
 
 {% else %}
     <p>No user selected</p>

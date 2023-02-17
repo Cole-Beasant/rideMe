@@ -7,6 +7,12 @@
 <button type="button">
     <a href="{% url 'usersToReview' %}" >Leave a Review </a>                 
 </button>
+<button type="button">
+    <a href="{% url 'viewConversations' %}">View My Conversations</a>
+</button>
+<button type="button">
+    <a href="{% url 'myProfile' %}">View My Profile</a>
+</button>
 
 <h2>Hello {{ user.firstName }} </h2>
 

@@ -6,6 +6,10 @@
     <a href="{% url 'postings' %}" >Back to Postings</a>                 
 </button>
 
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
+
 <h2>Message Post Owner</h2>
 
 <form method="post" >

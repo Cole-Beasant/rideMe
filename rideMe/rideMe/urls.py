@@ -26,7 +26,6 @@ urlpatterns = [
     path('signup/', views.createUser, name='signup'),
     path('resetPassword/', views.resetPassword, name='resetPassword'),
     path('logout/', views.logout, name='logout'),
-    # path('getLoggedInUser/', views.getLoggedInUser, name='getLoggedInUser'),
     path('postings?submitted=True/', views.viewPostings, name='postings'),
     path('<int:pk>/postingdetails?submitted=True/', views.viewPostingDetails, name='postingdetails'),
     path('<int:pk>/postingdetails/messagePostOwner?submitted=True/', views.messagePostOwner, name='messagePostOwner'),
@@ -34,5 +33,10 @@ urlpatterns = [
     path('postings/addPostings?submitted=True/', views.addPosting, name='addPosting'),
     path('usersToReview', views.usersToReview, name='usersToReview'),
     path('<int:pk>/addReview', views.addReview, name='addReview'),
-    path('<int:pk>/dismissReview', views.dismissReview, name='dismissReview')
+    path('<int:pk>/dismissReview', views.dismissReview, name='dismissReview'),
+    path('viewConversations', views.viewConversations, name='viewConversations'),
+    path('<int:pk>/viewMessages', views.viewMessages, name='viewMessages'),
+    path('<int:pk>/sendMessages', views.sendMessage, name='sendMessage'),
+    path('<int:pk>/addApprovedPassenger', views.addApprovedPassenger, name='addApprovedPassenger'),
+    path('myProfile', views.viewMyProfile, name='myProfile')
 ]

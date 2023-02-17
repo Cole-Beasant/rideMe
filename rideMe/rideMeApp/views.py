@@ -5,13 +5,15 @@ from rideMeApp.models import ApprovedPassengers, UsersInteractedForUsers, UsersI
 from passlib.hash import pbkdf2_sha256
 from django.utils import timezone
 from django.views import generic
+from django.views.decorators.cache import cache_control
 from .forms import LoginForm, SignUpForm, ResetPasswordForm
-from django.contrib.auth.forms import UserCreationForm
+# from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy, reverse
-from .forms import SignUpForm, LoginForm, AddPostingForm, StartConversation, AddReviewForm
+from .forms import SignUpForm, LoginForm, AddPostingForm, StartConversation, AddReviewForm, SendMessageForm
 from django.contrib import messages
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def logout(request):
     try:
         del request.session['loggedInUser']
@@ -151,40 +153,61 @@ def messagePostOwner(request, pk):
             return HttpResponseRedirect(reverse('postings'))
 
     if request.method == 'POST':             
+        try:
+            newConversation = Conversation(
+                postingID = posting, 
+                passengerID = user,
+                isClosed = False,
+                latestMessageSentTime = timezone.now()
+            )
+            newConversation.save()
+        except:
+            messages.error(request, 'Something went wrong. Conversation was not created. Please try again.')
+            return render(request, 'rideMeApp/messagePostOwner.html', {'form': StartConversation})
 
-        newConversation = Conversation(postingID = posting, passengerID = user, isClosed = False)
-        newConversation.save()
-        message = request.POST['message']
-        Message.objects.create(
-            conversationID = newConversation,
-            senderID = user,
-            message = message
-        )
-        UsersInteractedForPostings.objects.create(
-            postingID = posting,
-            userID = user
-        )
-        UsersInteractedForUsers.objects.create(
-            theUser = user,
-            theInteracter = posting.ownerID,
-            hasReviewed = False
-        )
-        UsersInteractedForUsers.objects.create(
-            theUser = posting.ownerID,
-            theInteracter = user,
-            hasReviewed = False
-        )
+        try:
+            message = request.POST['message']
+            Message.objects.create(
+                conversationID = newConversation,
+                senderID = user,
+                message = message,
+                hasRead = False,
+                timeSent = timezone.now()
+            )
+        except:
+            messages.error(request, 'Something went wrong. Message was not created. Please try again.')
+            return render(request, 'rideMeApp/messagePostOwner.html', {'form': StartConversation})
+        try:
+            UsersInteractedForPostings.objects.create(
+                postingID = posting,
+                userID = user
+            )
+        except:
+            messages.error(request, 'Something went wrong. Please try again.')
+            return render(request, 'rideMeApp/messagePostOwner.html', {'form': StartConversation})
+        try:
+            UsersInteractedForUsers.objects.create(
+                theUser = user,
+                theInteracter = posting.ownerID,
+                hasReviewed = False
+            )
+        except:
+            messages.error(request, 'Something went wrong. Please try again.')
+            return render(request, 'rideMeApp/messagePostOwner.html', {'form': StartConversation})
+        try:
+            UsersInteractedForUsers.objects.create(
+                theUser = posting.ownerID,
+                theInteracter = user,
+                hasReviewed = False
+            )
+        except:
+            messages.error(request, 'Something went wrong. Please try again.')
+            return render(request, 'rideMeApp/messagePostOwner.html', {'form': StartConversation})
         messages.success(request, 'Successfully messaged post owner!')
         return HttpResponseRedirect(reverse('postings'))
 
     return render(request, 'rideMeApp/messagePostOwner.html', {'form': StartConversation})
 
-'''
-class viewPostingDetailsView(generic.DetailView):
-    model = Posting
-    context_object_name = 'posting'
-    template_name = 'rideMeApp/postingDetails.html'
-'''
 
 class viewUserDetails(generic.DetailView):
     model = User
@@ -264,7 +287,7 @@ def addReview(request, pk):
                         break
 
             messages.success(request, 'Review posted successfully!')
-            return HttpResponseRedirect(reverse('postings'))
+            return HttpResponseRedirect(reverse('usersToReview'))
 
         else:
             messages.error('Your rating may not be between 0 and 5 or your description may be too long.')
@@ -284,4 +307,79 @@ def dismissReview(request, pk):
                 break
 
     messages.success(request, 'Successfully dismissed')
-    return HttpResponseRedirect(reverse('postings'))
+    return HttpResponseRedirect(reverse('usersToReview'))
+
+def viewConversations(request):
+    user = User.objects.get(username = request.session['loggedInUser'])
+    conversations = user.getConversations()
+    
+    for conversation in conversations:
+        conversation.setHasUnreadMessagesCurUser(user)
+
+    context = {'conversations': conversations, 'user': user}
+    return render(request, 'rideMeApp/viewConversations.html', context)
+
+def viewMessages(request, pk):
+    conversation = Conversation.objects.get(pk=pk)
+    messages = Message.objects.filter(conversationID = conversation).order_by('-timeSent')
+    user = User.objects.get(username=request.session['loggedInUser'])
+    for message in messages:
+        if message.senderID != User.objects.get(username=request.session['loggedInUser']):
+            if message.hasRead == False:
+                message.hasRead = True
+                message.save()
+    context = {'messages': messages, 'conversation': conversation, 'user': user}
+    return render(request, 'rideMeApp/viewMessages.html', context)
+
+def sendMessage(request, pk):
+    if request.method == 'POST':
+        conversation = Conversation.objects.get(pk=pk)
+        sender = User.objects.get(username=request.session['loggedInUser'])
+        form = SendMessageForm(request.POST)
+        if form.is_valid():
+            conversation = Conversation.objects.get(pk=pk)
+            Message.objects.create(
+                conversationID = conversation,
+                senderID = sender,
+                message = request.POST['message'],
+                hasRead = False,
+                timeSent = timezone.now()
+            )
+            return HttpResponseRedirect('viewMessages')
+        else:
+            messages.error('The message was too long')
+            return render(request, 'rideMeApp/sendMessage.html', {'form': SendMessageForm})
+
+    return render(request, 'rideMeApp/sendMessage.html', {'form': SendMessageForm})
+
+def viewMyProfile(request):
+    user = User.objects.get(username = request.session['loggedInUser'])
+    context = {'user': user}
+    return render(request, 'rideMeApp/myProfile.html', context)
+
+def addApprovedPassenger(request, pk):
+    conversation = Conversation.objects.get(pk=pk)
+    posting = conversation.postingID
+    approvedPassenger = conversation.passengerID
+    # Issue is Here
+    for user in posting.getApprovedPassengers():
+        if user == approvedPassenger:
+            messages.error(request, approvedPassenger.username + ' is already an approved passenger for this trip.')
+            return HttpResponseRedirect(reverse('viewConversations'))
+    try:
+        toDelete = UsersInteractedForPostings.objects.get(postingID=posting,userID=approvedPassenger)
+        toDelete.delete()
+    except:
+        pass
+    ApprovedPassengers.objects.create(postingID=posting, userID=approvedPassenger)
+    Message.objects.create(
+        conversationID = conversation,
+        senderID = posting.ownerID,
+        message = 'This is an automated message stating that you have been added as an approved passenger for my trip',
+        hasRead = False,
+        timeSent = timezone.now()
+    )
+    messages.success(request, approvedPassenger.username + ' is now an approved passenger for this trip')
+    return HttpResponseRedirect(reverse('viewConversations'))
+
+

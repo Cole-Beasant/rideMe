@@ -1,0 +1,54 @@
+<button type="button">
+    <a href="{% url 'logout' %}" >Logout </a>                 
+</button>
+<button type="button">
+    <a href="{% url 'postings' %}">Back to Postings List</a>
+</button>
+
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+<h1>My Conversations</h1>
+
+{% if conversations %}
+<table>
+    <tr>
+        <td>Unread Messages</td>
+        <td>User</td>
+        <td></td>
+    </tr>
+        {% for conversation in conversations %}
+        <tr>
+            {% if conversation.hasUnreadMessagesCurUser == False %}
+            <td>No</td>
+            {% else %}
+            <td>Yes</td>
+            {% endif %}
+
+            {% if user == conversation.passengerID %}
+            <td>
+                <a href="{% url 'userdetails' conversation.postingID.ownerID.id %}">
+                {{ conversation.postingID.ownerID.lastName }}, {{ conversation.postingID.ownerID.firstName }}
+                </a>
+            </td>
+            {% else %}
+            <td>
+                <a href="{% url 'userdetails' conversation.passengerID.id %}">
+                    {{ conversation.passengerID.lastName }}, {{ conversation.passengerID.firstName }}
+                </a>
+            </td>
+            {% endif %}
+
+            <td>
+                <button type="button">
+                    <a href="{% url 'viewMessages' conversation.id %}">View Messages</a>
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+</table>
+
+{% else %}
+    <p>You do not have any open conversations</p>
+{% endif %}
