@@ -4,6 +4,9 @@
 <button type="button">
     <a href="{% url 'postings' %}">Back to Postings List</a>
 </button>
+<button type="button">
+    <a href="{% url 'myPassengerPostings' %}">View My Passenger Postings</a>
+</button>
 
 <h1>My Driver Trips</h1>
 
@@ -32,7 +35,7 @@
                 <a href="{% url 'completePosting' trip.id %}" >Yes</a>                 
             </button>
             <button type="button">
-                <a href="{% url 'cancelPosting' trip.id %}" >No</a>                 
+                <a href="{% url 'confirmCancelPosting' trip.id %}" >No</a>                 
             </button>
         </td>
     </tr>
@@ -60,7 +63,7 @@
         <td>{{ trip.tripTime }}</td>
         <td>
             <button type="button">
-                <a href="{% url 'managePosting' trip.id %}" >Yes</a>                 
+                <a href="{% url 'managePosting' trip.id %}" >Manage</a>                 
             </button>
         </td>
     </tr>

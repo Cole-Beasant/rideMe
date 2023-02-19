@@ -29,6 +29,28 @@ class AddPostingForm(forms.Form):
     dropoffLocation = forms.CharField(label='Enter the general location where you can drop off passenger:', max_length=50)
     vehicle = forms.CharField(label='Enter the make and model of the vehicle you will be making the trip with:', max_length=50)
 
+class UpdatePickupLocation(forms.Form):
+    pickupLocation = forms.CharField(max_length=50, label='New pick up location:')
+
+class UpdateDropoffLocation(forms.Form):
+    dropoffLocation = forms.CharField(max_length=50, label='New drop off location:')
+
+class UpdateTripDate(forms.Form):
+    tripDate = forms.DateTimeField(label='New date:', widget=forms.DateInput(
+        attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd', 'class': 'form-control'}
+    ))
+
+class UpdateTripTime(forms.Form):
+    tripTime = forms.TimeField(label='New time in the format HH:MM in military time:', widget=forms.DateInput(
+        attrs={'class': 'timepicker'}
+    ))
+
+class UpdateNumAvailableSeats(forms.Form):
+    numAvailableSeats = forms.IntegerField(label='New number of available seats:')
+
+class UpdateVehicle(forms.Form):
+    vehicle = forms.CharField(label='New vehicle', max_length=50)
+
 class StartConversation(forms.Form):
     message = forms.CharField(max_length=500, label='Enter the message you would like to send to the post owner')
 

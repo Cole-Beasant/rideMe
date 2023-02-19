@@ -1,0 +1,76 @@
+<button type="button">
+    <a href="{% url 'logout' %}" >Logout </a>                 
+</button>
+<button type="button">
+    <a href="{% url 'myDriverPostings' %}">Back to My Driver Postings</a>
+</button>
+
+<h1>Manage Posting</h1>
+
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+<table>
+    <tr>
+        <td>Pickup Location:</td>
+        <td>{{ posting.pickupLocation }}</td>
+        <td>
+            <button type="button">
+                <a href="{% url 'updatePickupLocation' posting.id %}">Update</a>
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td>Dropoff Location:</td>
+        <td>{{ posting.dropoffLocation }}</td>
+        <td>
+            <button type="button">
+                <a href="{% url 'updateDropoffLocation' posting.id %}">Update</a>
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td>Trip Date:</td>
+        <td>{{ posting.tripDate }}</td>
+        <td>
+            <button type="button">
+                <a href="{% url 'updateTripDate' posting.id %}">Update</a>
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td>Trip Time:</td>
+        <td>{{ posting.tripTime }}</td>
+        <td>
+            <button type="button">
+                <a href="{% url 'updateTripTime' posting.id %}">Update</a>
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td>Number of Available Seats:</td>
+        <td>{{ posting.numAvailableSeats }}</td>
+        <td>
+            <button type="button">
+                <a href="{% url 'updateNumAvailableSeats' posting.id %}">Update</a>
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td>Trip Vehicle:</td>
+        <td>{{ posting.vehicle }}</td>
+        <td>
+            <button type="button">
+                <a href="{% url 'updateVehicle' posting.id %}">Update</a>
+            </button>
+        </td>
+    </tr>
+</table>
+
+<button type="button">
+    <a href="{% url 'confirmCancelPosting' posting.id %}">Cancel Trip</a>
+</button>
+
+
+

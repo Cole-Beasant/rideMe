@@ -45,6 +45,22 @@
         <td>{{ posting.vehicle }}</td>
     </tr>
 </table>
+
+
+{% if posting.getApprovedPassengers %}
+<table>
+    <h3>Approved Passengers</h3>
+    {% for user in posting.getApprovedPassengers %}
+    <tr>
+        <td>
+            <a href="{% url 'userdetails' user.id %}">{{ user.username }}</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+{% endif %}
+
 <button type="button">
     <a href="{% url 'postingdetails' posting.id %}">View Associated Posting</a>
 </button>

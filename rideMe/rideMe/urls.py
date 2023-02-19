@@ -42,9 +42,17 @@ urlpatterns = [
     path('confirmDeleteProfile?submitted=True', views.confirmDeleteProfile, name='confirmDeleteProfile'),
     path('deleteProfile?submitted=True/', views.deleteProfile, name='deleteProfile'),
     path('myDriverPostings?submitted=True/', views.myDriverPostings, name='myDriverPostings'),
+    path('<int:pk>/managePosting?submitted=True', views.managePosting, name='managePosting'),
     path('<int:pk>/completePosting?submitted=True/', views.completePosting, name='completePosting'),
+    path('<int:pk>/confirmCancelPosting?submitted=True/', views.confirmCancelPosting, name='confirmCancelPosting'),
     path('<int:pk>/cancelPosting?submitted=True/', views.cancelPosting, name='cancelPosting'),
     path('myPassengerPostings?submitted=True/', views.myPassengerPostings, name='myPassengerPostings'),
     path('<int:pk>/removeMyselfAsApprovedPassenger?submitted=True/', views.removeMyselfAsApprovedPassenger, name='removeMyselfAsApprovedPassenger'),
-    path('<int:pk>/confirmRemoveMyselfAsApprovedPassenger?submitted=True/', views.confirmRemoveMyselfAsApprovedPassenger, name='confirmRemoveMyselfAsApprovedPassenger')
+    path('<int:pk>/confirmRemoveMyselfAsApprovedPassenger?submitted=True/', views.confirmRemoveMyselfAsApprovedPassenger, name='confirmRemoveMyselfAsApprovedPassenger'),
+    path('<int:pk>/updatePickupLocation?submitted=True', views.updatePickupLocation, name='updatePickupLocation'),
+    path('<int:pk>/updateDropoffLocation?submitted=True', views.updateDropoffLocation, name='updateDropoffLocation'),
+    path('<int:pk>/updateTripDate?submitted=True', views.updateTripDate, name='updateTripDate'),
+    path('<int:pk>/updateTripTime?submitted=True', views.updateTripTime, name='updateTripTime'),
+    path('<int:pk>/updateNumAvailableSeats?submitted=True', views.updateNumAvailableSeats, name='updateNumAvailableSeats'),
+    path('<int:pk>/updateVehicle?submitted=True', views.updateVehicle, name='updateVehicle')
 ]

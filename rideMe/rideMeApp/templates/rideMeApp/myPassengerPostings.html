@@ -4,6 +4,9 @@
 <button type="button">
     <a href="{% url 'postings' %}">Back to Postings List</a>
 </button>
+<button type="button">
+    <a href="{% url 'myDriverPostings' %}">View My Driver Postings</a>
+</button>
 
 <h1>My Passenger Trips</h1>
 
@@ -50,7 +53,30 @@
 {% endif %}
 
 {% if user.getAwaitingApprovalPassengerTrips %}
-<h3>Messaged Post Owner</h3>
+<h3>Messaged Post Owner Trips</h3>
+
+<table>
+    <tr>
+        <td>Pickup Location</td>
+        <td>Dropoff Location</td>
+        <td>Trip Date</td>
+        <td>Pickup Time</td>
+        <td>View Details</td>
+    </tr>  
+    {% for trip in user.getAwaitingApprovalPassengerTrips %}
+    <tr>
+        <td>{{ trip.pickupLocation }}</td>
+        <td>{{ trip.dropoffLocation }}</td>
+        <td>{{ trip.tripDate }}</td>
+        <td>{{ trip.tripTime }}</td>
+        <td>
+            <button type="button">
+                <a href="{% url 'postingdetails' trip.id %}" >Details</a>                 
+            </button>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 
 
 {% else %}
@@ -58,6 +84,29 @@
 
 <h2>Past Trips as Approved Passenger</h2>
 {% if user.getPastApprovedPassengerTrips %}
+
+<table>
+    <tr>
+        <td>Pickup Location</td>
+        <td>Dropoff Location</td>
+        <td>Trip Date</td>
+        <td>Pickup Time</td>
+        <td>View Details</td>
+    </tr>  
+    {% for trip in user.getPastApprovedPassengerTrips %}
+    <tr>
+        <td>{{ trip.pickupLocation }}</td>
+        <td>{{ trip.dropoffLocation }}</td>
+        <td>{{ trip.tripDate }}</td>
+        <td>{{ trip.tripTime }}</td>
+        <td>
+            <button type="button">
+                <a href="{% url 'postingdetails' trip.id %}" >Details</a>                 
+            </button>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 
 {% else %}
 <p>There are no past trips where you are an approved passenger.</p>

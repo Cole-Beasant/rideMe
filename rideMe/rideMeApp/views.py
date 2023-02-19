@@ -10,6 +10,8 @@ from .forms import LoginForm, SignUpForm, ResetPasswordForm
 # from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy, reverse
 from .forms import SignUpForm, LoginForm, AddPostingForm, StartConversation, AddReviewForm, SendMessageForm
+from .forms import UpdatePickupLocation, UpdateDropoffLocation, UpdateTripDate, UpdateTripTime, UpdateVehicle
+from .forms import UpdateNumAvailableSeats
 from django.contrib import messages
 import random
 
@@ -446,6 +448,123 @@ def myDriverPostings(request):
     context = {'user': user}
     return render(request, 'rideMeApp/myDriverPostings.html', context)
 
+def managePosting(request, pk):
+    posting = Posting.objects.get(pk=pk)
+    context = {'posting': posting}
+    return render(request, 'rideMeApp/managePosting.html', context)
+
+def updatePickupLocation(request, pk):
+    if request.method == 'POST':
+        form = UpdatePickupLocation(request.POST)
+        posting = Posting.objects.get(pk=pk)
+        if form.is_valid():
+            posting.pickupLocation = request.POST['pickupLocation']
+            posting.sendTripInfoUpdatedNotification()
+            posting.save()
+            messages.success(request, 'Successfully updated pickup location!')
+            return HttpResponseRedirect(reverse('myDriverPostings'))
+        else:
+            messages.error(request, 'Something went wrong')
+            return render(request, 'rideMeApp/updatePickupLocation.html', {'form': UpdatePickupLocation})
+
+    return render(request, 'rideMeApp/updatePickupLocation.html', {'form': UpdatePickupLocation})
+
+def updateDropoffLocation(request, pk):
+    if request.method == 'POST':
+        form = UpdateDropoffLocation(request.POST)
+        posting = Posting.objects.get(pk=pk)
+        if form.is_valid():
+            posting.dropoffLocation = request.POST['dropoffLocation']
+            posting.sendTripInfoUpdatedNotification()
+            posting.save()
+            messages.success(request, 'Successfully updated dropoff location!')
+            return HttpResponseRedirect(reverse('myDriverPostings'))
+        else:
+            messages.error(request, 'Something went wrong')
+            return render(request, 'rideMeApp/updateDropoffLocation.html', {'form': UpdateDropoffLocation})
+
+    return render(request, 'rideMeApp/updateDropoffLocation.html', {'form': UpdateDropoffLocation})
+
+def updateVehicle(request, pk):
+    if request.method == 'POST':
+        form = UpdateVehicle(request.POST)
+        posting = Posting.objects.get(pk=pk)
+        if form.is_valid():
+            posting.vehicle = request.POST['vehicle']
+            posting.sendTripInfoUpdatedNotification()
+            posting.save()
+            messages.success(request, 'Successfully updated vehicle!')
+            return HttpResponseRedirect(reverse('myDriverPostings'))
+        else:
+            messages.error(request, 'Something went wrong')
+            return render(request, 'rideMeApp/updateVehicle.html', {'form': UpdateVehicle})
+
+    return render(request, 'rideMeApp/updateVehicle.html', {'form': UpdateVehicle})
+
+def updateTripDate(request, pk):
+    if request.method == 'POST':
+        form = UpdateTripDate(request.POST)
+        posting = Posting.objects.get(pk=pk)
+        if form.is_valid():
+            posting.tripDate = request.POST['tripDate']
+            posting.sendTripInfoUpdatedNotification()
+            posting.save()
+            messages.success(request, 'Successfully updated trip date!')
+            return HttpResponseRedirect(reverse('myDriverPostings'))
+        else:
+            messages.error(request, 'Something went wrong')
+            return render(request, 'rideMeApp/updateTripDate.html', {'form': UpdateTripDate})
+
+    return render(request, 'rideMeApp/updateTripDate.html', {'form': UpdateTripDate})
+
+def updateTripTime(request, pk):
+    if request.method == 'POST':
+        form = UpdateTripTime(request.POST)
+        posting = Posting.objects.get(pk=pk)
+        if form.is_valid():
+            posting.tripTime = request.POST['tripTime']
+            posting.sendTripInfoUpdatedNotification()
+            posting.save()
+            messages.success(request, 'Successfully updated trip time!')
+            return HttpResponseRedirect(reverse('myDriverPostings'))
+        else:
+            messages.error(request, 'Inputted format incorrectly')
+            return render(request, 'rideMeApp/updateTripTime.html', {'form': UpdateTripTime})
+
+    return render(request, 'rideMeApp/updateTripTime.html', {'form': UpdateTripTime})
+
+def updateNumAvailableSeats(request, pk):
+    if request.method == 'POST':
+        form = UpdateNumAvailableSeats(request.POST)
+        posting = Posting.objects.get(pk=pk)
+        try:
+            numAvailableSeats = int(request.POST['numAvailableSeats'])
+        except:
+            messages.error(request, 'The number of available seats must be an integer.')
+            return render(request, 'rideMeApp/updateNumAvailableSeats.html', {'form': UpdateNumAvailableSeats})
+
+        if numAvailableSeats < 0:
+            messages.error(request, 'The number of available seats cannot be negative.')
+            return render(request, 'rideMeApp/updateNumAvailableSeats.html', {'form': UpdateNumAvailableSeats})
+
+        if posting.numAvailableSeats == 0 and numAvailableSeats > 0:
+            posting.sendTripReopenNotification()
+            posting.isOpen = True
+            posting.save()
+
+        elif posting.numAvailableSeats > 0 and numAvailableSeats == 0:
+            posting.sendTripClosedNotification()
+            posting.isOpen = False
+            posting.save()
+
+        posting.numAvailableSeats = numAvailableSeats
+        posting.save()
+        messages.success(request, 'Successfully update number of available seats!')
+        return HttpResponseRedirect(reverse('myDriverPostings'))
+    
+    return render(request, 'rideMeApp/updateNumAvailableSeats.html', {'form': UpdateNumAvailableSeats})
+
+
 def completePosting(request, pk):
     posting = Posting.objects.get(pk=pk)
     postOwner = posting.ownerID
@@ -459,6 +578,11 @@ def completePosting(request, pk):
     posting.save()
     messages.success(request, 'Successfully marked posting as complete!')
     return HttpResponseRedirect(reverse('myDriverPostings'))
+
+def confirmCancelPosting(request, pk):
+    posting = Posting.objects.get(pk=pk)
+    context = {'posting': posting}
+    return render(request, 'rideMeApp/confirmCancelPosting.html', context)
 
 def cancelPosting(request, pk):
     posting = Posting.objects.get(pk=pk)
