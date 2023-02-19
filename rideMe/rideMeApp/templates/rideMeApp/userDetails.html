@@ -79,9 +79,9 @@
     <p>{{ user.lastName }}, {{ user.firstName }} has not been reviewed as a passenger yet</p>
 {% endif %}
 
-<h2>User Postings</h2>
+<h2>User Upcoming Driver Trips</h2>
 
-{% if user.getOwnedPostings %}
+{% if user.getUpcomingDriverTrips %}
 <table>
     <tr>
         <td>Pickup Location</td>
@@ -90,7 +90,7 @@
         <td>Pickup Time</td>
         <td></td>
     </tr>
-    {% for posting in user.getOwnedPostings %}
+    {% for posting in user.getUpcomingDriverTrips %}
     <tr>
         <td>{{ posting.pickupLocation }}</td>
         <td>{{ posting.dropoffLocation }}</td>
@@ -106,7 +106,7 @@
 </table>
 
 {% else %}
-<p>{{ user.lastName }}, {{ user.firstName }} does not own any postings</p>
+<p>{{ user.lastName }}, {{ user.firstName }} does not have any upcoming driver trips</p>
 {% endif %}
 
 {% else %}

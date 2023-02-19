@@ -1,0 +1,104 @@
+<button type="button">
+    <a href="{% url 'logout' %}" >Logout </a>                 
+</button>
+<button type="button">
+    <a href="{% url 'postings' %}">Back to Postings List</a>
+</button>
+
+<h1>My Driver Trips</h1>
+
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+{% if user.getPastDriverTripsNeedingAction %}
+<h2>Past Trips that Need Action</h2>
+<table>
+    <tr>
+        <td>Pickup Location</td>
+        <td>Dropoff Location</td>
+        <td>Trip Date</td>
+        <td>Pickup Time</td>
+        <td>Trip Occurred?</td>
+    </tr>  
+    {% for trip in user.getPastDriverTripsNeedingAction %}
+    <tr>
+        <td>{{ trip.pickupLocation }}</td>
+        <td>{{ trip.dropoffLocation }}</td>
+        <td>{{ trip.tripDate }}</td>
+        <td>{{ trip.tripTime }}</td>
+        <td>
+            <button type="button">
+                <a href="{% url 'completePosting' trip.id %}" >Yes</a>                 
+            </button>
+            <button type="button">
+                <a href="{% url 'cancelPosting' trip.id %}" >No</a>                 
+            </button>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+{% endif %}
+
+<h2>My Upcoming Driver Trips</h2>
+{% if user.getUpcomingDriverTrips %}
+
+<table>
+    <tr>
+        <td>Pickup Location</td>
+        <td>Dropoff Location</td>
+        <td>Trip Date</td>
+        <td>Pickup Time</td>
+        <td>Manage Posting</td>
+    </tr>  
+    {% for trip in user.getUpcomingDriverTrips %}
+    <tr>
+        <td>{{ trip.pickupLocation }}</td>
+        <td>{{ trip.dropoffLocation }}</td>
+        <td>{{ trip.tripDate }}</td>
+        <td>{{ trip.tripTime }}</td>
+        <td>
+            <button type="button">
+                <a href="{% url 'managePosting' trip.id %}" >Yes</a>                 
+            </button>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+{% else %}
+<p>You have no upcoming trips as a driver.</p>
+{% endif %}
+
+<h2>My Past Driver Trips</h2>
+{% if user.getPastDriverTrips %}
+
+<table>
+    <tr>
+        <td>Pickup Location</td>
+        <td>Dropoff Location</td>
+        <td>Trip Date</td>
+        <td>Pickup Time</td>
+        <td>View Details</td>
+    </tr>  
+    {% for trip in user.getPastDriverTrips %}
+    <tr>
+        <td>{{ trip.pickupLocation }}</td>
+        <td>{{ trip.dropoffLocation }}</td>
+        <td>{{ trip.tripDate }}</td>
+        <td>{{ trip.tripTime }}</td>
+        <td>
+            <button type="button">
+                <a href="{% url 'postingdetails' trip.id %}" >Details</a>                 
+            </button>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% else %}
+<p>You have no past trips as a driver.</p>
+
+{% endif %}

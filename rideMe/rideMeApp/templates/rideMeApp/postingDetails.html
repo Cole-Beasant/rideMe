@@ -7,6 +7,12 @@
 <button type="button">
     <a href="{% url 'viewConversations' %}">Back to Conversations</a>
 </button>
+<button type="button">
+    <a href="{% url 'myDriverPostings' %}">View My Driver Postings</a>
+</button>
+<button type="button">
+    <a href="{% url 'myPassengerPostings' %}">View My Passenger Postings</a>
+</button>
 
 {% for message in messages %}
     <p>{{ message }}</p>
@@ -56,6 +62,7 @@
 </button>
 
 <h3>Approved Passengers</h3>
+{% if posting.getApprovedPassengers %}
 <table>
     {% for user in posting.getApprovedPassengers %}
     <tr>
@@ -65,8 +72,6 @@
     </tr>
     {% endfor %}
 </table>
-
-{% if posting.getApprovedPassengers %}
 {% else %}
 <p>There are no approved passengers for this posting</p>
 {% endif %}

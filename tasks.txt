@@ -1,21 +1,28 @@
 Priority of Things to do:
 
 1. Can add posts in the past and i dont like tight the format for the tripTime is
+    - nbd that can add trips in the past, as they wont show up on the open postings
+      and they will be deleted once u query my driver postings as if past postings dont
+      have approved passengers, they r tossed once queried
 
 2. Discuss if we want to edit profile information
     - I think no, info should be locked but see what others think
     - wont be difficult to implement anyway
+    - should we add to profile number of trips cancelled??
+    - this will also punish adding past trips more cuz it ends up
+      cancelling it
 
 3. My Postings 
+    - WROTE QUERIES JUST NEED TO BUILD PAGES
     Should be two pages, driver trips and passenger trips, both available 
     on the navbar
 
     DRIVER TRIPS
 
-    - Upcoming Trips
-        - NOTI FOR UPCOMING DRIVER TRIPS
     - Past trips that need action 
         - NOTI IF THESE EXIST
+    - Upcoming Trips
+        - NOTI FOR UPCOMING DRIVER TRIPS
         - Two options:
             1. mark as complete -> tripComplete workflow
             2. trip did not occur -> tripCancelled workflow
@@ -36,8 +43,6 @@ Priority of Things to do:
     - changing trip information and notifying users through messages
     - do we want to let post owners be able to modify approved passengers
       list thru here or just thru conversations???
-
-5. Removing urself from the approvedPassenger list and its consequences
 
 6. Fix back bug regarding logout and delete account
     - rn users can hit back and it will appear they are logged in

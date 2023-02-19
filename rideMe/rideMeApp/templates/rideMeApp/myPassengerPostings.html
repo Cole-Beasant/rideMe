@@ -1,0 +1,64 @@
+<button type="button">
+    <a href="{% url 'logout' %}" >Logout </a>                 
+</button>
+<button type="button">
+    <a href="{% url 'postings' %}">Back to Postings List</a>
+</button>
+
+<h1>My Passenger Trips</h1>
+
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+<h2>Upcoming Trips</h2>
+
+<h3>Approved Passenger</h3>
+{% if user.getUpcomingApprovedPassengerTrips %}
+
+<table>
+    <tr>
+        <td>Pickup Location</td>
+        <td>Dropoff Location</td>
+        <td>Trip Date</td>
+        <td>Pickup Time</td>
+        <td></td>
+        <td></td>
+    </tr>  
+    {% for trip in user.getUpcomingApprovedPassengerTrips %}
+    <tr>
+        <td>{{ trip.pickupLocation }}</td>
+        <td>{{ trip.dropoffLocation }}</td>
+        <td>{{ trip.tripDate }}</td>
+        <td>{{ trip.tripTime }}</td>
+        <td>
+            <button type="button">
+                <a href="{% url 'postingdetails' trip.id %}" >View Trip Details</a>                 
+            </button>
+        </td>
+        <td>
+            <button type="button">
+                <a href="{% url 'confirmRemoveMyselfAsApprovedPassenger' trip.id %}" >Remove Myself as Approved Passenger</a>                 
+            </button>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% else %}
+<p>You have not been added as an approved passenger for any upcoming trips.</p>
+{% endif %}
+
+{% if user.getAwaitingApprovalPassengerTrips %}
+<h3>Messaged Post Owner</h3>
+
+
+{% else %}
+{% endif %}
+
+<h2>Past Trips as Approved Passenger</h2>
+{% if user.getPastApprovedPassengerTrips %}
+
+{% else %}
+<p>There are no past trips where you are an approved passenger.</p>
+{% endif %}

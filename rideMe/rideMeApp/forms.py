@@ -1,15 +1,12 @@
 from django import forms
 
 class SignUpForm(forms.Form):
-    # class Meta:
-        # model = User
-        # fields = ('username', 'firstName', 'lastName', 'email', 'password')
     username = forms.CharField(label='Enter your username:')
     firstName = forms.CharField(label='Enter your First Name:')
     lastName = forms.CharField(label='Enter your Last Name:')
     email = forms.EmailField(label="Enter your email address:")
-    password = forms.CharField(label='Enter your password:', widget=forms.PasswordInput())
-    confirmPassword = forms.CharField(label='Confirm you password:', widget=forms.PasswordInput())
+    password = forms.CharField(label='Enter your password:', widget=forms.PasswordInput)
+    confirmPassword = forms.CharField(label='Confirm you password:', widget=forms.PasswordInput)
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Enter your username')

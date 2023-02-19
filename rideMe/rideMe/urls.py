@@ -40,5 +40,11 @@ urlpatterns = [
     path('<int:pk>/addApprovedPassenger?submitted=True/', views.addApprovedPassenger, name='addApprovedPassenger'),
     path('myProfile?submitted=True/', views.viewMyProfile, name='myProfile'),
     path('confirmDeleteProfile?submitted=True', views.confirmDeleteProfile, name='confirmDeleteProfile'),
-    path('deleteProfile?submitted=True/', views.deleteProfile, name='deleteProfile')
+    path('deleteProfile?submitted=True/', views.deleteProfile, name='deleteProfile'),
+    path('myDriverPostings?submitted=True/', views.myDriverPostings, name='myDriverPostings'),
+    path('<int:pk>/completePosting?submitted=True/', views.completePosting, name='completePosting'),
+    path('<int:pk>/cancelPosting?submitted=True/', views.cancelPosting, name='cancelPosting'),
+    path('myPassengerPostings?submitted=True/', views.myPassengerPostings, name='myPassengerPostings'),
+    path('<int:pk>/removeMyselfAsApprovedPassenger?submitted=True/', views.removeMyselfAsApprovedPassenger, name='removeMyselfAsApprovedPassenger'),
+    path('<int:pk>/confirmRemoveMyselfAsApprovedPassenger?submitted=True/', views.confirmRemoveMyselfAsApprovedPassenger, name='confirmRemoveMyselfAsApprovedPassenger')
 ]

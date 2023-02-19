@@ -92,15 +92,11 @@ class User(models.Model):
             if self == user.theUser:
                 if user.hasReviewed == False:
                     usersToReview.append(user.theInteracter)
-        return usersToReview
+        return usersToReview        
+
 
     def getNumUsersToReview(self):
-        numUsersToReview = 0
-        for user in UsersInteractedForUsers.objects.all():
-            if self == user.theUser:
-                if user.hasReviewed == False:
-                    numUsersToReview += 1
-        return numUsersToReview
+        return len(self.getUsersToReview())
 
     def getConversations(self):
         conversations = []
@@ -127,6 +123,56 @@ class User(models.Model):
                             if self != message.senderID:
                                 numUnreadConversations += 1
         return numUnreadConversations
+
+    def getUpcomingDriverTrips(self):
+        return Posting.objects.filter(ownerID=self, tripDate__gt=timezone.now(), isCancelled=False).order_by('-tripDate')
+
+    def getNumUpcomingDriverTrips(self):
+        return len(self.getUpcomingDriverTrips())
+
+    def getPastDriverTripsNeedingAction(self):
+        query = Posting.objects.filter(ownerID=self, tripDate__lt=timezone.now()).order_by('-tripDate')
+        pastDriverTrips = []
+        for posting in query:
+            if len(posting.getApprovedPassengers()) == 0:
+                posting.isCancelled == True
+                posting.sendTripCancelledNotification()
+                posting.save()
+            elif posting.isComplete == False and posting.isCancelled == False:
+                pastDriverTrips.append(posting)
+        return pastDriverTrips
+
+    def getNumPastDriverTripsNeedingAction(self):
+        return len(self.getPastDriverTripsNeedingAction())
+
+    def getPastDriverTrips(self):
+        return Posting.objects.filter(ownerID=self, tripDate__lt=timezone.now(), isComplete=True).order_by('-tripDate')
+
+    def getUpcomingApprovedPassengerTrips(self):
+        upcomingApprovedPassengerTrips = []
+        for object in ApprovedPassengers.objects.all():
+            if object.userID == self and object.postingID.tripDate > datetime.date.today():
+                upcomingApprovedPassengerTrips.append(object.postingID)
+        return upcomingApprovedPassengerTrips
+
+    def getNumUpcomingApprovedPassengerTrips(self):
+        return len(self.getUpcomingApprovedPassengerTrips())
+
+    def getAwaitingApprovalPassengerTrips(self):
+        awaitingApprovalPassengerTrips = []
+        for object in UsersInteractedForPostings.objects.all():
+            if object.userID == self and object.postingID.tripDate > datetime.date.today():
+                awaitingApprovalPassengerTrips.append(object.postingID)
+        return awaitingApprovalPassengerTrips
+
+    def getPastApprovedPassengerTrips(self):
+        pastApprovedPassengerTrips = []
+        for object in ApprovedPassengers.objects.all():
+            if object.userID == self and object.postingID.tripDate < datetime.date.today():
+                if object.postingID.isComplete == True:
+                    pastApprovedPassengerTrips.append(object.postingID)
+        return pastApprovedPassengerTrips
+
 
 
 class Review(models.Model):
@@ -190,6 +236,8 @@ class Posting(models.Model):
                 hasRead = False,
                 timeSent = timezone.now()
             )
+            conversation.setLatestMessageSentTime(timezone.now())
+            conversation.save()
 
     def sendTripReopenNotification(self):
         for conversation in self.getAssociatedConversations():
@@ -200,6 +248,8 @@ class Posting(models.Model):
                 hasRead = False,
                 timeSent = timezone.now()
             )
+            conversation.setLatestMessageSentTime(timezone.now())
+            conversation.save()
 
     def sendTripCancelledNotification(self):
         for conversation in self.getAssociatedConversations():
@@ -210,6 +260,8 @@ class Posting(models.Model):
                 hasRead = False,
                 timeSent = timezone.now()
             )
+            conversation.setLatestMessageSentTime(timezone.now())
+            conversation.save()
 
     def sendTripInfoUpdatedNotification(self):
         for conversation in self.getAssociatedConversations():
@@ -220,6 +272,8 @@ class Posting(models.Model):
                 hasRead = False,
                 timeSent = timezone.now()
             )
+            conversation.setLatestMessageSentTime(timezone.now())
+            conversation.save()
 
     def tripCompleted(self):
         for conversation in self.getAssociatedConversations():

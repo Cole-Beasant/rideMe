@@ -80,7 +80,6 @@ def createUser(request):
                     email = email,
                     numTripsAsDriver = 0,
                     numTripsAsPassenger = 0,
-                    averageRating = 0.0,
                     registrationTime = timezone.now()
                 )
                 messages.success(request, 'Successfully signed up!')
@@ -120,8 +119,20 @@ def resetPassword(request):
 
 
 def viewPostings(request):
-    postingsList = Posting.objects.filter(isOpen=True).order_by('-tripDate') # add to the filter tripDate__gt=timezone.now()
+    postingsList = Posting.objects.filter(isOpen=True, tripDate__gt=timezone.now()).order_by('-tripDate') 
     user = User.objects.get(username=request.session['loggedInUser'])
+
+    numPastDriverTripsNeedingAction = user.getNumPastDriverTripsNeedingAction()
+    if numPastDriverTripsNeedingAction > 0:
+        messages.info(request, 'You have ' + str(numPastDriverTripsNeedingAction) + ' past trips where you were a driver that need action')
+
+    numUpcomingDriverTrips = user.getNumUpcomingDriverTrips()
+    if numUpcomingDriverTrips > 0:
+        messages.info(request, 'You have ' + str(numUpcomingDriverTrips) + ' upcoming trips where you are a driver')
+
+    numUpcomingPassengerTrips = user.getNumUpcomingApprovedPassengerTrips()
+    if numUpcomingPassengerTrips > 0:
+        messages.info(request, 'You have ' + str(numUpcomingPassengerTrips) + ' upcoming trips where you are an approved passenger')
 
     numUnreadConversations = user.getNumUnreadConversations()
     if numUnreadConversations > 0:
@@ -316,20 +327,6 @@ def dismissReview(request, pk):
     messages.success(request, 'Successfully dismissed')
     return HttpResponseRedirect(reverse('usersToReview'))
 
-def myPostings(request):
-    # NEED DISCUSSION W THIS QUERY CUZ RN IT HAS BOTH OPEN AND CLOSED!!!!
-    user = User.objects.get(username = request.session['loggedInUser'])
-    ownedPostings = user.getOwnedPostings()
-    approvedPassengerPostings = user.getApprovedPassengerRides()
-    messagedPostOwnerPostings = user.getPostingsInteractedWith()
-
-    context = {
-        'user': user,
-        'ownedPostings': ownedPostings,
-        'approvedPassengerPostings': approvedPassengerPostings,
-        'messagedPostOwnerPostings': messagedPostOwnerPostings
-    }
-
 def viewConversations(request):
     user = User.objects.get(username = request.session['loggedInUser'])
     conversations = user.getConversations()
@@ -444,3 +441,67 @@ def deleteProfile(request):
         messages.error(request, 'Profile was not deleted')
         return HttpResponseRedirect(reverse('myProfile'))
 
+def myDriverPostings(request):
+    user = User.objects.get(username=request.session['loggedInUser'])
+    context = {'user': user}
+    return render(request, 'rideMeApp/myDriverPostings.html', context)
+
+def completePosting(request, pk):
+    posting = Posting.objects.get(pk=pk)
+    postOwner = posting.ownerID
+    postOwner.completedRideAsDriver()
+    postOwner.save()
+    posting.tripCompleted()
+    posting.isComplete = True
+    for passenger in posting.getApprovedPassengers():
+        passenger.completedRideAsPassenger()
+        passenger.save()
+    posting.save()
+    messages.success(request, 'Successfully marked posting as complete!')
+    return HttpResponseRedirect(reverse('myDriverPostings'))
+
+def cancelPosting(request, pk):
+    posting = Posting.objects.get(pk=pk)
+    posting.sendTripCancelledNotification()
+    posting.isCancelled = True
+    posting.save()
+    messages.success(request, 'Successfully cancelled posting')
+    return HttpResponseRedirect(reverse('myDriverPostings'))
+
+def myPassengerPostings(request):
+    user = User.objects.get(username=request.session['loggedInUser'])
+    context = {'user': user}
+    return render(request, 'rideMeApp/myPassengerPostings.html', context)    
+
+def removeMyselfAsApprovedPassenger(request, pk):
+    user = User.objects.get(username=request.session['loggedInUser'])
+    posting = Posting.objects.get(pk=pk)
+    for passenger in posting.getApprovedPassengers():
+        if user == passenger:
+            object = ApprovedPassengers.objects.get(postingID=posting, userID=user)
+            object.delete()
+            if posting.numAvailableSeats == 0:
+                posting.sendTripReopenNotification()
+                posting.isOpen = True
+            posting.numAvailableSeats += 1
+            posting.save()
+            conversation = Conversation.objects.get(postingID=posting, passengerID=user)
+            conversation.latestMessageSentTime = timezone.now()
+            conversation.save()
+            Message.objects.create(
+                conversationID = conversation,
+                senderID = user,
+                message = 'This is an automated message stating that I have removed myself from the approved passenger list. My apologies for any inconvenice.',
+                hasRead = False,
+                timeSent = timezone.now()
+            )
+            messages.success(request, 'Successfully removed from the approved passenger list for the posting')
+            return HttpResponseRedirect(reverse('myPassengerPostings'))
+    messages.error(request, 'Something went wrong')
+    return HttpResponseRedirect(reverse('myPassengerPostings'))
+    
+
+def confirmRemoveMyselfAsApprovedPassenger(request, pk):
+    posting = Posting.objects.get(pk=pk)
+    context = {'posting': posting}
+    return render(request, 'rideMeApp/removeMyselfAsApprovedPassenger.html', context)
