@@ -149,8 +149,9 @@ def viewPostings(request):
     return render(request, 'rideMeApp/postingsList.html', context)
 
 def viewPostingDetails(request, pk):
+    user = User.objects.get(username=request.session['loggedInUser'])
     posting = Posting.objects.get(pk=pk)
-    context = {'posting': posting}
+    context = {'posting': posting, 'user': user}
     return render(request, 'rideMeApp/postingDetails.html', context)
 
 def messagePostOwner(request, pk):

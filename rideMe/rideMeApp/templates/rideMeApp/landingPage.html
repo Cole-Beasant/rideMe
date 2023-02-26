@@ -1,4 +1,8 @@
+{% extends "rideMeApp\master.html" %}
+{% block content %}
+<div style="text-align: center;">
 <h1>Welcome to RideMe</h1>
+<img src="https://cdn.discordapp.com/attachments/891732631295754280/1078786258375037088/rideMe_logo.jpg" alt="rideMe Logo" style="width:25%; height: auto; ">
 
 {% for message in messages %}
     <p>{{ message }}</p>
@@ -13,6 +17,9 @@
 </form>
 
 <p>Don't have an account?</p>
-<button type="button"><a href="{% url 'signup' %}">Sign Up</a></button>
+<button type="button" class="btn"><a href="{% url 'signup' %}">Sign Up</a></button>
 <p>Forgot your password?</p>
-<button type="button"><a href="{% url 'resetPassword' %}">Reset Password</a></button>
+<button type="button" class="btn"><a href="{% url 'resetPassword' %}">Reset Password</a></button>
+</div>
+<a>{{request.path}}</a>
+{% endblock %}
