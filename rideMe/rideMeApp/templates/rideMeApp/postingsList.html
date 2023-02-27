@@ -1,63 +1,50 @@
-<button type="button">
-    <a href="{% url 'logout' %}" >Logout </a>                 
-</button>
-<button type="button">
-    <a href="{% url 'addPosting' %}" >Add Posting </a>                 
-</button>
-<button type="button">
-    <a href="{% url 'usersToReview' %}" >Leave a Review </a>                 
-</button>
-<button type="button">
-    <a href="{% url 'viewConversations' %}">View My Conversations</a>
-</button>
-<button type="button">
-    <a href="{% url 'myDriverPostings' %}">View My Driver Postings</a>
-</button>
-<button type="button">
-    <a href="{% url 'myPassengerPostings' %}">View My Passenger Postings</a>
-</button>
-<button type="button">
-    <a href="{% url 'myProfile' %}">View My Profile</a>
-</button>
+{% extends "rideMeApp\master.html" %}
+{% block content %}
 
-<h2>Hello {{ user.firstName }} </h2>
+<div style="float: right; width: 50%;">
+    <h2 style="color: #ddd">Hello {{ user.firstName }} </h2>
 
-{% for message in messages %}
-    <p>{{ message }}</p>
-{% endfor %}
+    {% for message in messages %}
+        <p style="color: #ddd">{{ message }}</p>
+    {% endfor %}
+</div>
 
-<h1>Open Postings</h1>
+<div style="width: 50%; float: right;">
+    <h1>Open Postings</h1>
 
-{% if postingsList %}
-<table>
-    <tr>
-        <td>Pickup Location</td>
-        <td>Dropoff Location</td>
-        <td>Trip Date</td>
-        <td>Pickup Time</td>
-        <td></td>
-    </tr>
-        {% for posting in postingsList %}
-        {% if posting.isOpen == True %}
+    {% if postingsList %}
+    <table class="list">
         <tr>
-            <td>{{ posting.pickupLocation }}</td>
-            <td>{{ posting.dropoffLocation }}</td>
-            <td>{{ posting.tripDate }}</td>
-            <td>{{ posting.tripTime }}</td>
-            <td>
-                <button type="button">
-                    <a href="{% url 'postingdetails' posting.id %}" >View Posting </a>                 
-                </button>
-            </td>
-
+            <th>Pickup Location</th>
+            <th>Dropoff Location</th>
+            <th>Trip Date</th>
+            <th>Pickup Time</th>
+            <th></th>
         </tr>
-        {% else %}
-        {% endif %}
-        {% endfor %}
-</table>
-{% else %}
-    <p>No open postings</p>
-{% endif %}
+            {% for posting in postingsList %}
+            {% if posting.isOpen == True %}
+            <tr>
+                <td>{{ posting.pickupLocation }}</td>
+                <td>{{ posting.dropoffLocation }}</td>
+                <td>{{ posting.tripDate }}</td>
+                <td>{{ posting.tripTime }}</td>
+                <td>
+                    <span class="btn">
+                        <a class="btn" href="{% url 'postingdetails' posting.id %}">View Posting </a>                 
+                    </span>
+                </td>
+
+            </tr>
+            {% else %}
+            {% endif %}
+            {% endfor %}
+    </table>
+    {% else %}
+        <p>No open postings</p>
+    {% endif %}
+
+</div>
+{% endblock %}
 
 
 

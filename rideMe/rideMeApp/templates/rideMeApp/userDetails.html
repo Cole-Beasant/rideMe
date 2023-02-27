@@ -1,20 +1,25 @@
-<button type="button">
-    <a href="{% url 'logout' %}" >Logout </a>                 
-</button>
+{% extends "rideMeApp\master.html" %}
+{% block content %}
 
-<button type="button">
-    <a href="{% url 'postings' %}">Back to Postings List</a>
-</button>
+<div class="btn">
+    <button type="button">
+        <a href="{% url 'logout' %}" >Logout </a>                 
+    </button>
 
-<button type="button">
-    <a href="{% url 'viewConversations' %}">View Conversations</a>
-</button>
+    <button type="button">
+        <a href="{% url 'postings' %}">Back to Postings List</a>
+    </button>
+
+    <button type="button">
+        <a href="{% url 'viewConversations' %}">View Conversations</a>
+    </button>
+</div>
 
 <h1>User Details</h1>
 
 {% if user %}
 
-<table>
+<table class="box">
     <tr>
         <td>Username:</td>
         <td>{{ user.username }}</td>
@@ -54,10 +59,12 @@
 <h3>As a Driver</h3>
 
 {% if user.getReviewsAsDriver %}
-<table>
+<table class="box">
     {% for review in user.getReviewsAsDriver %}
     <tr>
-        <td>{{ review }}</td>
+        <td>{{review.0}}</td>
+        <td>{{review.1}}</td>
+        <td>{{review.2}}</td>
     </tr>
     {% endfor %}
 </table>
@@ -68,10 +75,12 @@
 <h3>As a Passenger</h3>
 
 {% if user.getReviewsAsPassenger %}
-<table>
+<table class="box">
     {% for review in user.getReviewsAsPassenger %}
     <tr>
-        <td>{{ review }}</td>
+        <td>{{review.0}}</td>
+        <td>{{review.1}}</td>
+        <td>{{review.2}}</td>
     </tr>
     {% endfor %}
 </table>
@@ -82,7 +91,7 @@
 <h2>User Upcoming Driver Trips</h2>
 
 {% if user.getUpcomingDriverTrips %}
-<table>
+<table class="box">
     <tr>
         <td>Pickup Location</td>
         <td>Dropoff Location</td>
@@ -112,3 +121,4 @@
 {% else %}
     <p>No user selected</p>
 {% endif %}
+{% endblock %}

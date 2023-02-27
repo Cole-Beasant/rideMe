@@ -1,0 +1,113 @@
+<style>
+    .topnav {
+        background-color: #EAC098;
+        overflow: hidden;
+    }
+    .topnav a {
+        float: left;
+        color: #333;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+    }
+
+    /* Change the color of links on hover */
+    .topnav a:hover {
+        background-color: #ddd;
+        color: black;
+    }
+
+    /* Add a color to the active/current link */
+    .topnav a.active {
+        background-color: #706340;
+        color: white;
+    }
+    .btn a {
+        text-decoration: none;
+        color: black !important;
+    }
+    button a {
+        text-decoration: none;
+        color: black !important;
+    }
+    body {
+        background-color: #333;
+    }
+    h1 {
+        color: #ddd;
+        text-align: center;
+    }
+    h2 {
+        color:#ddd;
+    }
+    h3 {
+        color:#ddd;
+    }
+    .box a {
+        color: #ddd;
+    }
+    .box p {
+        color: #ddd;
+    }
+    .box tr {
+        color: #ddd;
+    }
+    p {
+        color: #ddd;
+    }
+    .list {
+        width: 90%
+    }
+
+    .list th {
+        background-color: #EAC098;
+        color: white;
+    }
+
+    .list td {
+        border-bottom: 1px solid #ddd;
+        padding-right: 15px;
+        padding-bottom: 2px;
+        padding-top: 2px;
+    }
+
+    .list tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    .list tr:nth-child(odd) {
+        background-color: #ddd;
+    }
+    .list tr:hover {
+        background-color: #706340;
+    }
+
+    .msg-left {
+        border-radius: 25px 25px 25px 0px;
+        background-color: #ddd;
+        padding: 10px;
+        float: left;
+    }
+    .msg-right {
+        border-radius: 25px 25px 0px 25px;
+        background-color: dodgerblue;
+        padding: 10px;
+        float: right;
+    }
+
+</style>
+{% if request.path != '/' and request.path != '/signup/' and request.path != '/resetPassword/' %}
+<div class="topnav">
+    <a class="{% if request.path == '/postings?submitted=True/' %}active{% endif %}" href="{% url 'postings' %}">Postings</a>
+    <a class="{% if request.path == '/postings/addPostings?submitted=True/' %}active{% endif %}" href="{% url 'addPosting' %}" >Add Posting </a>
+    <a class="{% if request.path == '/usersToReview?submitted=True/' %}active{% endif %}" href="{% url 'usersToReview' %}" >Leave a Review </a>
+    <a class="{% if request.path == '/viewConversations?submitted=True/' %}active{% endif %}" href="{% url 'viewConversations' %}">View My Conversations</a>
+    <a class="{% if request.path == '/myDriverPostings?submitted=True/' %}active{% endif %}" href="{% url 'myDriverPostings' %}">View My Driver Postings</a>
+    <a class="{% if request.path == '/myPassengerPostings?submitted=True/' %}active{% endif %}" href="{% url 'myPassengerPostings' %}">View My Passenger Postings</a>
+    <a class="{% if request.path == '/myProfile?submitted=True/' %}active{% endif %}" style="float:right" href="{% url 'logout' %}">Logout</a>
+    <a style="float:right" href="{% url 'myProfile' %}">My Profile</a>
+</div>
+{% endif %}
+
+{% block content %}
+{% endblock %}

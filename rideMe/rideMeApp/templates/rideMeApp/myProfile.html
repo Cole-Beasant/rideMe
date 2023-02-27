@@ -1,3 +1,7 @@
+{% extends "rideMeApp\master.html" %}
+{% block content %}
+
+<div class="btn">
 <button type="button">
     <a href="{% url 'logout' %}" >Logout </a>                 
 </button>
@@ -8,12 +12,13 @@
 <button type="button">
     <a href="{% url 'viewConversations' %}">Back to Conversations</a>
 </button>
+</div>
 
 <h1>User Details</h1>
 
 {% if user %}
 
-<table>
+<table class="box">
     <tr>
         <td>Username:</td>
         <td>{{ user.username }}</td>
@@ -53,10 +58,12 @@
 <h3>As a Driver</h3>
 
 {% if user.getReviewsAsDriver %}
-<table>
+<table class="box">
     {% for review in user.getReviewsAsDriver %}
     <tr>
-        <td>{{ review }}</td>
+        <td>{{review.0}}</td>
+        <td>{{review.1}}</td>
+        <td>{{review.2}}</td>
     </tr>
     {% endfor %}
 </table>
@@ -70,7 +77,9 @@
 <table>
     {% for review in user.getReviewsAsPassenger %}
     <tr>
-        <td>{{ review }}</td>
+        <td>{{review.0}}</td>
+        <td>{{review.1}}</td>
+        <td>{{review.2}}</td>
     </tr>
     {% endfor %}
 </table>
@@ -81,7 +90,7 @@
 <h2>User Postings</h2>
 
 {% if user.getOwnedPostings %}
-<table>
+<table class="box">
     <tr>
         <td>Pickup Location</td>
         <td>Dropoff Location</td>
@@ -96,8 +105,8 @@
         <td>{{ posting.tripDate }}</td>
         <td>{{ posting.tripTime }}</td>
         <td>
-            <button type="button">
-                <a href="{% url 'postingdetails' posting.id %}" >View Posting </a>                 
+            <button type="button" class="btn">
+                <a style="color:#333 !important;" href="{% url 'postingdetails' posting.id %}" >View Posting </a>                 
             </button>
         </td>
     </tr>
@@ -108,10 +117,12 @@
 <p>{{ user.lastName }}, {{ user.firstName }} does not own any postings</p>
 {% endif %}
 
-<button type="button">
+<button type="button" class="btn">
     <a href="{% url 'confirmDeleteProfile' %}">Delete Profile</a>
 </button>
 
 {% else %}
     <p>No user selected</p>
 {% endif %}
+
+{% endblock %}

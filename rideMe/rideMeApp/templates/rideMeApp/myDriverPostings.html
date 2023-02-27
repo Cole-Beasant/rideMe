@@ -1,12 +1,16 @@
-<button type="button">
-    <a href="{% url 'logout' %}" >Logout </a>                 
-</button>
-<button type="button">
-    <a href="{% url 'postings' %}">Back to Postings List</a>
-</button>
-<button type="button">
-    <a href="{% url 'myPassengerPostings' %}">View My Passenger Postings</a>
-</button>
+{% extends "rideMeApp\master.html" %}
+{% block content %}
+<div class="btn">
+    <button type="button">
+        <a href="{% url 'logout' %}" >Logout </a>                 
+    </button>
+    <button type="button">
+        <a href="{% url 'postings' %}">Back to Postings List</a>
+    </button>
+    <button type="button">
+        <a href="{% url 'myPassengerPostings' %}">View My Passenger Postings</a>
+    </button>
+</div>
 
 <h1>My Driver Trips</h1>
 
@@ -16,13 +20,13 @@
 
 {% if user.getPastDriverTripsNeedingAction %}
 <h2>Past Trips that Need Action</h2>
-<table>
+<table class="list">
     <tr>
-        <td>Pickup Location</td>
-        <td>Dropoff Location</td>
-        <td>Trip Date</td>
-        <td>Pickup Time</td>
-        <td>Trip Occurred?</td>
+        <th>Pickup Location</th>
+        <th>Dropoff Location</th>
+        <th>Trip Date</th>
+        <th>Pickup Time</th>
+        <th>Trip Occurred?</th>
     </tr>  
     {% for trip in user.getPastDriverTripsNeedingAction %}
     <tr>
@@ -47,13 +51,13 @@
 <h2>My Upcoming Driver Trips</h2>
 {% if user.getUpcomingDriverTrips %}
 
-<table>
+<table class="list">
     <tr>
-        <td>Pickup Location</td>
-        <td>Dropoff Location</td>
-        <td>Trip Date</td>
-        <td>Pickup Time</td>
-        <td>Manage Posting</td>
+        <th>Pickup Location</th>
+        <th>Dropoff Location</th>
+        <th>Trip Date</th>
+        <th>Pickup Time</th>
+        <th>Manage Posting</th>
     </tr>  
     {% for trip in user.getUpcomingDriverTrips %}
     <tr>
@@ -62,7 +66,7 @@
         <td>{{ trip.tripDate }}</td>
         <td>{{ trip.tripTime }}</td>
         <td>
-            <button type="button">
+            <button type="button" class="btn">
                 <a href="{% url 'managePosting' trip.id %}" >Manage</a>                 
             </button>
         </td>
@@ -78,13 +82,13 @@
 <h2>My Past Driver Trips</h2>
 {% if user.getPastDriverTrips %}
 
-<table>
+<table class="list">
     <tr>
-        <td>Pickup Location</td>
-        <td>Dropoff Location</td>
-        <td>Trip Date</td>
-        <td>Pickup Time</td>
-        <td>View Details</td>
+        <th>Pickup Location</th>
+        <th>Dropoff Location</th>
+        <th>Trip Date</th>
+        <th>Pickup Time</th>
+        <th>View Details</th>
     </tr>  
     {% for trip in user.getPastDriverTrips %}
     <tr>
@@ -93,7 +97,7 @@
         <td>{{ trip.tripDate }}</td>
         <td>{{ trip.tripTime }}</td>
         <td>
-            <button type="button">
+            <button type="button" class="btn">
                 <a href="{% url 'postingdetails' trip.id %}" >Details</a>                 
             </button>
         </td>
@@ -105,3 +109,4 @@
 <p>You have no past trips as a driver.</p>
 
 {% endif %}
+{% endblock %}

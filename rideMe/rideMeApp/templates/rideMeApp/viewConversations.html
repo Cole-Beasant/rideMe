@@ -1,9 +1,14 @@
-<button type="button">
-    <a href="{% url 'logout' %}" >Logout </a>                 
-</button>
-<button type="button">
-    <a href="{% url 'postings' %}">Back to Postings List</a>
-</button>
+{% extends "rideMeApp\master.html" %}
+{% block content %}
+
+<div class="btn">
+    <button type="button">
+        <a href="{% url 'logout' %}" >Logout </a>                 
+    </button>
+    <button type="button">
+        <a href="{% url 'postings' %}">Back to Postings List</a>
+    </button>
+</div>
 
 {% for message in messages %}
     <p>{{ message }}</p>
@@ -12,18 +17,18 @@
 <h1>My Conversations</h1>
 
 {% if conversations %}
-<table>
+<table class="list">
     <tr>
-        <td>Unread Messages</td>
-        <td>My Post</td>
-        <td>User</td>
-        <td></td>
-        <td>Posting Open</td>
-        <td>Pickup Location</td>
-        <td>Dropoff Location</td>
-        <td>Trip Date</td>
-        <td>Pickup Time</td>
-        <td></td>
+        <th>Unread Messages</th>
+        <th>My Post</th>
+        <th>User</th>
+        <th></th>
+        <th>Posting Open</th>
+        <th>Pickup Location</th>
+        <th>Dropoff Location</th>
+        <th>Trip Date</th>
+        <th>Pickup Time</th>
+        <th></th>
     </tr>
         {% for conversation in conversations %}
         <tr>
@@ -35,22 +40,26 @@
 
             {% if user == conversation.passengerID %}
             <td>No</td>
-            <td>
-                <a href="{% url 'userdetails' conversation.postingID.ownerID.id %}">
-                {{ conversation.postingID.ownerID.lastName }}, {{ conversation.postingID.ownerID.firstName }}
-                </a>
+            <td style="white-space: nowrap; width: 0px;">
+                <button>
+                    <a href="{% url 'userdetails' conversation.postingID.ownerID.id %}">
+                        {{ conversation.passengerID.firstName }} {{ conversation.passengerID.lastName }} ({{conversation.passengerID.username}})
+                    </a>
+                </button>
             </td>
             {% else %}
             <td>Yes</td>
-            <td>
-                <a href="{% url 'userdetails' conversation.passengerID.id %}">
-                    {{ conversation.passengerID.lastName }}, {{ conversation.passengerID.firstName }}
-                </a>
+            <td style="white-space:nowrap; width: 0px;">
+                <button class="btn" >
+                    <a href="{% url 'userdetails' conversation.passengerID.id %}">
+                        {{ conversation.passengerID.firstName }} {{ conversation.passengerID.lastName }} ({{conversation.passengerID.username}})
+                    </a>
+                </button>
             </td>
             {% endif %}
 
-            <td>
-                <button type="button">
+            <td style="white-space:nowrap; width: 0px;">
+                <button type="button" class="btn">
                     <a href="{% url 'viewMessages' conversation.id %}">View Messages</a>
                 </button>
             </td>
@@ -63,8 +72,8 @@
             <td>{{ conversation.postingID.dropoffLocation }}</td>
             <td>{{ conversation.postingID.tripDate }}</td>
             <td>{{ conversation.postingID.tripTime }}</td>
-            <td>
-                <button type="button">
+            <td style="white-space:nowrap; width: 0px;">
+                <button type="button" class="btn">
                     <a href="{% url 'postingdetails' conversation.postingID.id %}">View Associated Posting</a>
                 </button>
             </td>
@@ -75,3 +84,5 @@
 {% else %}
     <p>You do not have any open conversations</p>
 {% endif %}
+
+{% endblock %}

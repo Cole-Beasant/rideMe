@@ -1,3 +1,7 @@
+{% extends "rideMeApp\master.html" %}
+{% block content %}
+
+<div class="btn">
 <button type="button">
     <a href="{% url 'logout' %}" >Logout </a>                 
 </button>
@@ -7,78 +11,88 @@
 <button type="button">
     <a href="{% url 'viewConversations' %}">Back to Conversations</a>
 </button>
+</div>
 
 <h1>Messages</h1>
+<div style="float:right; width:48%">
 
-<h2>Associated Posting Details</h2>
-<table>
-    <tr>
-        <td>Post Owner Name:</td>
-        <td>
-            <a href="{% url 'userdetails' posting.ownerID.id %}" > 
-                {{ posting.ownerID.lastName }}, {{ posting.ownerID.firstName }}  
-            </a>
-        </td>
-    </tr>
-    <tr>
-        <td>Pickup Location:</td>
-        <td>{{ posting.pickupLocation }}</td>
-    </tr>
-    <tr>
-        <td>Dropoff Location:</td>
-        <td>{{ posting.dropoffLocation }}</td>
-    </tr>
-    <tr>
-        <td>Trip Date:</td>
-        <td>{{ posting.tripDate }}</td>
-    </tr>
-    <tr>
-        <td>Trip Time:</td>
-        <td>{{ posting.tripTime }}</td>
-    </tr>
-    <tr>
-        <td>Number of Available Seats:</td>
-        <td>{{ posting.numAvailableSeats }}</td>
-    </tr>
-    <tr>
-        <td>Trip Vehicle:</td>
-        <td>{{ posting.vehicle }}</td>
-    </tr>
-</table>
+    <h2>Associated Posting Details</h2>
+
+    <table class="box">
+        <tr>
+            <td>Post Owner Name:</td>
+            <td>
+                <a href="{% url 'userdetails' posting.ownerID.id %}" > 
+                    {{ posting.ownerID.lastName }}, {{ posting.ownerID.firstName }}  
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td>Pickup Location:</td>
+            <td>{{ posting.pickupLocation }}</td>
+        </tr>
+        <tr>
+            <td>Dropoff Location:</td>
+            <td>{{ posting.dropoffLocation }}</td>
+        </tr>
+        <tr>
+            <td>Trip Date:</td>
+            <td>{{ posting.tripDate }}</td>
+        </tr>
+        <tr>
+            <td>Trip Time:</td>
+            <td>{{ posting.tripTime }}</td>
+        </tr>
+        <tr>
+            <td>Number of Available Seats:</td>
+            <td>{{ posting.numAvailableSeats }}</td>
+        </tr>
+        <tr>
+            <td>Trip Vehicle:</td>
+            <td>{{ posting.vehicle }}</td>
+        </tr>
+
+    </table>
+    {% if posting.getApprovedPassengers %}
+    <table>
+        <h3>Approved Passengers</h3>
+        {% for user in posting.getApprovedPassengers %}
+        <tr>
+            <td>
+                <a href="{% url 'userdetails' user.id %}">{{ user.username }}</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    {% endif %}
+
+    <button type="button">
+        <a href="{% url 'postingdetails' posting.id %}">View Associated Posting</a>
+    </button>
 
 
-{% if posting.getApprovedPassengers %}
-<table>
-    <h3>Approved Passengers</h3>
-    {% for user in posting.getApprovedPassengers %}
-    <tr>
-        <td>
-            <a href="{% url 'userdetails' user.id %}">{{ user.username }}</a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-{% endif %}
-
-<button type="button">
-    <a href="{% url 'postingdetails' posting.id %}">View Associated Posting</a>
-</button>
-
+    {% if user == conversation.postingID.ownerID %}
+    {% if conversation.passengerID not in posting.getApprovedPassengers %}
+        <p>Add 
+        <a href="{% url 'userdetails' conversation.passengerID.id %}">{{ conversation.passengerID.username }} </a>
+        as an approved passenger</p>
+        
+        <button type="button">
+            <a href="{% url 'addApprovedPassenger' conversation.id %}">Add</a>
+        </button>
+    {% endif %}
+    {% endif %}
+</div>
+<div style="height: 75%; border: 1px white; border-style: solid; float: left; width: 48%;">
 {% if user == conversation.postingID.ownerID %}
-<p>Add 
-<a href="{% url 'userdetails' conversation.passengerID.id %}">{{ conversation.passengerID.username }} </a>
-as an approved passenger</p>
-<button type="button">
-    <a href="{% url 'addApprovedPassenger' conversation.id %}">Add</a>
-</button>
 <p>Send a message to {{ conversation.passengerID.username }}</p>
-<button type="button">
+<button type="button" class="btn">
     <a href="{% url 'sendMessage' conversation.id %}">Send Message</a>
 </button>
 {% else %}
 <p>Send a message to {{ conversation.postingID.ownerID.username }}</p>
-<button type="button">
+<button type="button" class="btn">
     <a href="{% url 'sendMessage' conversation.id %}">Send Message</a>
 </button>
 {% endif %}
@@ -87,28 +101,31 @@ as an approved passenger</p>
 
 
 {% if messages %}
-<table>
+<table style="overflow:auto; width:auto; height: 80%; display: block;">
     <tr>
-        <td>Sender</td>
-        <td>Message</td>
-        <td>Time Sent</td>
+        {% if user == conversation.postingID.ownerID %}
+        <td><a href="{% url 'userdetails' conversation.passengerID.id %}">{{conversation.passengerID.username}}</a></td>
+        {% else %}
+        <td><a href="{% url 'userdetails' conversation.postingID.ownerID.id %}">{{conversation.postingID.ownerID.username}}</a></td>
+        {% endif %}
+        <td><a style="float:right" href="{% url 'myProfile'}">{{user.username}}</a></td>
     </tr>
-        {% for message in messages %}
+        {% for message in messages.reverse %}
         {% if message.senderID == user %}
         <tr>
-            <td>
-                <a href="{% url 'myProfile' %}">{{ message.senderID.username }}</a> 
-            </td>
-            <td>{{ message.message }}</td>
-            <td>{{ message.timeSent }}</td>
+            <td></td>
+            <td><a class="msg-right">{{ message.message }}</a></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="float: right;">{{ message.timeSent }}</td>
         </tr>
         {% else %}
         <tr>
-            <td>
-                <a href="{% url 'userdetails' message.senderID.id %}">{{ message.senderID.username }}</a> 
-            </td>
-            <td>{{ message.message }}</td>
-            <td>{{ message.timeSent }}</td>
+            <td> <a class="msg-left">{{ message.message }}</a></td>
+        </tr>
+        <tr>
+            <td>{{message.timeSent}}</td>
         </tr>        
         {% endif %}
         {% endfor %}
@@ -117,3 +134,5 @@ as an approved passenger</p>
 {% else %}
     <p>There are no messages in this conversation</p>
 {% endif %}
+</div>
+{% endblock %}

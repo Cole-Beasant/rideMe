@@ -1,7 +1,10 @@
-<button type="button">
+{% extends "rideMeApp\master.html" %}
+{% block content %}
+
+<button type="button" class="btn">
     <a href="{% url 'logout' %}" >Logout </a>                 
 </button>
-<button type="button">
+<button type="button" class="btn">
     <a href="{% url 'myDriverPostings' %}">Back to My Driver Postings</a>
 </button>
 
@@ -11,12 +14,12 @@
     <p>{{ message }}</p>
 {% endfor %}
 
-<table>
+<table class="box">
     <tr>
         <td>Pickup Location:</td>
         <td>{{ posting.pickupLocation }}</td>
         <td>
-            <button type="button">
+            <button type="button" class="btn !important">
                 <a href="{% url 'updatePickupLocation' posting.id %}">Update</a>
             </button>
         </td>
@@ -25,7 +28,7 @@
         <td>Dropoff Location:</td>
         <td>{{ posting.dropoffLocation }}</td>
         <td>
-            <button type="button">
+            <button type="button" class="btn">
                 <a href="{% url 'updateDropoffLocation' posting.id %}">Update</a>
             </button>
         </td>
@@ -34,7 +37,7 @@
         <td>Trip Date:</td>
         <td>{{ posting.tripDate }}</td>
         <td>
-            <button type="button">
+            <button type="button" class="btn">
                 <a href="{% url 'updateTripDate' posting.id %}">Update</a>
             </button>
         </td>
@@ -43,7 +46,7 @@
         <td>Trip Time:</td>
         <td>{{ posting.tripTime }}</td>
         <td>
-            <button type="button">
+            <button type="button" class="btn">
                 <a href="{% url 'updateTripTime' posting.id %}">Update</a>
             </button>
         </td>
@@ -52,7 +55,7 @@
         <td>Number of Available Seats:</td>
         <td>{{ posting.numAvailableSeats }}</td>
         <td>
-            <button type="button">
+            <button type="button" class="btn">
                 <a href="{% url 'updateNumAvailableSeats' posting.id %}">Update</a>
             </button>
         </td>
@@ -61,16 +64,17 @@
         <td>Trip Vehicle:</td>
         <td>{{ posting.vehicle }}</td>
         <td>
-            <button type="button">
+            <button type="button" class="btn">
                 <a href="{% url 'updateVehicle' posting.id %}">Update</a>
             </button>
         </td>
     </tr>
 </table>
 
-<button type="button">
+<button type="button" class="btn">
     <a href="{% url 'confirmCancelPosting' posting.id %}">Cancel Trip</a>
 </button>
 
+{% endblock %}
 
 
