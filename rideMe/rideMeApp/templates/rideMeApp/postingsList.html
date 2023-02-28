@@ -23,7 +23,9 @@
         </tr>
             {% for posting in postingsList %}
             {% if posting.isOpen == True %}
+            {% if user != posting.ownerID %}
             <tr>
+                
                 <td>{{ posting.pickupLocation }}</td>
                 <td>{{ posting.dropoffLocation }}</td>
                 <td>{{ posting.tripDate }}</td>
@@ -35,7 +37,7 @@
                 </td>
 
             </tr>
-            {% else %}
+            {% endif %}
             {% endif %}
             {% endfor %}
     </table>
