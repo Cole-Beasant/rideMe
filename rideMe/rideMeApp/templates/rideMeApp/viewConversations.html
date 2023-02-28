@@ -43,7 +43,7 @@
             <td style="white-space: nowrap; width: 0px;">
                 <button>
                     <a href="{% url 'userdetails' conversation.postingID.ownerID.id %}">
-                        {{ conversation.passengerID.firstName }} {{ conversation.passengerID.lastName }} ({{conversation.passengerID.username}})
+                        {{ conversation.postingID.ownerID.firstName }} {{ conversation.postingID.ownerID.lastName }} ({{conversation.postingID.ownerID.username}})
                     </a>
                 </button>
             </td>
