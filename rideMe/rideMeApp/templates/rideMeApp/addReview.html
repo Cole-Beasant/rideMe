@@ -1,18 +1,6 @@
 {% extends "rideMeApp\master.html" %}
 {% block content %}
 
-<button type="button">
-    <a href="{% url 'logout' %}" >Logout </a>                 
-</button>
-
-<button type="button">
-    <a href="{% url 'postings' %}">Back to Postings List</a>
-</button>
-
-<button type="button">
-    <a href="{% url 'usersToReview' %}">Back to Users To Review</a>
-</button>
-
 {% for message in messages %}
     <p>{{ message }}</p>
 {% endfor %}
