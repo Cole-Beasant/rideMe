@@ -12,7 +12,7 @@
 <div style="width: 50%; float: right;">
     <h1>Open Postings</h1>
 
-    {% if postingsList %}
+    {% if postingsList and user.getUpcomingOpenDriverPostings.length != postingsList.length %}
     <table class="list">
         <tr>
             <th>Pickup Location</th>

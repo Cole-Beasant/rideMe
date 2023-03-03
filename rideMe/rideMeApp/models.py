@@ -172,6 +172,9 @@ class User(models.Model):
                 if object.postingID.isComplete == True:
                     pastApprovedPassengerTrips.append(object.postingID)
         return pastApprovedPassengerTrips
+    
+    def getUpcomingOpenDriverPosting(self):
+        return Posting.objects.filter(ownerID=self, isOpen=True, tripDate__gt = timezone.now()).order_by('-tripDate')
 
 
 

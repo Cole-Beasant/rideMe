@@ -23,7 +23,7 @@ class AddPostingForm(forms.Form):
         attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd', 'class': 'form-control'}
     ))   
     tripTime = forms.TimeField(label='Enter the time the trip will be occuring in the format HH:MM in military time:', widget=forms.DateInput(
-        attrs={'class': 'timepicker'}
+        attrs={'class': 'timepicker', 'type':'time'}
     ))
     pickupLocation = forms.CharField(label='Enter the general location of where you can pick up passengers:', max_length=50)
     dropoffLocation = forms.CharField(label='Enter the general location where you can drop off passenger:', max_length=50)
