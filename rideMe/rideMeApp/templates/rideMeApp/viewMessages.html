@@ -89,7 +89,7 @@
 
 
 {% if messages %}
-<table style="overflow:auto; width:auto; height: 80%; display: block;">
+<table style="overflow:auto; width:auto; height: 80%; display: flex; flex-direction: column-reverse;">
     <tr>
         {% if user == conversation.postingID.ownerID %}
         <td><a href="{% url 'userdetails' conversation.passengerID.id %}">{{conversation.passengerID.username}}</a></td>
@@ -118,6 +118,12 @@
         {% endif %}
         {% endfor %}
 </table>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="SEND">
+</form>
 
 {% else %}
     <p>There are no messages in this conversation</p>

@@ -342,12 +342,27 @@ def viewMessages(request, pk):
     posting = conversation.postingID
     messages = Message.objects.filter(conversationID = conversation).order_by('-timeSent')
     user = User.objects.get(username=request.session['loggedInUser'])
+    if request.method == 'POST':
+        form = SendMessageForm(request.POST)
+        if form.is_valid():
+            Message.objects.create(
+                conversationID = conversation,
+                senderID = user,
+                message = request.POST['message'],
+                hasRead = False,
+                timeSent = timezone.now()
+            )
+            conversation.setLatestMessageSentTime(timezone.now())
+            conversation.save()
+            return HttpResponseRedirect(reverse("viewMessages", args=[pk]))
+    else:
+        form = SendMessageForm()
     for message in messages:
         if message.senderID != User.objects.get(username=request.session['loggedInUser']):
             if message.hasRead == False:
                 message.hasRead = True
                 message.save()
-    context = {'messages': messages, 'conversation': conversation, 'user': user, 'posting': posting}
+    context = {'messages': messages, 'conversation': conversation, 'user': user, 'posting': posting, 'form': SendMessageForm}
     return render(request, 'rideMeApp/viewMessages.html', context)
 
 def sendMessage(request, pk):
