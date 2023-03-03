@@ -1,4 +1,5 @@
 from django import forms
+from django.utils import timezone
 
 class SignUpForm(forms.Form):
     username = forms.CharField(label='Enter your username:')
@@ -28,6 +29,19 @@ class AddPostingForm(forms.Form):
     pickupLocation = forms.CharField(label='Enter the general location of where you can pick up passengers:', max_length=50)
     dropoffLocation = forms.CharField(label='Enter the general location where you can drop off passenger:', max_length=50)
     vehicle = forms.CharField(label='Enter the make and model of the vehicle you will be making the trip with:', max_length=50)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        date = cleaned_data.get('tripDate')
+        seats = cleaned_data.get('numAvailableSeats')
+        try:
+            if int(seats)<1:
+                self.add_error('numAvailableSeats', forms.ValidationError('The number of available seats must be a positive integer'))
+        except:
+            self.add_error('numAvailableSeats', forms.ValidationError('The number of available seats must be a positive integer'))
+        if not (date > timezone.now()):
+            self.add_error('tripDate', forms.ValidationError('Please put a date in the future'))
+        return cleaned_data
 
 class UpdatePickupLocation(forms.Form):
     pickupLocation = forms.CharField(max_length=50, label='New pick up location:')

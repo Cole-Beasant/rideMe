@@ -25,6 +25,7 @@ def logout(request):
     messages.success(request, 'Successfully logged out!')
     return HttpResponseRedirect(reverse('landingPage'))
 
+
 def login(request):
     submitted = False
     if request.method == 'POST':
@@ -95,6 +96,7 @@ def createUser(request):
 
     return render(request, 'rideMeApp/signup.html', {'form': SignUpForm})
 
+
 def resetPassword(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -148,11 +150,13 @@ def viewPostings(request):
 
     return render(request, 'rideMeApp/postingsList.html', context)
 
+
 def viewPostingDetails(request, pk):
     user = User.objects.get(username=request.session['loggedInUser'])
     posting = Posting.objects.get(pk=pk)
     context = {'posting': posting, 'user': user}
     return render(request, 'rideMeApp/postingDetails.html', context)
+
 
 def messagePostOwner(request, pk):
     posting = Posting.objects.get(pk=pk)
@@ -231,19 +235,11 @@ class viewUserDetails(generic.DetailView):
     context_object_name = 'user'
     template_name = 'rideMeApp/userDetails.html'
 
+
 def addPosting(request):
     if request.method == 'POST':
         form = AddPostingForm(request.POST)
-        try:
-            numAvailableSeats = int(request.POST['numAvailableSeats'])
-        except:
-            messages.error(request, 'The number of available seats must be an integer.')
-            return render(request, 'rideMeApp/addPosting.html', {'form': AddPostingForm})
-
-        if numAvailableSeats < 1:
-            messages.error(request, 'You must have available seats in order to list the posting')
-            return render(request, 'rideMeApp/addPosting.html', {'form': AddPostingForm})
-
+        
         if form.is_valid():
             try:
                 ownerUsername = request.session['loggedInUser']
@@ -266,10 +262,11 @@ def addPosting(request):
             except:
                 messages.error(request, 'No posting added')
                 return render(request, 'rideMeApp/addPosting.html', {'form': AddPostingForm})
-        else:
-            messages.error(request, 'Inputted time incorrectly. Please follow the format listed below')
-            return render(request, 'rideMeApp/addPosting.html', {'form': AddPostingForm})
         
+        else:
+            messages.error(request, 'Please correct your sumbission')
+            return render(request, 'rideMeApp/addPosting.html', {'form': form})
+         
 
     return render(request, 'rideMeApp/addPosting.html', {'form': AddPostingForm})
 
