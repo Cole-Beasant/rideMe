@@ -11,7 +11,7 @@ class User(models.Model):
     email = models.EmailField()
     numTripsAsDriver = models.IntegerField(default=0)
     numTripsAsPassenger = models.IntegerField(default=0)
-    registrationTime = models.DateTimeField(default=timezone.now())
+    registrationTime = models.DateTimeField(auto_now_add=True)
 
     # phoneNumber
 
@@ -176,8 +176,6 @@ class User(models.Model):
     def getUpcomingOpenDriverPosting(self):
         return Posting.objects.filter(ownerID=self, isOpen=True, tripDate__gt = timezone.now()).order_by('-tripDate')
 
-
-
 class Review(models.Model):
     reviewedUserID = models.ForeignKey(User, on_delete=models.CASCADE)
     reviewedUserType = models.CharField(max_length=20, default='passenger')
@@ -208,7 +206,7 @@ class Posting(models.Model):
     pickupLocation = models.CharField(max_length=50)
     dropoffLocation = models.CharField(max_length=50)
     vehicle = models.CharField(max_length=50)
-    submissionTime = models.DateTimeField()
+    submissionTime = models.DateTimeField(auto_now_add=True)
 
     def getApprovedPassengers(self):
         approvedPassengers = []
@@ -305,7 +303,7 @@ class Conversation(models.Model):
     postingID = models.ForeignKey(Posting, on_delete=models.CASCADE)
     passengerID = models.ForeignKey(User, on_delete=models.CASCADE)
     isClosed = models.BooleanField(default=False)
-    latestMessageSentTime = models.DateTimeField(default=timezone.now())
+    latestMessageSentTime = models.DateTimeField(auto_now_add=True)
     hasUnreadMessagesCurUser = models.BooleanField(default=False)
 
     def getMessages(self):
@@ -339,7 +337,7 @@ class Message(models.Model):
     senderID = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.CharField(max_length=500)
     hasRead = models.BooleanField(default=True)
-    timeSent = models.DateTimeField(default=timezone.now())
+    timeSent = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.senderID.username + ', ' + self.message

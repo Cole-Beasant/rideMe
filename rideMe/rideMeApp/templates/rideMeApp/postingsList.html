@@ -12,7 +12,7 @@
 <div style="width: 50%; float: right;">
     <h1>Open Postings</h1>
 
-    {% if postingsList and user.getUpcomingOpenDriverPostings.length != postingsList.length %}
+    {% if postingsList and user.getUpcomingOpenDriverPosting.count != postingsList.count %}
     <table class="list">
         <tr>
             <th>Pickup Location</th>
@@ -22,7 +22,6 @@
             <th></th>
         </tr>
             {% for posting in postingsList %}
-            {% if posting.isOpen == True %}
             {% if user != posting.ownerID %}
             <tr>
                 
@@ -37,7 +36,6 @@
                 </td>
 
             </tr>
-            {% endif %}
             {% endif %}
             {% endfor %}
     </table>

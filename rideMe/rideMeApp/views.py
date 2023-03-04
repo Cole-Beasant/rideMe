@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404, HttpResponse
+from django.shortcuts import render
+from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from rideMeApp.models import User, Posting, Review, Conversation, Message
 from rideMeApp.models import ApprovedPassengers, UsersInteractedForUsers, UsersInteractedForPostings
@@ -89,10 +90,10 @@ def createUser(request):
                 return HttpResponseRedirect(reverse('landingPage'))
             except:
                 messages.error(request, 'No user added')
-                return render(request, 'rideMeApp/signup.html', {'form': SignUpForm})
+                return render(request, 'rideMeApp/signup.html', {'form': form})
         else:
             messages.error(request, 'Ensure that the email address is valid')
-            return render(request, 'rideMeApp/signup.html', {'form': SignUpForm})
+            return render(request, 'rideMeApp/signup.html', {'form': form})
 
     return render(request, 'rideMeApp/signup.html', {'form': SignUpForm})
 
@@ -154,7 +155,67 @@ def viewPostings(request):
 def viewPostingDetails(request, pk):
     user = User.objects.get(username=request.session['loggedInUser'])
     posting = Posting.objects.get(pk=pk)
-    context = {'posting': posting, 'user': user}
+    form = SendMessageForm()
+    if (posting in user.getPostingsInteractedWith() and user!=posting.ownerID):
+        conversation = Conversation.objects.get(postingID=posting, passengerID=user)
+    else:
+        conversation = Conversation.objects.filter(passengerID=user)[0]
+    if request.method == 'POST':             
+        try:
+            newConversation = Conversation(
+                postingID = posting, 
+                passengerID = user,
+                isClosed = False,
+                latestMessageSentTime = timezone.now()
+            )
+            newConversation.save()
+        except:
+            messages.error(request, 'Something went wrong. Conversation was not created. Please try again.')
+            return render(request, 'rideMeApp/postingDetails.html', context)
+
+        try:
+            message = request.POST['message']
+            Message.objects.create(
+                conversationID = newConversation,
+                senderID = user,
+                message = message,
+                hasRead = False,
+                timeSent = timezone.now()
+            )
+        except:
+            messages.error(request, 'Something went wrong. Message was not created. Please try again.')
+            return render(request, 'rideMeApp/postingDetails.html', context)
+        try:
+            UsersInteractedForPostings.objects.create(
+                postingID = posting,
+                userID = user
+            )
+        except:
+            messages.error(request, 'Something went wrong. Please try again.')
+            render(request, 'rideMeApp/postingDetails.html', context)
+        try:
+            UsersInteractedForUsers.objects.create(
+                theUser = user,
+                theInteracter = posting.ownerID,
+                InteractionType = 'driver',
+                hasReviewed = False
+            )
+        except:
+            messages.error(request, 'Something went wrong. Please try again.')
+            render(request, 'rideMeApp/postingDetails.html', context)
+        try:
+            UsersInteractedForUsers.objects.create(
+                theUser = posting.ownerID,
+                theInteracter = user,
+                InteractionType = 'passenger',
+                hasReviewed = False
+            )
+        except:
+            messages.error(request, 'Something went wrong. Please try again.')
+            return render(request, 'rideMeApp/postingDetails.html', context)
+        messages.success(request, 'Successfully messaged post owner!')
+        return HttpResponseRedirect(reverse("viewMessages", args=[newConversation.pk]))
+    context = {'posting': posting, 'user': user, 'form': form, 'conversation': conversation}
     return render(request, 'rideMeApp/postingDetails.html', context)
 
 
@@ -642,3 +703,13 @@ def confirmRemoveMyselfAsApprovedPassenger(request, pk):
     posting = Posting.objects.get(pk=pk)
     context = {'posting': posting}
     return render(request, 'rideMeApp/removeMyselfAsApprovedPassenger.html', context)
+
+def handler404(request, exception, template_name='404.html'):
+    response = render(template_name)
+    response.status_code = 404
+    return response
+
+def handler500(request, exception, template_name='500.html'):
+    response = render(template_name)
+    response.status_code = 500
+    return response

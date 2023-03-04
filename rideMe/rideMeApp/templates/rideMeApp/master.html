@@ -101,6 +101,8 @@
     }
 
 </style>
+<title>RideMe</title>
+<link rel="icon" type="image/x-icon" href="https://cdn.discordapp.com/attachments/891732631295754280/1081604741131403456/favicon.ico">
 {% if request.path != '/' and request.path != '/signup/' and request.path != '/resetPassword/' %}
 <div class="topnav">
     <a class="{% if request.path == '/postings?submitted=True/' %}active{% endif %}" href="{% url 'postings' %}">Postings</a>
@@ -109,8 +111,8 @@
     <a class="{% if request.path == '/viewConversations?submitted=True/' %}active{% endif %}" href="{% url 'viewConversations' %}">View My Conversations</a>
     <a class="{% if request.path == '/myDriverPostings?submitted=True/' %}active{% endif %}" href="{% url 'myDriverPostings' %}">View My Driver Postings</a>
     <a class="{% if request.path == '/myPassengerPostings?submitted=True/' %}active{% endif %}" href="{% url 'myPassengerPostings' %}">View My Passenger Postings</a>
-    <a class="{% if request.path == '/myProfile?submitted=True/' %}active{% endif %}" style="float:right" href="{% url 'logout' %}">Logout</a>
-    <a style="float:right" href="{% url 'myProfile' %}">My Profile</a>
+    <a style="float:right" href="{% url 'logout' %}">Logout</a>
+    <a class="{% if request.path == '/myProfile?submitted=True/' %}active{% endif %}" style="float:right" href="{% url 'myProfile' %}">My Profile</a>
 </div>
 {% endif %}
 

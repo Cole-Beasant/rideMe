@@ -45,9 +45,17 @@
 </table>
 
 {% if user != posting.ownerID %}
+{% if posting in user.getPostingsInteractedWith %}
 <button type="button">
-    <a href="{% url 'messagePostOwner' posting.id %}">Message Post Owner</a>
+    <a href="{% url 'viewMessages' conversation.id %}">Go to Messages</a>
 </button>
+{% else %}
+<form method="post" >
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="submit">
+</form>
+{% endif %}
 {% endif %}
 
 <h3>Approved Passengers</h3>
