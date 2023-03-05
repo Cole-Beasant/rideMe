@@ -51,16 +51,33 @@ class UpdateDropoffLocation(forms.Form):
 
 class UpdateTripDate(forms.Form):
     tripDate = forms.DateTimeField(label='New date:', widget=forms.DateInput(
-        attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd', 'class': 'form-control'}
+        attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd', 'class': 'form-control', 'required': 'false'}
     ))
+    def clean(self):
+        cleaned_data = super().clean()
+        date = cleaned_data.get('tripDate')
+        if type(date) == type(None):
+            return cleaned_data
+        if not (date > timezone.now()):
+            self.add_error('tripDate', forms.ValidationError('Please put a date in the future'))
+        return cleaned_data
 
 class UpdateTripTime(forms.Form):
     tripTime = forms.TimeField(label='New time in the format HH:MM in military time:', widget=forms.DateInput(
-        attrs={'class': 'timepicker'}
+        attrs={'class': 'timepicker', 'type':'time'}
     ))
 
 class UpdateNumAvailableSeats(forms.Form):
     numAvailableSeats = forms.IntegerField(label='New number of available seats:')
+    def clean(self):
+        cleaned_data = super().clean()
+        seats = cleaned_data.get('numAvailableSeats')
+        try:
+            if int(seats)<0:
+                self.add_error('numAvailableSeats', forms.ValidationError('Please put a postive integer'))
+        except:
+            self.add_error('numAvailableSeats', forms.ValidationError('Please put a positive integer'))
+        return cleaned_data
 
 class UpdateVehicle(forms.Form):
     vehicle = forms.CharField(label='New vehicle', max_length=50)

@@ -159,7 +159,9 @@ def viewPostingDetails(request, pk):
     if (posting in user.getPostingsInteractedWith() and user!=posting.ownerID):
         conversation = Conversation.objects.get(postingID=posting, passengerID=user)
     else:
-        conversation = Conversation.objects.filter(passengerID=user)[0]
+        conversation = Conversation.objects.filter(passengerID=user) # this solution isn't ideal but none of these should be accessible
+        if len(conversation) == 0:
+            conversation = Conversation.objects.get(pk=1)
     if request.method == 'POST':             
         try:
             newConversation = Conversation(
@@ -426,7 +428,7 @@ def viewMessages(request, pk):
     context = {'messages': messages, 'conversation': conversation, 'user': user, 'posting': posting, 'form': SendMessageForm}
     return render(request, 'rideMeApp/viewMessages.html', context)
 
-def sendMessage(request, pk):
+def sendMessage(request, pk): # still needed? 
     if request.method == 'POST':
         conversation = Conversation.objects.get(pk=pk)
         sender = User.objects.get(username=request.session['loggedInUser'])
@@ -524,7 +526,73 @@ def myDriverPostings(request):
 
 def managePosting(request, pk):
     posting = Posting.objects.get(pk=pk)
-    context = {'posting': posting}
+    pickupLocationForm = UpdatePickupLocation()
+    dropoffLocationForm = UpdateDropoffLocation()
+    tripDateForm = UpdateTripDate()
+    tripTimeForm = UpdateTripTime()
+    numSeatsForm = UpdateNumAvailableSeats()
+    vehicleForm = UpdateVehicle()
+    if request.method == 'POST':
+        if 'pickupButton' in request.POST:
+            pickupLocationForm = UpdatePickupLocation(request.POST)
+            if pickupLocationForm.is_valid():
+                posting.pickupLocation = request.POST['pickupLocation']
+                posting.sendTripInfoUpdatedNotification()
+                posting.save()
+                messages.success(request, 'Successfully updated pickup location!')
+        if 'dropoffButton' in request.POST:
+            dropoffLocationForm = UpdateDropoffLocation(request.POST)
+            if dropoffLocationForm.is_valid():
+                posting.dropoffLocation = request.POST['dropoffLocation']
+                posting.sendTripInfoUpdatedNotification()
+                posting.save()
+                messages.success(request, 'Successfully updated dropoff location!')
+        if 'tripDateButton' in request.POST:
+            tripDateForm = UpdateTripDate(request.POST)
+            if tripDateForm.is_valid():
+                posting.tripDate = request.POST['tripDate']
+                posting.sendTripInfoUpdatedNotification()
+                posting.save()
+                messages.success(request, 'Successfully updated trip date!')
+        if 'tripTimeButton' in request.POST:
+            tripTimeForm = UpdateTripTime(request.POST)
+            if tripTimeForm.is_valid():
+                posting.tripTime = request.POST['tripTime']
+                posting.sendTripInfoUpdatedNotification()
+                posting.save()
+                messages.success(request, 'Successfully updated trip time!')
+        if 'numSeatsButton' in request.POST:
+            numSeatsForm = UpdateNumAvailableSeats(request.POST)
+            if numSeatsForm.is_valid():
+                numAvailableSeats = int(request.POST['numAvailableSeats'])
+                if posting.numAvailableSeats == 0 and numAvailableSeats > 0:
+                    posting.sendTripReopenNotification()
+                    posting.isOpen = True
+                    posting.save()
+
+                elif posting.numAvailableSeats > 0 and numAvailableSeats == 0:
+                    posting.sendTripClosedNotification()
+                    posting.isOpen = False
+                    posting.save()
+
+                posting.numAvailableSeats = numAvailableSeats
+                posting.save()
+                messages.success(request, 'Successfully update number of available seats!')
+        if 'vehicleButton' in request.POST:
+            vehicleForm = UpdateVehicle(request.POST)
+            if vehicleForm.is_valid():
+                posting.vehicle = request.POST['vehicle']
+                posting.sendTripInfoUpdatedNotification()
+                posting.save()
+                messages.success(request, 'Successfully updated vehicle!')
+    context = {'posting': posting, 
+               'pickupLocationForm': pickupLocationForm,
+               'dropoffLocationForm': dropoffLocationForm,
+               'tripDateForm': tripDateForm,
+               'tripTimeForm': tripTimeForm,
+               'numSeatsForm': numSeatsForm,
+               'vehicleForm': vehicleForm
+    }
     return render(request, 'rideMeApp/managePosting.html', context)
 
 def updatePickupLocation(request, pk):

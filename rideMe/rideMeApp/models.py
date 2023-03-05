@@ -22,19 +22,26 @@ class User(models.Model):
         return pbkdf2_sha256.verify(raw_password, self.password)
 
     def getAverageRatingAsDriver(self):
-        sumOfRatings = 0
-        numRatings = 0
+        reviews = Review.objects.filter(reviewedUserID=self, reviewedUserType='driver')
+        sumOfRatings = sum(r.rating for r in reviews)
+        numRatings = reviews.count()
+        """
         for review in Review.objects.all():
             if self == review.reviewedUserID:
                 if review.reviewedUserType == 'driver':
                     sumOfRatings += review.rating
                     numRatings += 1
+        """
         if numRatings == 0:
             return 0
         else:
             return sumOfRatings / numRatings
 
     def getAverageRatingAsPassenger(self):
+        reviews = Review.objects.filter(reviewedUserID=self, reviewedUserType='driver')
+        sumOfRatings = sum(r.rating for r in reviews)
+        numRatings = reviews.count()
+        """
         sumOfRatings = 0
         numRatings = 0
         for review in Review.objects.all():
@@ -42,6 +49,7 @@ class User(models.Model):
                 if review.reviewedUserType == 'passenger':
                     sumOfRatings += review.rating
                     numRatings += 1
+        """
         if numRatings == 0:
             return 0
         else:
@@ -184,7 +192,7 @@ class Review(models.Model):
     description = models.CharField(max_length=500)
 
     def __str__(self):
-        return (self.reviewerID.username, self.rating, self.description)
+        return self.reviewerID.username + " " + self.rating.__str__() + " " + self.description
 
 class UsersInteractedForUsers(models.Model):
     '''
