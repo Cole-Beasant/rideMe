@@ -19,16 +19,16 @@ class ResetPasswordForm(forms.Form):
     confirmNewPassword = forms.CharField(label='Confirm your new password:', widget=forms.PasswordInput)
 
 class AddPostingForm(forms.Form):
-    numAvailableSeats = forms.IntegerField(label='Enter the number of available seats for your trip:')
+    numAvailableSeats = forms.IntegerField(label='Enter the number of available seats for your trip:', widget=forms.NumberInput(attrs={'placeholder':'Number of Seats'}))
     tripDate = forms.DateTimeField(label='Enter the date the trip will be occuring:', widget=forms.DateInput(
         attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd', 'class': 'form-control'}
     ))   
-    tripTime = forms.TimeField(label='Enter the time the trip will be occuring in the format HH:MM in military time:', widget=forms.DateInput(
+    tripTime = forms.TimeField(label='Enter the time the trip will be occuring:', widget=forms.DateInput(
         attrs={'class': 'timepicker', 'type':'time'}
     ))
-    pickupLocation = forms.CharField(label='Enter the general location of where you can pick up passengers:', max_length=50)
-    dropoffLocation = forms.CharField(label='Enter the general location where you can drop off passenger:', max_length=50)
-    vehicle = forms.CharField(label='Enter the make and model of the vehicle you will be making the trip with:', max_length=50)
+    pickupLocation = forms.CharField(label='Enter the general location where you can pick up passengers:', max_length=50, widget=forms.TextInput(attrs={'placeholder':'Pickup Location'}))
+    dropoffLocation = forms.CharField(label='Enter the general location where you can drop off passengers:', max_length=50, widget=forms.TextInput(attrs={'placeholder':'Dropoff Location'}))
+    vehicle = forms.CharField(label='Enter the make and model of the vehicle you will be making the trip with:', max_length=50, widget=forms.TextInput(attrs={'placeholder':'Vehicle Information'}))
 
     def clean(self):
         cleaned_data = super().clean()
@@ -86,8 +86,8 @@ class StartConversation(forms.Form):
     message = forms.CharField(max_length=500, label='Enter the message you would like to send to the post owner')
 
 class AddReviewForm(forms.Form):
-    rating = forms.FloatField(min_value=0, max_value=5, label='Enter a rating of your experience with this user from 0 to 5 with 5 being the best:')
-    description = forms.CharField(max_length=500, label='Enter a description of your experience with this user (max 500 characters):')
+    rating = forms.FloatField(min_value=0, max_value=5, label='Enter a rating of your experience with this user from 0 to 5 with 5 being the best:', widget=forms.NumberInput(attrs={'placeholder': '0-5'}))
+    description = forms.CharField(max_length=500, label='Enter a description of your experience with this user (max 500 characters):', widget=forms.Textarea(attrs={'placeholder':'Message'}))
 
 class SendMessageForm(forms.Form):
-    message = forms.CharField(max_length=500, label='Enter Message:')
+    message = forms.CharField(max_length=500, label='Enter Message:', widget=forms.TextInput(attrs={'placeholder': 'Message'}))

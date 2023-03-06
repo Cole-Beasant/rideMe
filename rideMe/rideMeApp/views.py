@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from rideMeApp.models import User, Posting, Review, Conversation, Message
 from rideMeApp.models import ApprovedPassengers, UsersInteractedForUsers, UsersInteractedForPostings
@@ -8,8 +7,7 @@ from django.utils import timezone
 from django.views import generic
 from django.views.decorators.cache import cache_control
 from .forms import LoginForm, SignUpForm, ResetPasswordForm
-# from django.contrib.auth.forms import UserCreationForm
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from .forms import SignUpForm, LoginForm, AddPostingForm, StartConversation, AddReviewForm, SendMessageForm
 from .forms import UpdatePickupLocation, UpdateDropoffLocation, UpdateTripDate, UpdateTripTime, UpdateVehicle
 from .forms import UpdateNumAvailableSeats
@@ -221,78 +219,6 @@ def viewPostingDetails(request, pk):
     return render(request, 'rideMeApp/postingDetails.html', context)
 
 
-def messagePostOwner(request, pk):
-    posting = Posting.objects.get(pk=pk)
-    user = User.objects.get(username = request.session['loggedInUser'])
-
-    if user == posting.ownerID:
-        messages.error(request, 'You cannot message yourself')
-        return HttpResponseRedirect(reverse('postings'))
-
-    for conversation in posting.getAssociatedConversations():
-        if user == conversation.passengerID:
-            messages.error(request, 'You have already messaged this post owner regarding this posting. Go to your conversations page to view the conversation.')
-            return HttpResponseRedirect(reverse('postings'))
-
-    if request.method == 'POST':             
-        try:
-            newConversation = Conversation(
-                postingID = posting, 
-                passengerID = user,
-                isClosed = False,
-                latestMessageSentTime = timezone.now()
-            )
-            newConversation.save()
-        except:
-            messages.error(request, 'Something went wrong. Conversation was not created. Please try again.')
-            return render(request, 'rideMeApp/messagePostOwner.html', {'form': StartConversation})
-
-        try:
-            message = request.POST['message']
-            Message.objects.create(
-                conversationID = newConversation,
-                senderID = user,
-                message = message,
-                hasRead = False,
-                timeSent = timezone.now()
-            )
-        except:
-            messages.error(request, 'Something went wrong. Message was not created. Please try again.')
-            return render(request, 'rideMeApp/messagePostOwner.html', {'form': StartConversation})
-        try:
-            UsersInteractedForPostings.objects.create(
-                postingID = posting,
-                userID = user
-            )
-        except:
-            messages.error(request, 'Something went wrong. Please try again.')
-            return render(request, 'rideMeApp/messagePostOwner.html', {'form': StartConversation})
-        try:
-            UsersInteractedForUsers.objects.create(
-                theUser = user,
-                theInteracter = posting.ownerID,
-                InteractionType = 'driver',
-                hasReviewed = False
-            )
-        except:
-            messages.error(request, 'Something went wrong. Please try again.')
-            return render(request, 'rideMeApp/messagePostOwner.html', {'form': StartConversation})
-        try:
-            UsersInteractedForUsers.objects.create(
-                theUser = posting.ownerID,
-                theInteracter = user,
-                InteractionType = 'passenger',
-                hasReviewed = False
-            )
-        except:
-            messages.error(request, 'Something went wrong. Please try again.')
-            return render(request, 'rideMeApp/messagePostOwner.html', {'form': StartConversation})
-        messages.success(request, 'Successfully messaged post owner!')
-        return HttpResponseRedirect(reverse('postings'))
-
-    return render(request, 'rideMeApp/messagePostOwner.html', {'form': StartConversation})
-
-
 class viewUserDetails(generic.DetailView):
     model = User
     context_object_name = 'user'
@@ -344,6 +270,7 @@ def usersToReview(request):
     context = {'usersToReview': usersToReview}
     return render(request, 'rideMeApp/usersToReview.html', context)
 
+
 def addReview(request, pk):
     object = UsersInteractedForUsers.objects.get(pk=pk)
     userToReview = object.theInteracter
@@ -377,6 +304,7 @@ def addReview(request, pk):
     messages.info(request, 'Leave a review for ' + userToReview.lastName + ', ' + userToReview.firstName)
     return render(request, 'rideMeApp/addReview.html', {'form': AddReviewForm})
 
+
 def dismissReview(request, pk):
     userToReview = User.objects.get(pk=pk)
     reviewer = User.objects.get(username=request.session['loggedInUser'])
@@ -390,6 +318,7 @@ def dismissReview(request, pk):
     messages.success(request, 'Successfully dismissed')
     return HttpResponseRedirect(reverse('usersToReview'))
 
+
 def viewConversations(request):
     user = User.objects.get(username = request.session['loggedInUser'])
     conversations = user.getConversations()
@@ -399,6 +328,7 @@ def viewConversations(request):
 
     context = {'conversations': conversations, 'user': user}
     return render(request, 'rideMeApp/viewConversations.html', context)
+
 
 def viewMessages(request, pk):
     conversation = Conversation.objects.get(pk=pk)
@@ -428,33 +358,12 @@ def viewMessages(request, pk):
     context = {'messages': messages, 'conversation': conversation, 'user': user, 'posting': posting, 'form': SendMessageForm}
     return render(request, 'rideMeApp/viewMessages.html', context)
 
-def sendMessage(request, pk): # still needed? 
-    if request.method == 'POST':
-        conversation = Conversation.objects.get(pk=pk)
-        sender = User.objects.get(username=request.session['loggedInUser'])
-        form = SendMessageForm(request.POST)
-        if form.is_valid():
-            conversation = Conversation.objects.get(pk=pk)
-            Message.objects.create(
-                conversationID = conversation,
-                senderID = sender,
-                message = request.POST['message'],
-                hasRead = False,
-                timeSent = timezone.now()
-            )
-            conversation.setLatestMessageSentTime(timezone.now())
-            conversation.save()
-            return HttpResponseRedirect(reverse('viewConversations'))
-        else:
-            messages.error('The message was too long')
-            return render(request, 'rideMeApp/sendMessage.html', {'form': SendMessageForm})
-
-    return render(request, 'rideMeApp/sendMessage.html', {'form': SendMessageForm})
 
 def viewMyProfile(request):
     user = User.objects.get(username = request.session['loggedInUser'])
     context = {'user': user}
     return render(request, 'rideMeApp/myProfile.html', context)
+
 
 def addApprovedPassenger(request, pk):
     conversation = Conversation.objects.get(pk=pk)
@@ -509,6 +418,7 @@ def addApprovedPassenger(request, pk):
 def confirmDeleteProfile(request):
     return render(request, 'rideMeApp/confirmDeleteProfile.html')
 
+
 def deleteProfile(request):
     user = User.objects.get(username=request.session['loggedInUser'])
     try:
@@ -519,10 +429,12 @@ def deleteProfile(request):
         messages.error(request, 'Profile was not deleted')
         return HttpResponseRedirect(reverse('myProfile'))
 
+
 def myDriverPostings(request):
     user = User.objects.get(username=request.session['loggedInUser'])
     context = {'user': user}
     return render(request, 'rideMeApp/myDriverPostings.html', context)
+
 
 def managePosting(request, pk):
     posting = Posting.objects.get(pk=pk)
@@ -595,117 +507,6 @@ def managePosting(request, pk):
     }
     return render(request, 'rideMeApp/managePosting.html', context)
 
-def updatePickupLocation(request, pk):
-    if request.method == 'POST':
-        form = UpdatePickupLocation(request.POST)
-        posting = Posting.objects.get(pk=pk)
-        if form.is_valid():
-            posting.pickupLocation = request.POST['pickupLocation']
-            posting.sendTripInfoUpdatedNotification()
-            posting.save()
-            messages.success(request, 'Successfully updated pickup location!')
-            return HttpResponseRedirect(reverse('myDriverPostings'))
-        else:
-            messages.error(request, 'Something went wrong')
-            return render(request, 'rideMeApp/updatePickupLocation.html', {'form': UpdatePickupLocation})
-
-    return render(request, 'rideMeApp/updatePickupLocation.html', {'form': UpdatePickupLocation})
-
-def updateDropoffLocation(request, pk):
-    if request.method == 'POST':
-        form = UpdateDropoffLocation(request.POST)
-        posting = Posting.objects.get(pk=pk)
-        if form.is_valid():
-            posting.dropoffLocation = request.POST['dropoffLocation']
-            posting.sendTripInfoUpdatedNotification()
-            posting.save()
-            messages.success(request, 'Successfully updated dropoff location!')
-            return HttpResponseRedirect(reverse('myDriverPostings'))
-        else:
-            messages.error(request, 'Something went wrong')
-            return render(request, 'rideMeApp/updateDropoffLocation.html', {'form': UpdateDropoffLocation})
-
-    return render(request, 'rideMeApp/updateDropoffLocation.html', {'form': UpdateDropoffLocation})
-
-def updateVehicle(request, pk):
-    if request.method == 'POST':
-        form = UpdateVehicle(request.POST)
-        posting = Posting.objects.get(pk=pk)
-        if form.is_valid():
-            posting.vehicle = request.POST['vehicle']
-            posting.sendTripInfoUpdatedNotification()
-            posting.save()
-            messages.success(request, 'Successfully updated vehicle!')
-            return HttpResponseRedirect(reverse('myDriverPostings'))
-        else:
-            messages.error(request, 'Something went wrong')
-            return render(request, 'rideMeApp/updateVehicle.html', {'form': UpdateVehicle})
-
-    return render(request, 'rideMeApp/updateVehicle.html', {'form': UpdateVehicle})
-
-def updateTripDate(request, pk):
-    if request.method == 'POST':
-        form = UpdateTripDate(request.POST)
-        posting = Posting.objects.get(pk=pk)
-        if form.is_valid():
-            posting.tripDate = request.POST['tripDate']
-            posting.sendTripInfoUpdatedNotification()
-            posting.save()
-            messages.success(request, 'Successfully updated trip date!')
-            return HttpResponseRedirect(reverse('myDriverPostings'))
-        else:
-            messages.error(request, 'Something went wrong')
-            return render(request, 'rideMeApp/updateTripDate.html', {'form': UpdateTripDate})
-
-    return render(request, 'rideMeApp/updateTripDate.html', {'form': UpdateTripDate})
-
-def updateTripTime(request, pk):
-    if request.method == 'POST':
-        form = UpdateTripTime(request.POST)
-        posting = Posting.objects.get(pk=pk)
-        if form.is_valid():
-            posting.tripTime = request.POST['tripTime']
-            posting.sendTripInfoUpdatedNotification()
-            posting.save()
-            messages.success(request, 'Successfully updated trip time!')
-            return HttpResponseRedirect(reverse('myDriverPostings'))
-        else:
-            messages.error(request, 'Inputted format incorrectly')
-            return render(request, 'rideMeApp/updateTripTime.html', {'form': UpdateTripTime})
-
-    return render(request, 'rideMeApp/updateTripTime.html', {'form': UpdateTripTime})
-
-def updateNumAvailableSeats(request, pk):
-    if request.method == 'POST':
-        form = UpdateNumAvailableSeats(request.POST)
-        posting = Posting.objects.get(pk=pk)
-        try:
-            numAvailableSeats = int(request.POST['numAvailableSeats'])
-        except:
-            messages.error(request, 'The number of available seats must be an integer.')
-            return render(request, 'rideMeApp/updateNumAvailableSeats.html', {'form': UpdateNumAvailableSeats})
-
-        if numAvailableSeats < 0:
-            messages.error(request, 'The number of available seats cannot be negative.')
-            return render(request, 'rideMeApp/updateNumAvailableSeats.html', {'form': UpdateNumAvailableSeats})
-
-        if posting.numAvailableSeats == 0 and numAvailableSeats > 0:
-            posting.sendTripReopenNotification()
-            posting.isOpen = True
-            posting.save()
-
-        elif posting.numAvailableSeats > 0 and numAvailableSeats == 0:
-            posting.sendTripClosedNotification()
-            posting.isOpen = False
-            posting.save()
-
-        posting.numAvailableSeats = numAvailableSeats
-        posting.save()
-        messages.success(request, 'Successfully update number of available seats!')
-        return HttpResponseRedirect(reverse('myDriverPostings'))
-    
-    return render(request, 'rideMeApp/updateNumAvailableSeats.html', {'form': UpdateNumAvailableSeats})
-
 
 def completePosting(request, pk):
     posting = Posting.objects.get(pk=pk)
@@ -721,10 +522,12 @@ def completePosting(request, pk):
     messages.success(request, 'Successfully marked posting as complete!')
     return HttpResponseRedirect(reverse('myDriverPostings'))
 
+
 def confirmCancelPosting(request, pk):
     posting = Posting.objects.get(pk=pk)
     context = {'posting': posting}
     return render(request, 'rideMeApp/confirmCancelPosting.html', context)
+
 
 def cancelPosting(request, pk):
     posting = Posting.objects.get(pk=pk)
@@ -734,10 +537,12 @@ def cancelPosting(request, pk):
     messages.success(request, 'Successfully cancelled posting')
     return HttpResponseRedirect(reverse('myDriverPostings'))
 
+
 def myPassengerPostings(request):
     user = User.objects.get(username=request.session['loggedInUser'])
     context = {'user': user}
     return render(request, 'rideMeApp/myPassengerPostings.html', context)    
+
 
 def removeMyselfAsApprovedPassenger(request, pk):
     user = User.objects.get(username=request.session['loggedInUser'])
@@ -765,17 +570,19 @@ def removeMyselfAsApprovedPassenger(request, pk):
             return HttpResponseRedirect(reverse('myPassengerPostings'))
     messages.error(request, 'Something went wrong')
     return HttpResponseRedirect(reverse('myPassengerPostings'))
-    
+
 
 def confirmRemoveMyselfAsApprovedPassenger(request, pk):
     posting = Posting.objects.get(pk=pk)
     context = {'posting': posting}
     return render(request, 'rideMeApp/removeMyselfAsApprovedPassenger.html', context)
 
+
 def handler404(request, exception, template_name='404.html'):
     response = render(template_name)
     response.status_code = 404
     return response
+
 
 def handler500(request, exception, template_name='500.html'):
     response = render(template_name)

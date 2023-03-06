@@ -99,7 +99,46 @@
         padding: 10px;
         float: right;
     }
-
+    .user {
+        border-radius: 25px;
+        padding: 5px;
+        background-color: #706340;
+        border: none;
+    }
+    .user a {
+        color: #ddd !important;
+    }
+    :root {
+        --star-size: 30px;
+        --star-color: #fff;
+        --star-background: #fc0;
+    }
+    .Stars {
+        --percent: calc(var(--rating) / 5 * 100%);
+        
+        display: inline-block;
+        font-size: var(--star-size);
+        font-family: Times;
+        line-height: 1;
+    }
+    .Stars::before {
+        content: '★★★★★';
+        letter-spacing: 3px;
+        background: linear-gradient(90deg, var(--star-background) var(--percent), var(--star-color) var(--percent));
+        background-clip: padding-box ; /* TODO: This probably will break on certain browsers*/
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .Stars .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+    }
+    .Stars:hover .tooltiptext {
+        visibility: visible;
+    }
 </style>
 <title>RideMe</title>
 <link rel="icon" type="image/x-icon" href="https://cdn.discordapp.com/attachments/891732631295754280/1081604741131403456/favicon.ico">

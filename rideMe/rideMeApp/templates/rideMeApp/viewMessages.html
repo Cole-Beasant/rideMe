@@ -1,6 +1,19 @@
 {% extends "rideMeApp\master.html" %}
 {% block content %}
 
+<style>
+    input[type=text] {
+        width: 100%;
+        padding: 8px;
+    }
+    table th {
+        position: sticky;
+        top: 0;
+        background-color: #333;
+        padding: 4px;
+    }
+</style>
+
 <h1>Messages</h1>
 <div style="float:right; width:48%">
 
@@ -47,7 +60,9 @@
         {% for user in posting.getApprovedPassengers %}
         <tr>
             <td>
-                <a href="{% url 'userdetails' user.id %}">{{ user.username }}</a>
+                <button class="user">
+                    <a href="{% url 'userdetails' user.id %}">{{ user.username }}</a>
+                </button>
             </td>
         </tr>
         {% endfor %}
@@ -63,7 +78,9 @@
     {% if user == conversation.postingID.ownerID %}
     {% if conversation.passengerID not in posting.getApprovedPassengers %}
         <p>Add 
-        <a href="{% url 'userdetails' conversation.passengerID.id %}">{{ conversation.passengerID.username }} </a>
+            <button class="user">
+                <a href="{% url 'userdetails' conversation.passengerID.id %}">@{{ conversation.passengerID.username }} </a>
+            </button>
         as an approved passenger</p>
         
         <button type="button">
@@ -72,57 +89,64 @@
     {% endif %}
     {% endif %}
 </div>
-<div style="height: 75%; border: 1px white; border-style: solid; float: left; width: 48%;">
+<div style="height: 75%; border: 1px white; border-style: solid; float: left; width: 48%; border-radius: 25px;">
 {% if user == conversation.postingID.ownerID %}
-<p>Send a message to {{ conversation.passengerID.username }}</p>
-<button type="button" class="btn">
-    <a href="{% url 'sendMessage' conversation.id %}">Send Message</a>
-</button>
+<p style="padding: 4px;"> Send a message to {{ conversation.passengerID.username }}</p>
 {% else %}
-<p>Send a message to {{ conversation.postingID.ownerID.username }}</p>
-<button type="button" class="btn">
-    <a href="{% url 'sendMessage' conversation.id %}">Send Message</a>
-</button>
+<p style="padding: 4px"> Send a message to {{ conversation.postingID.ownerID.username }}</p>
 {% endif %}
 
 
 
 
 {% if messages %}
-<table style="overflow:auto; width:auto; height: 80%; display: flex; flex-direction: column-reverse;">
+<table cellspacing="0" cellpadding="0" width="100%" style="table-layout: fixed;" height="80%">
     <tr>
-        {% if user == conversation.postingID.ownerID %}
-        <td><a href="{% url 'userdetails' conversation.passengerID.id %}">{{conversation.passengerID.username}}</a></td>
-        {% else %}
-        <td><a href="{% url 'userdetails' conversation.postingID.ownerID.id %}">{{conversation.postingID.ownerID.username}}</a></td>
-        {% endif %}
-        <td><a style="float:right" href="{% url 'myProfile'}">{{user.username}}</a></td>
+      <td>
+         <table cellspacing="0" cellpadding="1" width="100%" >
+           <tr style="color:white;background-color:grey">
+            {% if user == conversation.postingID.ownerID %}
+            <th><button class="user" style="float:left"><a href="{% url 'userdetails' conversation.passengerID.id %}">@{{conversation.passengerID.username}}</a></button>
+            {% else %}
+            <th><button class="user" style="float:left"><a href="{% url 'userdetails' conversation.postingID.ownerID.id %}">@{{conversation.postingID.ownerID.username}}</a></button>
+            {% endif %}
+            <button class="user" style="float:right"><a href="{% url 'myProfile'}">@{{user.username}}</a></button></th>
+           </tr>
+         </table>
+      </td>
     </tr>
-        {% for message in messages.reverse %}
-        {% if message.senderID == user %}
-        <tr>
-            <td></td>
-            <td><a class="msg-right">{{ message.message }}</a></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td style="float: right;">{{ message.timeSent }}</td>
-        </tr>
-        {% else %}
-        <tr>
-            <td> <a class="msg-left">{{ message.message }}</a></td>
-        </tr>
-        <tr>
-            <td>{{message.timeSent}}</td>
-        </tr>        
-        {% endif %}
-        {% endfor %}
-</table>
+    <tr>
+      <td>
+         <div style="width:99%; overflow:auto; height: 55vh; display: flex; flex-direction: column-reverse; padding: 4px;">
+           <table cellspacing="0" cellpadding="1" width="100%" height="40%" style="table-layout: fixed;">
+            {% for message in messages.reverse %}
+            {% if message.senderID == user %}
+            <tr>
+                <td><a class="msg-right">{{ message.message }}</a></td>
+            </tr>
+            <tr>
+                <td style="float: right; color: gray;">{{ message.timeSent }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td> <a class="msg-left">{{ message.message }}</a></td>
+            </tr>
+            <tr>
+                <td style="color: gray;">{{message.timeSent}}</td>
+            </tr>        
+            {% endif %}
+            {% endfor %}
+           </table>  
+         </div>
+      </td>
+    </tr>
+  </table>
 
-<form method="post">
+<form method="post" width="100%">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="SEND">
+    <table>
+        <td width="100%">{{ form.message }}</td> <td><input type="submit" value="SEND" style="padding: 8px 16px; background-color: dodgerblue; border: none;"></td>
+    </table>
 </form>
 
 {% else %}

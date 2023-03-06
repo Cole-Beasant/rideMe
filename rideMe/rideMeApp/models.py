@@ -38,7 +38,7 @@ class User(models.Model):
             return sumOfRatings / numRatings
 
     def getAverageRatingAsPassenger(self):
-        reviews = Review.objects.filter(reviewedUserID=self, reviewedUserType='driver')
+        reviews = Review.objects.filter(reviewedUserID=self, reviewedUserType='passenger')
         sumOfRatings = sum(r.rating for r in reviews)
         numRatings = reviews.count()
         """
@@ -139,12 +139,11 @@ class User(models.Model):
         return len(self.getUpcomingDriverTrips())
 
     def getPastDriverTripsNeedingAction(self):
-        query = Posting.objects.filter(ownerID=self, tripDate__lt=timezone.now()).order_by('-tripDate')
+        query = Posting.objects.filter(ownerID=self, tripDate__lt=timezone.now(), isComplete=False, isCancelled=False).order_by('-tripDate')
         pastDriverTrips = []
         for posting in query:
             if len(posting.getApprovedPassengers()) == 0:
                 posting.isCancelled == True
-                posting.sendTripCancelledNotification()
                 posting.save()
             elif posting.isComplete == False and posting.isCancelled == False:
                 pastDriverTrips.append(posting)

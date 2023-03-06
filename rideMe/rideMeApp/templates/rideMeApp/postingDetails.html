@@ -52,8 +52,8 @@
 {% else %}
 <form method="post" >
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="submit">
+    <p>Send a Message</p>
+    {{ form.message }} <input type="submit" value="Send">
 </form>
 {% endif %}
 {% endif %}
@@ -64,7 +64,7 @@
     {% for user in posting.getApprovedPassengers %}
     <tr>
         <td>
-            <a>{{user.firstName}} {{user.lastName}} ( </a><a href="{% url 'userdetails' user.id %}">{{ user.username }}</a> <a>)</a>
+            <a>{{user.firstName}} {{user.lastName}} </a><button class="user"><a href="{% url 'userdetails' user.id %}">@{{ user.username }}</a></button>
         </td>
     </tr>
     {% endfor %}
