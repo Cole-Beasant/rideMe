@@ -11,56 +11,38 @@
     <tr>
         <td>Pickup Location:</td>
         <td>{{ posting.pickupLocation }}</td>
-        <td>
-            <button type="button" class="btn !important">
-                <a href="{% url 'updatePickupLocation' posting.id %}">Update</a>
-            </button>
-        </td>
+        <td><form method="post">{% csrf_token %}{{ pickupLocationForm.pickupLocation }}<input type="submit" value="Update" name="pickupButton"></form></td>
+        <td>{{ pickupLocationForm.pickupLocation.errors }}</td>
     </tr>
     <tr>
         <td>Dropoff Location:</td>
         <td>{{ posting.dropoffLocation }}</td>
-        <td>
-            <button type="button" class="btn">
-                <a href="{% url 'updateDropoffLocation' posting.id %}">Update</a>
-            </button>
-        </td>
+        <td><form method="post">{% csrf_token %}{{ dropoffLocationForm.dropoffLocation }}<input type="submit" value="Update" name="dropoffButton"></form></td>
+        <td>{{ dropoffLocationForm.dropoffLocation.errors }}</td>
     </tr>
     <tr>
         <td>Trip Date:</td>
         <td>{{ posting.tripDate }}</td>
-        <td>
-            <button type="button" class="btn">
-                <a href="{% url 'updateTripDate' posting.id %}">Update</a>
-            </button>
-        </td>
+        <td><form method="post">{% csrf_token %}{{ tripDateForm.tripDate }}<input type="submit" value="Update" name="tripDateButton"></form></td>
+        <td>{{ tripDateForm.tripDate.errors }}</td>
     </tr>
     <tr>
         <td>Trip Time:</td>
         <td>{{ posting.tripTime }}</td>
-        <td>
-            <button type="button" class="btn">
-                <a href="{% url 'updateTripTime' posting.id %}">Update</a>
-            </button>
-        </td>
+        <td><form method="post">{% csrf_token %}{{ tripTimeForm.tripTime }}<input type="submit" value="Update" name="tripTimeButton"></form></td>
+        <td>{{ tripTimeForm.tripTime.errors.as_text }}</td>
     </tr>
     <tr>
         <td>Number of Available Seats:</td>
         <td>{{ posting.numAvailableSeats }}</td>
-        <td>
-            <button type="button" class="btn">
-                <a href="{% url 'updateNumAvailableSeats' posting.id %}">Update</a>
-            </button>
-        </td>
+        <td><form method="post">{% csrf_token %}{{ numSeatsForm.numAvailableSeats }}<input type="submit" value="Update" name="numSeatsButton"></form></td>
+        <td>{{ numSeatsForm.numAvailableSeats.errors }}</td>
     </tr>
     <tr>
         <td>Trip Vehicle:</td>
         <td>{{ posting.vehicle }}</td>
-        <td>
-            <button type="button" class="btn">
-                <a href="{% url 'updateVehicle' posting.id %}">Update</a>
-            </button>
-        </td>
+        <td><form method="post">{% csrf_token %}{{ vehicleForm.vehicle }}<input type="submit" value="Update" name="vehicleButton"></form></td>
+        <td>{{ vehicleForm.vehicle.errors }}</td>
     </tr>
 </table>
 

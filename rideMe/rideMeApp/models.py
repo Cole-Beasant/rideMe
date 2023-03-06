@@ -11,7 +11,7 @@ class User(models.Model):
     email = models.EmailField()
     numTripsAsDriver = models.IntegerField(default=0)
     numTripsAsPassenger = models.IntegerField(default=0)
-    registrationTime = models.DateTimeField(default=timezone.now())
+    registrationTime = models.DateTimeField(auto_now_add=True)
 
     # phoneNumber
 
@@ -22,19 +22,26 @@ class User(models.Model):
         return pbkdf2_sha256.verify(raw_password, self.password)
 
     def getAverageRatingAsDriver(self):
-        sumOfRatings = 0
-        numRatings = 0
+        reviews = Review.objects.filter(reviewedUserID=self, reviewedUserType='driver')
+        sumOfRatings = sum(r.rating for r in reviews)
+        numRatings = reviews.count()
+        """
         for review in Review.objects.all():
             if self == review.reviewedUserID:
                 if review.reviewedUserType == 'driver':
                     sumOfRatings += review.rating
                     numRatings += 1
+        """
         if numRatings == 0:
             return 0
         else:
             return sumOfRatings / numRatings
 
     def getAverageRatingAsPassenger(self):
+        reviews = Review.objects.filter(reviewedUserID=self, reviewedUserType='passenger')
+        sumOfRatings = sum(r.rating for r in reviews)
+        numRatings = reviews.count()
+        """
         sumOfRatings = 0
         numRatings = 0
         for review in Review.objects.all():
@@ -42,6 +49,7 @@ class User(models.Model):
                 if review.reviewedUserType == 'passenger':
                     sumOfRatings += review.rating
                     numRatings += 1
+        """
         if numRatings == 0:
             return 0
         else:
@@ -131,12 +139,11 @@ class User(models.Model):
         return len(self.getUpcomingDriverTrips())
 
     def getPastDriverTripsNeedingAction(self):
-        query = Posting.objects.filter(ownerID=self, tripDate__lt=timezone.now()).order_by('-tripDate')
+        query = Posting.objects.filter(ownerID=self, tripDate__lt=timezone.now(), isComplete=False, isCancelled=False).order_by('-tripDate')
         pastDriverTrips = []
         for posting in query:
             if len(posting.getApprovedPassengers()) == 0:
                 posting.isCancelled == True
-                posting.sendTripCancelledNotification()
                 posting.save()
             elif posting.isComplete == False and posting.isCancelled == False:
                 pastDriverTrips.append(posting)
@@ -172,8 +179,9 @@ class User(models.Model):
                 if object.postingID.isComplete == True:
                     pastApprovedPassengerTrips.append(object.postingID)
         return pastApprovedPassengerTrips
-
-
+    
+    def getUpcomingOpenDriverPosting(self):
+        return Posting.objects.filter(ownerID=self, isOpen=True, tripDate__gt = timezone.now()).order_by('-tripDate')
 
 class Review(models.Model):
     reviewedUserID = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -183,7 +191,7 @@ class Review(models.Model):
     description = models.CharField(max_length=500)
 
     def __str__(self):
-        return (self.reviewerID.username, self.rating, self.description)
+        return self.reviewerID.username + " " + self.rating.__str__() + " " + self.description
 
 class UsersInteractedForUsers(models.Model):
     '''
@@ -205,7 +213,7 @@ class Posting(models.Model):
     pickupLocation = models.CharField(max_length=50)
     dropoffLocation = models.CharField(max_length=50)
     vehicle = models.CharField(max_length=50)
-    submissionTime = models.DateTimeField()
+    submissionTime = models.DateTimeField(auto_now_add=True)
 
     def getApprovedPassengers(self):
         approvedPassengers = []
@@ -302,7 +310,7 @@ class Conversation(models.Model):
     postingID = models.ForeignKey(Posting, on_delete=models.CASCADE)
     passengerID = models.ForeignKey(User, on_delete=models.CASCADE)
     isClosed = models.BooleanField(default=False)
-    latestMessageSentTime = models.DateTimeField(default=timezone.now())
+    latestMessageSentTime = models.DateTimeField(auto_now_add=True)
     hasUnreadMessagesCurUser = models.BooleanField(default=False)
 
     def getMessages(self):
@@ -336,7 +344,7 @@ class Message(models.Model):
     senderID = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.CharField(max_length=500)
     hasRead = models.BooleanField(default=True)
-    timeSent = models.DateTimeField(default=timezone.now())
+    timeSent = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.senderID.username + ', ' + self.message

@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from rideMeApp import views
 
 # app_name = 'rideMeApp'
@@ -28,7 +28,6 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('postings?submitted=True/', views.viewPostings, name='postings'),
     path('<int:pk>/postingdetails?submitted=True/', views.viewPostingDetails, name='postingdetails'),
-    path('<int:pk>/postingdetails/messagePostOwner?submitted=True/', views.messagePostOwner, name='messagePostOwner'),
     path('<int:pk>/userdetails?submitted=True/', views.viewUserDetails.as_view(), name='userdetails'),
     path('postings/addPostings?submitted=True/', views.addPosting, name='addPosting'),
     path('usersToReview?submitted=True/', views.usersToReview, name='usersToReview'),
@@ -36,7 +35,6 @@ urlpatterns = [
     path('<int:pk>/dismissReview?submitted=True/', views.dismissReview, name='dismissReview'),
     path('viewConversations?submitted=True/', views.viewConversations, name='viewConversations'),
     path('<int:pk>/viewMessages?submitted=True/', views.viewMessages, name='viewMessages'),
-    path('<int:pk>/sendMessages?submitted=True/', views.sendMessage, name='sendMessage'),
     path('<int:pk>/addApprovedPassenger?submitted=True/', views.addApprovedPassenger, name='addApprovedPassenger'),
     path('myProfile?submitted=True/', views.viewMyProfile, name='myProfile'),
     path('confirmDeleteProfile?submitted=True', views.confirmDeleteProfile, name='confirmDeleteProfile'),
@@ -48,11 +46,5 @@ urlpatterns = [
     path('<int:pk>/cancelPosting?submitted=True/', views.cancelPosting, name='cancelPosting'),
     path('myPassengerPostings?submitted=True/', views.myPassengerPostings, name='myPassengerPostings'),
     path('<int:pk>/removeMyselfAsApprovedPassenger?submitted=True/', views.removeMyselfAsApprovedPassenger, name='removeMyselfAsApprovedPassenger'),
-    path('<int:pk>/confirmRemoveMyselfAsApprovedPassenger?submitted=True/', views.confirmRemoveMyselfAsApprovedPassenger, name='confirmRemoveMyselfAsApprovedPassenger'),
-    path('<int:pk>/updatePickupLocation?submitted=True', views.updatePickupLocation, name='updatePickupLocation'),
-    path('<int:pk>/updateDropoffLocation?submitted=True', views.updateDropoffLocation, name='updateDropoffLocation'),
-    path('<int:pk>/updateTripDate?submitted=True', views.updateTripDate, name='updateTripDate'),
-    path('<int:pk>/updateTripTime?submitted=True', views.updateTripTime, name='updateTripTime'),
-    path('<int:pk>/updateNumAvailableSeats?submitted=True', views.updateNumAvailableSeats, name='updateNumAvailableSeats'),
-    path('<int:pk>/updateVehicle?submitted=True', views.updateVehicle, name='updateVehicle')
+    path('<int:pk>/confirmRemoveMyselfAsApprovedPassenger?submitted=True/', views.confirmRemoveMyselfAsApprovedPassenger, name='confirmRemoveMyselfAsApprovedPassenger')
 ]

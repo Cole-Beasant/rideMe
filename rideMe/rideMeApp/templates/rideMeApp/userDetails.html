@@ -32,11 +32,11 @@
     </tr>
     <tr>
         <td>Average Rating as Driver:</td>
-        <td>{{ user.getAverageRatingAsDriver }}</td>
+        <td> <div class="stars" style="--rating: {{ user.getAverageRatingAsDriver }};" aria-label="Rating"><a class="tooltiptext">{{ user.getAverageRatingAsDriver }}</a></div></td>
     </tr>
     <tr>
         <td>Average Rating as Passenger:</td>
-        <td>{{ user.getAverageRatingAsPassenger }}</td>
+        <td><div class="stars" style="--rating: {{ user.getAverageRatingAsPassenger }};" aria-label="Rating"><a class="tooltiptext">{{ user.getAverageRatingAsPassenger }}</a></div></td>
     </tr>
 </table>
 
@@ -48,9 +48,18 @@
 <table class="box">
     {% for review in user.getReviewsAsDriver %}
     <tr>
-        <td>{{review.0}}</td>
-        <td>{{review.1}}</td>
-        <td>{{review.2}}</td>
+        <td>
+            <div style="padding: 4px;">
+                <a style="padding: 4px;">
+                    {{review.2}}
+                </a>
+                <a> <br> <button class="user"><a>
+                    @{{ review.0}}
+                </a> </button>
+                <div class="stars" style="--rating: {{review.1}}; padding-top: 0px;"> <a class="tooltiptext">{{review.1}}</a></div>
+            </a>
+            </div>
+        </td>
     </tr>
     {% endfor %}
 </table>
@@ -64,9 +73,18 @@
 <table class="box">
     {% for review in user.getReviewsAsPassenger %}
     <tr>
-        <td>{{review.0}}</td>
-        <td>{{review.1}}</td>
-        <td>{{review.2}}</td>
+        <td>
+            <div style="padding: 4px;">
+                <a style="padding: 4px;">
+                    {{review.2}}
+                </a>
+                <a> <br> <button class="user"><a>
+                    @{{ review.0}}
+                </a> </button>
+                <div class="stars" style="--rating: {{review.1}}; padding-top: 0px;"> <a class="tooltiptext">{{review.1}}</a></div>
+            </a>
+            </div>
+        </td>
     </tr>
     {% endfor %}
 </table>

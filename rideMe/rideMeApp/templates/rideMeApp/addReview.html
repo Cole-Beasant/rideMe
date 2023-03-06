@@ -9,7 +9,9 @@
 
 <form method="post" >
     {% csrf_token %}
-    {{ form.as_p }}
+    <p>{{ form.rating.label }} {{ form.rating}}</p>
+    <p>{{ form.description.label }}</p>
+    <p>{{ form.description }}</p>
     <input type="submit" value="submit">
 </form>
 {% endblock %}
