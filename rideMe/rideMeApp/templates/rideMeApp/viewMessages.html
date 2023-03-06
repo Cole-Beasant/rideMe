@@ -110,7 +110,7 @@
             {% else %}
             <th><button class="user" style="float:left"><a href="{% url 'userdetails' conversation.postingID.ownerID.id %}">@{{conversation.postingID.ownerID.username}}</a></button>
             {% endif %}
-            <button class="user" style="float:right"><a href="{% url 'myProfile'}">@{{user.username}}</a></button></th>
+            <button class="user" style="float:right"><a href="{% url 'myProfile' %}">@{{user.username}}</a></button></th>
            </tr>
          </table>
       </td>
