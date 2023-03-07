@@ -18,6 +18,7 @@
         <th>Dropoff Location</th>
         <th>Trip Date</th>
         <th>Pickup Time</th>
+        <th>Price</th>
         <th></th>
         <th></th>
     </tr>  
@@ -27,6 +28,7 @@
         <td>{{ trip.dropoffLocation }}</td>
         <td>{{ trip.tripDate }}</td>
         <td>{{ trip.tripTime }}</td>
+        <td>${{ trip.tripPrice }}</td>
         <td>
             <button type="button" class="btn">
                 <a href="{% url 'postingdetails' trip.id %}" >View Trip Details</a>                 
@@ -54,6 +56,7 @@
         <th>Dropoff Location</th>
         <th>Trip Date</th>
         <th>Pickup Time</th>
+        <th>Price</th>
         <th>View Details</th>
     </tr>  
     {% for trip in user.getAwaitingApprovalPassengerTrips %}
@@ -62,6 +65,7 @@
         <td>{{ trip.dropoffLocation }}</td>
         <td>{{ trip.tripDate }}</td>
         <td>{{ trip.tripTime }}</td>
+        <td>${{ trip.tripPrice }}</td>
         <td>
             <button type="button" class="btn">
                 <a href="{% url 'postingdetails' trip.id %}" >Details</a>                 

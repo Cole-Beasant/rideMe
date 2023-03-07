@@ -210,6 +210,7 @@ class Posting(models.Model):
     isComplete = models.BooleanField(default=False)
     tripDate = models.DateField(default=datetime.date(2023,2,15))
     tripTime = models.TimeField(default=datetime.time(10,30,0))
+    tripPrice = models.DecimalField(max_digits=6, decimal_places=2)
     pickupLocation = models.CharField(max_length=50)
     dropoffLocation = models.CharField(max_length=50)
     vehicle = models.CharField(max_length=50)

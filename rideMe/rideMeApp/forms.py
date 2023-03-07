@@ -28,6 +28,7 @@ class AddPostingForm(forms.Form):
     ))
     pickupLocation = forms.CharField(label='Enter the general location where you can pick up passengers:', max_length=50, widget=forms.TextInput(attrs={'placeholder':'Pickup Location'}))
     dropoffLocation = forms.CharField(label='Enter the general location where you can drop off passengers:', max_length=50, widget=forms.TextInput(attrs={'placeholder':'Dropoff Location'}))
+    tripPrice = forms.DecimalField(label='Enter the price you wish passengers to pay for the trip:', max_digits=6, decimal_places=2, widget=forms.TextInput(attrs={'placeholder': 'Trip Price'}))
     vehicle = forms.CharField(label='Enter the make and model of the vehicle you will be making the trip with:', max_length=50, widget=forms.TextInput(attrs={'placeholder':'Vehicle Information'}))
 
     def clean(self):

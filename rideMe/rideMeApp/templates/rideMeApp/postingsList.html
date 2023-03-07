@@ -19,6 +19,7 @@
             <th>Dropoff Location</th>
             <th>Trip Date</th>
             <th>Pickup Time</th>
+            <th>Price</th>
             <th></th>
         </tr>
             {% for posting in postingsList %}
@@ -29,6 +30,7 @@
                 <td>{{ posting.dropoffLocation }}</td>
                 <td>{{ posting.tripDate }}</td>
                 <td>{{ posting.tripTime }}</td>
+                <td>${{ posting.tripPrice }}</td>
                 <td>
                     <span class="btn">
                         <a class="btn" href="{% url 'postingdetails' posting.id %}">View Posting </a>                 
