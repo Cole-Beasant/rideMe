@@ -446,6 +446,12 @@ def managePosting(request, pk):
     numSeatsForm = UpdateNumAvailableSeats()
     tripPrice = UpdatePriceForm()
     vehicleForm = UpdateVehicle()
+    
+    user = User.objects.get(username=request.session['loggedInUser'])
+
+    for conversation in user.getConversations():
+        conversation.setHasUnreadMessagesCurUser(user)
+
     if request.method == 'POST':
         if 'pickupButton' in request.POST:
             pickupLocationForm = UpdatePickupLocation(request.POST)
