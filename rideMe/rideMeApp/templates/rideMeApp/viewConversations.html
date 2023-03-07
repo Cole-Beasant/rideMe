@@ -19,6 +19,7 @@
         <th>Dropoff Location</th>
         <th>Trip Date</th>
         <th>Pickup Time</th>
+        <th>Trip Price</th>
         <th style="border-radius: 0px 25px 0px 0px;"></th>
     </tr>
         {% for conversation in conversations %}
@@ -63,6 +64,7 @@
             <td>{{ conversation.postingID.dropoffLocation }}</td>
             <td>{{ conversation.postingID.tripDate }}</td>
             <td>{{ conversation.postingID.tripTime }}</td>
+            <td>${{ conversation.postingID.tripPrice }}</td>
             <td style="white-space:nowrap; width: 0px;">
                 <button type="button" class="btn">
                     <a href="{% url 'postingdetails' conversation.postingID.id %}">View Associated Posting</a>

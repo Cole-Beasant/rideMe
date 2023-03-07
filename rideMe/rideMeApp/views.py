@@ -241,6 +241,7 @@ def addPosting(request):
                     submissionTime = timezone.now(),
                     pickupLocation = request.POST['pickupLocation'],
                     dropoffLocation = request.POST['dropoffLocation'],
+                    tripPrice = request.POST['tripPrice'],
                     vehicle = request.POST['vehicle'],
                     isOpen = True,
                     isCancelled = False,
