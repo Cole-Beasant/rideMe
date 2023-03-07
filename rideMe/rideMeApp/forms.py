@@ -92,3 +92,6 @@ class AddReviewForm(forms.Form):
 
 class SendMessageForm(forms.Form):
     message = forms.CharField(max_length=500, label='Enter Message:', widget=forms.TextInput(attrs={'placeholder': 'Message'}))
+
+class UpdatePriceForm(forms.Form):
+    tripPrice = forms.DecimalField(label='Enter the price you wish passengers to pay for the trip:', max_digits=6, decimal_places=2, widget=forms.TextInput(attrs={'placeholder': 'Trip Price'}))

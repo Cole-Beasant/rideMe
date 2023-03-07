@@ -39,6 +39,12 @@
         <td>{{ numSeatsForm.numAvailableSeats.errors }}</td>
     </tr>
     <tr>
+        <td>Trip Price:</td>
+        <td>{{ posting.tripPrice }}</td>
+        <td><form method="post">{% csrf_token %}{{ tripPriceForm.tripPrice }}<input type="submit" value="Update" name="vehicleButton"></form></td>
+        <td>{{ tripPriceForm.tripPrice.errors }}</td>
+    </tr>
+    <tr>
         <td>Trip Vehicle:</td>
         <td>{{ posting.vehicle }}</td>
         <td><form method="post">{% csrf_token %}{{ vehicleForm.vehicle }}<input type="submit" value="Update" name="vehicleButton"></form></td>
