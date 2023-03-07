@@ -10,7 +10,7 @@ from .forms import LoginForm, SignUpForm, ResetPasswordForm
 from django.urls import reverse
 from .forms import SignUpForm, LoginForm, AddPostingForm, StartConversation, AddReviewForm, SendMessageForm
 from .forms import UpdatePickupLocation, UpdateDropoffLocation, UpdateTripDate, UpdateTripTime, UpdateVehicle
-from .forms import UpdateNumAvailableSeats
+from .forms import UpdateNumAvailableSeats, UpdatePriceForm
 from django.contrib import messages
 import random
 
@@ -444,6 +444,7 @@ def managePosting(request, pk):
     tripDateForm = UpdateTripDate()
     tripTimeForm = UpdateTripTime()
     numSeatsForm = UpdateNumAvailableSeats()
+    tripPrice = UpdatePriceForm()
     vehicleForm = UpdateVehicle()
     if request.method == 'POST':
         if 'pickupButton' in request.POST:
@@ -453,6 +454,7 @@ def managePosting(request, pk):
                 posting.sendTripInfoUpdatedNotification()
                 posting.save()
                 messages.success(request, 'Successfully updated pickup location!')
+                pickupLocationForm = UpdateDropoffLocation()
         if 'dropoffButton' in request.POST:
             dropoffLocationForm = UpdateDropoffLocation(request.POST)
             if dropoffLocationForm.is_valid():
@@ -460,6 +462,7 @@ def managePosting(request, pk):
                 posting.sendTripInfoUpdatedNotification()
                 posting.save()
                 messages.success(request, 'Successfully updated dropoff location!')
+                dropoffLocationForm = UpdateDropoffLocation()
         if 'tripDateButton' in request.POST:
             tripDateForm = UpdateTripDate(request.POST)
             if tripDateForm.is_valid():
@@ -467,6 +470,7 @@ def managePosting(request, pk):
                 posting.sendTripInfoUpdatedNotification()
                 posting.save()
                 messages.success(request, 'Successfully updated trip date!')
+                tripDateForm = UpdateTripDate()
         if 'tripTimeButton' in request.POST:
             tripTimeForm = UpdateTripTime(request.POST)
             if tripTimeForm.is_valid():
@@ -474,6 +478,7 @@ def managePosting(request, pk):
                 posting.sendTripInfoUpdatedNotification()
                 posting.save()
                 messages.success(request, 'Successfully updated trip time!')
+                tripTimeForm = UpdateTripTime()
         if 'numSeatsButton' in request.POST:
             numSeatsForm = UpdateNumAvailableSeats(request.POST)
             if numSeatsForm.is_valid():
@@ -491,6 +496,15 @@ def managePosting(request, pk):
                 posting.numAvailableSeats = numAvailableSeats
                 posting.save()
                 messages.success(request, 'Successfully update number of available seats!')
+                numSeatsForm = UpdateNumAvailableSeats()
+        if 'tripPrice' in request.POST:
+            tripPrice = UpdatePriceForm(request.POST)
+            if tripPrice.is_valid():
+                posting.tripPrice = request.POST['tripPrice']
+                posting.sendTripInfoUpdatedNotification()
+                posting.save()
+                messages.success(request, 'Successfully updated trip price!')
+                tripPrice = UpdatePriceForm()
         if 'vehicleButton' in request.POST:
             vehicleForm = UpdateVehicle(request.POST)
             if vehicleForm.is_valid():
@@ -498,12 +512,14 @@ def managePosting(request, pk):
                 posting.sendTripInfoUpdatedNotification()
                 posting.save()
                 messages.success(request, 'Successfully updated vehicle!')
+                vehicleForm = UpdateVehicle()
     context = {'posting': posting, 
                'pickupLocationForm': pickupLocationForm,
                'dropoffLocationForm': dropoffLocationForm,
                'tripDateForm': tripDateForm,
                'tripTimeForm': tripTimeForm,
                'numSeatsForm': numSeatsForm,
+               'tripPriceForm': tripPrice,
                'vehicleForm': vehicleForm
     }
     return render(request, 'rideMeApp/managePosting.html', context)
