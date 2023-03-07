@@ -41,7 +41,7 @@
     <tr>
         <td>Trip Price:</td>
         <td>{{ posting.tripPrice }}</td>
-        <td><form method="post">{% csrf_token %}{{ tripPriceForm.tripPrice }}<input type="submit" value="Update" name="vehicleButton"></form></td>
+        <td><form method="post">{% csrf_token %}{{ tripPriceForm.tripPrice }}<input type="submit" value="Update" name="tripPriceButton"></form></td>
         <td>{{ tripPriceForm.tripPrice.errors }}</td>
     </tr>
     <tr>
