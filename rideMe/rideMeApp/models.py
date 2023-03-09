@@ -99,7 +99,8 @@ class User(models.Model):
         for user in UsersInteractedForUsers.objects.all():
             if self == user.theUser:
                 if user.hasReviewed == False:
-                    usersToReview.append(user.theInteracter)
+                    if user.postingID.tripDate < datetime.date.today():
+                        usersToReview.append(user.theInteracter)
         return usersToReview        
 
 
@@ -289,7 +290,7 @@ class UsersInteractedForUsers(models.Model):
     theInteracter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='interacts_with')
     InteractionType = models.CharField(max_length=20, default='passenger')
     hasReviewed = models.BooleanField(default=False)
-    postingID = models.ForeignKey(Posting, on_delete=models.CASCADE, null=True, blank=True)
+    postingID = models.ForeignKey(Posting, on_delete=models.CASCADE, null=True)
 
 class ApprovedPassengers(models.Model):
     id = models.AutoField(primary_key=True)

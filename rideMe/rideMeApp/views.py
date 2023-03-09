@@ -12,7 +12,7 @@ from .forms import SignUpForm, LoginForm, AddPostingForm, StartConversation, Add
 from .forms import UpdatePickupLocation, UpdateDropoffLocation, UpdateTripDate, UpdateTripTime, UpdateVehicle
 from .forms import UpdateNumAvailableSeats, UpdatePriceForm
 from django.contrib import messages
-import random
+import random, datetime
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -198,7 +198,8 @@ def viewPostingDetails(request, pk):
                 theUser = user,
                 theInteracter = posting.ownerID,
                 InteractionType = 'driver',
-                hasReviewed = False
+                hasReviewed = False,
+                postingID = posting
             )
         except:
             messages.error(request, 'Something went wrong. Please try again.')
@@ -208,7 +209,8 @@ def viewPostingDetails(request, pk):
                 theUser = posting.ownerID,
                 theInteracter = user,
                 InteractionType = 'passenger',
-                hasReviewed = False
+                hasReviewed = False,
+                postingID = posting
             )
         except:
             messages.error(request, 'Something went wrong. Please try again.')
@@ -264,15 +266,11 @@ def addPosting(request):
 def usersToReview(request):
     username = request.session['loggedInUser']
     user = User.objects.get(username=username)
-    # for object in UsersInteractedForUsers.objects.all():
-    #     object.postingID = Posting.objects.get(pk=2)
-    
-    # object = UsersInteractedForUsers.objects.get(pk=2)
-    # print(object.postingID)
-    usersToReview = UsersInteractedForUsers.objects.filter(
-        theUser = user,
-        hasReviewed=False
-    )
+
+    usersToReview =[]
+    for object in UsersInteractedForUsers.objects.filter(theUser = user, hasReviewed=False):
+        if object.postingID.tripDate < datetime.date.today():
+            usersToReview.append(object)
     context = {'usersToReview': usersToReview}
     return render(request, 'rideMeApp/usersToReview.html', context)
 
