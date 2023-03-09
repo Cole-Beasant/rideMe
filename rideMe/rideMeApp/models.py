@@ -63,18 +63,18 @@ class User(models.Model):
 
     def getReviewsAsDriver(self):
         reviews = []
-        for review in Review.objects.all():
+        for review in Review.objects.all().order_by('-submissionTime'):
             if self == review.reviewedUserID:
                 if review.reviewedUserType == 'driver':
-                    reviews.append((review.reviewerID.username, review.rating, review.description))
+                    reviews.append((review.reviewerID.username, review.rating, review.description, review.submissionTime))
         return reviews
 
     def getReviewsAsPassenger(self):
         reviews = []
-        for review in Review.objects.all():
+        for review in Review.objects.all().order_by('-submissionTime'):
             if self == review.reviewedUserID:
                 if review.reviewedUserType == 'passenger':
-                    reviews.append((review.reviewerID.username, review.rating, review.description))
+                    reviews.append((review.reviewerID.username, review.rating, review.description, review.submissionTime))
         return reviews
 
     def getOwnedPostings(self):
@@ -189,18 +189,10 @@ class Review(models.Model):
     reviewerID = models.ForeignKey(User, on_delete=models.CASCADE, related_name='leaves')
     rating = models.FloatField(max_length=2)
     description = models.CharField(max_length=500)
+    submissionTime = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.reviewerID.username + " " + self.rating.__str__() + " " + self.description
-
-class UsersInteractedForUsers(models.Model):
-    '''
-    For reviewing purposes
-    '''
-    theUser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='has')
-    theInteracter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='interacts_with')
-    InteractionType = models.CharField(max_length=20, default='passenger')
-    hasReviewed = models.BooleanField(default=False)
 
 class Posting(models.Model):
     ownerID = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -288,6 +280,16 @@ class Posting(models.Model):
         for conversation in self.getAssociatedConversations():
             conversation.isClosed = True
             conversation.save()
+
+class UsersInteractedForUsers(models.Model):
+    '''
+    For reviewing purposes
+    '''
+    theUser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='has')
+    theInteracter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='interacts_with')
+    InteractionType = models.CharField(max_length=20, default='passenger')
+    hasReviewed = models.BooleanField(default=False)
+    postingID = models.ForeignKey(Posting, on_delete=models.CASCADE, null=True, blank=True)
 
 class ApprovedPassengers(models.Model):
     id = models.AutoField(primary_key=True)

@@ -264,6 +264,11 @@ def addPosting(request):
 def usersToReview(request):
     username = request.session['loggedInUser']
     user = User.objects.get(username=username)
+    # for object in UsersInteractedForUsers.objects.all():
+    #     object.postingID = Posting.objects.get(pk=2)
+    
+    # object = UsersInteractedForUsers.objects.get(pk=2)
+    # print(object.postingID)
     usersToReview = UsersInteractedForUsers.objects.filter(
         theUser = user,
         hasReviewed=False
