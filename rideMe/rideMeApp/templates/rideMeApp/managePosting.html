@@ -88,7 +88,7 @@
             {% endif %}
             <td style="white-space: nowrap; width: 0px;">
                 <button>
-                    <a href="{% url 'userdetails' conversation.postingID.ownerID.id %}">
+                    <a href="{% url 'userdetails' conversation.passengerID.id %}">
                         {{ conversation.passengerID.firstName }} {{ conversation.passengerID.lastName }} ({{conversation.passengerID.username}})
                     </a>
                 </button>
