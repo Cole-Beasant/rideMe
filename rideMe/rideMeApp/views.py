@@ -291,12 +291,7 @@ def addReview(request, pk):
                 description = request.POST['description']
             )
 
-            for usersInteractedObject in UsersInteractedForUsers.objects.all():
-                if usersInteractedObject.theUser == reviewer:
-                    if usersInteractedObject.theInteracter == userToReview:
-                        usersInteractedObject.hasReviewed = True
-                        usersInteractedObject.delete()
-                        break
+            object.delete()
 
             messages.success(request, 'Review posted successfully!')
             return HttpResponseRedirect(reverse('usersToReview'))
