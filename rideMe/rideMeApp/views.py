@@ -168,14 +168,13 @@ def viewPostingDetails(request, pk):
                 isClosed = False,
                 latestMessageSentTime = timezone.now()
             )
-            newConversation.save()
         except:
-            messages.error(request, 'Something went wrong. Conversation was not created. Please try again.')
+            messages.error(request, 'Conversation was not created. Please try again.')
             return render(request, 'rideMeApp/postingDetails.html', context)
 
         try:
             message = request.POST['message']
-            Message.objects.create(
+            newMessage = Message(
                 conversationID = newConversation,
                 senderID = user,
                 message = message,
@@ -183,10 +182,10 @@ def viewPostingDetails(request, pk):
                 timeSent = timezone.now()
             )
         except:
-            messages.error(request, 'Something went wrong. Message was not created. Please try again.')
+            messages.error(request, 'Message was not created. Please try again.')
             return render(request, 'rideMeApp/postingDetails.html', context)
         try:
-            UsersInteractedForPostings.objects.create(
+            newObject = UsersInteractedForPostings(
                 postingID = posting,
                 userID = user
             )
@@ -194,7 +193,7 @@ def viewPostingDetails(request, pk):
             messages.error(request, 'Something went wrong. Please try again.')
             render(request, 'rideMeApp/postingDetails.html', context)
         try:
-            UsersInteractedForUsers.objects.create(
+            newUserToReview = UsersInteractedForUsers(
                 theUser = user,
                 theInteracter = posting.ownerID,
                 InteractionType = 'driver',
@@ -205,7 +204,7 @@ def viewPostingDetails(request, pk):
             messages.error(request, 'Something went wrong. Please try again.')
             render(request, 'rideMeApp/postingDetails.html', context)
         try:
-            UsersInteractedForUsers.objects.create(
+            newUserToReview1 = UsersInteractedForUsers(
                 theUser = posting.ownerID,
                 theInteracter = user,
                 InteractionType = 'passenger',
@@ -214,6 +213,15 @@ def viewPostingDetails(request, pk):
             )
         except:
             messages.error(request, 'Something went wrong. Please try again.')
+            return render(request, 'rideMeApp/postingDetails.html', context)
+        try:
+            newConversation.save()
+            newMessage.save()
+            newObject.save()
+            newUserToReview.save()
+            newUserToReview1.save()
+        except:
+            messages.error(request, 'New data items not successfully saved to the database. Please try again.')
             return render(request, 'rideMeApp/postingDetails.html', context)
         messages.success(request, 'Successfully messaged post owner!')
         return HttpResponseRedirect(reverse("viewMessages", args=[newConversation.pk]))
