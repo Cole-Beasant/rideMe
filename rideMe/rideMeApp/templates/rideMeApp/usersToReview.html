@@ -1,9 +1,13 @@
 {% extends "rideMeApp\master.html" %}
 {% block content %}
 
-{% for message in messages %}
-    <p>{{ message }}</p>
-{% endfor %}
+<table>
+    {% for message in messages %}
+    <tr>
+        <td class="{{ message.tags }}">{{ message }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 <h1>Users to Review</h1>
 
@@ -21,7 +25,7 @@
     </tr>
         {% for user in usersToReview %}
         <tr>
-            <td>{{ user.theInteracter.lastName }}, {{ user.theInteracter.firstName }}</td>
+            <td>{{ user.theInteracter.lastName }}, {{ user.theInteracter.firstName }} <a class="user" href="% url 'userdetails' user.theInteracter %"> @{{ user.theInteracter.username }}</a></td>
             {% if user.InteractionType == 'driver' %}
             <td>My Driver</td>
             {% else %}

@@ -3,9 +3,13 @@
 
 <h1>Manage Posting</h1>
 
-{% for message in messages %}
-    <p>{{ message }}</p>
-{% endfor %}
+<table>
+    {% for message in messages %}
+    <tr>
+        <td class="{{ message.tags }}">{{ message }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 <table class="box">
     <tr>

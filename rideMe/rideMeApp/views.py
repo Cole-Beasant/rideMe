@@ -288,6 +288,7 @@ def addReview(request, pk):
     userToReview = object.theInteracter
     reviewedUserType = object.InteractionType
     reviewer = User.objects.get(username=request.session['loggedInUser'])
+    context = {'userToReview': userToReview, 'form': AddReviewForm}
     if request.method == 'POST':
         form = AddReviewForm(request.POST)
         if form.is_valid():
@@ -306,10 +307,8 @@ def addReview(request, pk):
 
         else:
             messages.error('Your rating may not be between 0 and 5 or your description may be too long.')
-            return render(request, 'rideMeApp/addReview.html', {'form': AddReviewForm})
-    
-    messages.info(request, 'Leave a review for ' + userToReview.lastName + ', ' + userToReview.firstName)
-    return render(request, 'rideMeApp/addReview.html', {'form': AddReviewForm})
+            return render(request, 'rideMeApp/addReview.html', context)
+    return render(request, 'rideMeApp/addReview.html', context)
 
 
 def dismissReview(request, pk):
@@ -466,7 +465,7 @@ def managePosting(request, pk):
                 posting.sendTripInfoUpdatedNotification()
                 posting.save()
                 messages.success(request, 'Successfully updated pickup location!')
-                pickupLocationForm = UpdateDropoffLocation()
+                pickupLocationForm = UpdatePickupLocation()
         if 'dropoffButton' in request.POST:
             dropoffLocationForm = UpdateDropoffLocation(request.POST)
             if dropoffLocationForm.is_valid():

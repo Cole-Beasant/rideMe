@@ -3,10 +3,13 @@
 
 <div style="float: right; width: 50%;">
     <h2 style="color: #ddd">Hello {{ user.firstName }} </h2>
-
-    {% for message in messages %}
-        <p style="color: #ddd">{{ message }}</p>
-    {% endfor %}
+    <table>
+        {% for message in messages %}
+        <tr>
+            <td class="{{ message.tags }}">{{ message }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 
 <div style="width: 50%; float: right;">

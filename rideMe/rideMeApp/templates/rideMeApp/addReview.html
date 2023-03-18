@@ -1,10 +1,15 @@
 {% extends "rideMeApp\master.html" %}
 {% block content %}
 
-{% for message in messages %}
-    <p>{{ message }}</p>
-{% endfor %}
+<table>
+    {% for message in messages %}
+    <tr>
+        <td class="{{ message.tags }}">{{ message }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
+<p>Leave a review for {{ userToReview.firstName }} {{ userToReview.lastName }}</p>
 <p>Enter the following to leave the review</p>
 
 <form method="post" >

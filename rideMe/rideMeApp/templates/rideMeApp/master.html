@@ -125,7 +125,7 @@
         content: '★★★★★';
         letter-spacing: 3px;
         background: linear-gradient(90deg, var(--star-background) var(--percent), var(--star-color) var(--percent));
-        background-clip: padding-box ; /* TODO: This probably will break on certain browsers*/
+        background-clip: padding-box ; /* TODO: This probably will break on certain browsers */
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -138,6 +138,35 @@
     }
     .Stars:hover .tooltiptext {
         visibility: visible;
+    }
+
+    .INFO {
+        border-radius: 25px;
+        display: inline-block;
+        padding: 5px;
+        background-color: skyblue;
+        color: #333;
+    }
+    .SUCCESS {
+        border-radius: 25px;
+        display: inline-block;
+        padding: 5px;
+        background-color: green;
+        color: #333;
+    }
+    .WARNING {
+        border-radius: 25px;
+        display: inline-block;
+        padding: 5px;
+        background-color: orange;
+        color: #333;
+    }
+    .ERROR {
+        border-radius: 25px;
+        display: inline-block;
+        padding: 5px;
+        background-color: red;
+        color: #333;
     }
 </style>
 <title>RideMe</title>

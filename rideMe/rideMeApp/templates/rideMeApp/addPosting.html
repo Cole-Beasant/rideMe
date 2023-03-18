@@ -6,9 +6,13 @@
 <h1>Add Posting</h1>
 
 <div class="box">
-    {% for message in messages %}
-        <p>{{ message }}</p>
-    {% endfor %}
+    <table>
+        {% for message in messages %}
+        <tr>
+            <td class="{{ message.tags }}">{{ message }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
     <p>Enter the following information to add a new posting: </p>
 

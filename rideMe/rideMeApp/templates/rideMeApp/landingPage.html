@@ -4,9 +4,13 @@
 <h1>Welcome to RideMe</h1>
 <img src="https://cdn.discordapp.com/attachments/891732631295754280/1078786258375037088/rideMe_logo.jpg" alt="rideMe Logo" style="width:25%; height: auto; ">
 
-{% for message in messages %}
-    <p>{{ message }}</p>
-{% endfor %}
+<table>
+    {% for message in messages %}
+    <tr>
+        <td class="{{ message.tags }}">{{ message }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 <p>Login</p>
 

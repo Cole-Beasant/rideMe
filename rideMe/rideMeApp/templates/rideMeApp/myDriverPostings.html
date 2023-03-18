@@ -3,9 +3,13 @@
 
 <h1>My Driver Trips</h1>
 
-{% for message in messages %}
-    <p>{{ message }}</p>
-{% endfor %}
+<table>
+    {% for message in messages %}
+    <tr>
+        <td class="{{ message.tags }}">{{ message }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 {% if user.getPastDriverTripsNeedingAction %}
 <h2>Past Trips that Need Action</h2>

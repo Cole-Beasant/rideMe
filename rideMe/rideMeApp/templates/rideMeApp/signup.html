@@ -3,9 +3,13 @@
 
 <h1>Welcome to RideMe</h1>
 
-{% for message in messages %}
-    <p>{{ message }}</p>
-{% endfor %}
+<table>
+    {% for message in messages %}
+    <tr>
+        <td class="{{ message.tags }}">{{ message }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 <p>Enter the following information to register</p>
 
