@@ -223,7 +223,6 @@ def viewPostingDetails(request, pk):
         except:
             messages.error(request, 'New data items not successfully saved to the database. Please try again.')
             return render(request, 'rideMeApp/postingDetails.html', context)
-        messages.success(request, 'Successfully messaged post owner!')
         return HttpResponseRedirect(reverse("viewMessages", args=[newConversation.pk]))
     context = {'posting': posting, 'user': user, 'form': form, 'conversation': conversation}
     return render(request, 'rideMeApp/postingDetails.html', context)
