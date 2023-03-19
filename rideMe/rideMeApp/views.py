@@ -154,7 +154,7 @@ def viewPostingDetails(request, pk):
     user = User.objects.get(username=request.session['loggedInUser'])
     posting = Posting.objects.get(pk=pk)
     form = SendMessageForm()
-    if (posting in user.getPostingsInteractedWith() and user!=posting.ownerID):
+    if ((posting in user.getPostingsInteractedWith() or posting in user.getApprovedPassengerRides()) and user!=posting.ownerID):
         conversation = Conversation.objects.get(postingID=posting, passengerID=user)
     else:
         conversation = Conversation.objects.filter(passengerID=user) # this solution isn't ideal but none of these should be accessible

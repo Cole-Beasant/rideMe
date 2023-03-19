@@ -53,25 +53,18 @@
 </table>
 
 {% if user != posting.ownerID %}
-{% if posting in user.getPostingsInteractedWith %}
-{% if posting in user.getApprovedPassengerRides %}
+{% if posting not in user.getPostingsInteractedWith and posting not in user.getApprovedPassengerRides %}
+<form method="post" >
+    {% csrf_token %}
+    <p>Send a Message</p>
+    {{ form.message }} <input type="submit" value="Send">
+</form>
+{% else %}
 <button type="button">
     <a href="{% url 'viewMessages' conversation.id %}">Go to Messages</a>
 </button>
-{% else %}
-<form method="post" >
-    {% csrf_token %}
-    <p>Send a Message</p>
-    {{ form.message }} <input type="submit" value="Send">
-</form>
 {% endif %}
-{% else %}
-<form method="post" >
-    {% csrf_token %}
-    <p>Send a Message</p>
-    {{ form.message }} <input type="submit" value="Send">
-</form>
-{% endif %}
+
 {% endif %}
 
 <h3>Approved Passengers</h3>
