@@ -1,6 +1,8 @@
 {% extends "rideMeApp\master.html" %}
 {% block content %}
 
+<h1>My Conversations</h1>
+
 <table>
     {% for message in messages %}
     <tr>
@@ -8,8 +10,6 @@
     </tr>
     {% endfor %}
 </table>
-
-<h1>My Conversations</h1>
 
 {% if conversations %}
 <table class="list">

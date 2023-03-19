@@ -160,7 +160,12 @@ def viewPostingDetails(request, pk):
         conversation = Conversation.objects.filter(passengerID=user) # this solution isn't ideal but none of these should be accessible
         if len(conversation) == 0:
             conversation = Conversation.objects.get(pk=1)
-    if request.method == 'POST':             
+    context = {'posting': posting, 'user': user, 'form': form, 'conversation': conversation}
+    if request.method == 'POST':
+        for conversation in posting.getAssociatedConversations():
+            if conversation.passengerID == user:
+                messages.error(request, 'You have already messaged the post owner regarding this posting.')   
+                return render(request, 'rideMeApp/postingDetails.html', context)
         try:
             newConversation = Conversation(
                 postingID = posting, 
@@ -224,7 +229,6 @@ def viewPostingDetails(request, pk):
             messages.error(request, 'New data items not successfully saved to the database. Please try again.')
             return render(request, 'rideMeApp/postingDetails.html', context)
         return HttpResponseRedirect(reverse("viewMessages", args=[newConversation.pk]))
-    context = {'posting': posting, 'user': user, 'form': form, 'conversation': conversation}
     return render(request, 'rideMeApp/postingDetails.html', context)
 
 
@@ -338,7 +342,7 @@ def viewConversations(request):
 def viewMessages(request, pk):
     conversation = Conversation.objects.get(pk=pk)
     posting = conversation.postingID
-    messages = Message.objects.filter(conversationID = conversation).order_by('-timeSent')
+    Messages = Message.objects.filter(conversationID = conversation).order_by('-timeSent')
     user = User.objects.get(username=request.session['loggedInUser'])
     if request.method == 'POST':
         form = SendMessageForm(request.POST)
@@ -355,12 +359,12 @@ def viewMessages(request, pk):
             return HttpResponseRedirect(reverse("viewMessages", args=[pk]))
     else:
         form = SendMessageForm()
-    for message in messages:
+    for message in Messages:
         if message.senderID != User.objects.get(username=request.session['loggedInUser']):
             if message.hasRead == False:
                 message.hasRead = True
                 message.save()
-    context = {'messages': messages, 'conversation': conversation, 'user': user, 'posting': posting, 'form': SendMessageForm}
+    context = {'Messages': Messages, 'conversation': conversation, 'user': user, 'posting': posting, 'form': SendMessageForm}
     return render(request, 'rideMeApp/viewMessages.html', context)
 
 
@@ -417,7 +421,7 @@ def addApprovedPassenger(request, pk):
         posting.sendTripClosedNotification()
 
     messages.success(request, approvedPassenger.username + ' is now an approved passenger for this trip')
-    return HttpResponseRedirect(reverse('viewConversations'))
+    return HttpResponseRedirect(reverse("viewMessages", args=[conversation.pk]))
 
 
 def confirmDeleteProfile(request):
