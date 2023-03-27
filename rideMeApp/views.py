@@ -190,7 +190,23 @@ def viewPostingDetails(request, pk):
     else:
         conversation = Conversation.objects.filter(passengerID=user) # this solution isn't ideal but none of these should be accessible
         if len(conversation) == 0:
-            conversation = Conversation.objects.get(pk=1)
+            try:
+                conversation = Conversation.objects.get(pk=1)
+            except:
+                dummyUser = User(
+                    username = 'dummy',
+                    password = 'dummy',
+                    firstName = 'dummy',
+                    lastName = 'dummy',
+                    email = 'dummy@dummy.com',
+                )
+                dummyUser.save()
+                conversation = Conversation(
+                    postingID = posting,
+                    passengerID = dummyUser,
+                    isClosed = True
+                )
+                conversation.save()
     context = {'posting': posting, 'user': user, 'form': form, 'conversation': conversation}
     if request.method == 'POST':
         for conversation in posting.getAssociatedConversations():
