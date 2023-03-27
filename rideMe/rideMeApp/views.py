@@ -334,6 +334,7 @@ def viewConversations(request):
     
     for conversation in conversations:
         conversation.setHasUnreadMessagesCurUser(user)
+        conversation.save()
 
     context = {'conversations': conversations, 'user': user}
     return render(request, 'rideMeApp/viewConversations.html', context)
@@ -459,6 +460,7 @@ def managePosting(request, pk):
 
     for conversation in user.getConversations():
         conversation.setHasUnreadMessagesCurUser(user)
+        conversation.save()
 
     if request.method == 'POST':
         if 'pickupButton' in request.POST:
