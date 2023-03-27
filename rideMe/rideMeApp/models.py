@@ -12,6 +12,8 @@ class User(models.Model):
     numTripsAsDriver = models.IntegerField(default=0)
     numTripsAsPassenger = models.IntegerField(default=0)
     registrationTime = models.DateTimeField(auto_now_add=True)
+    securityQuestion = models.CharField(max_length=50, default="What is the name of the site")
+    securityQuestionAnswer = models.CharField(max_length=256, default='rideMe')
 
     # phoneNumber
 
@@ -20,6 +22,9 @@ class User(models.Model):
 
     def verifyPassword(self, raw_password):
         return pbkdf2_sha256.verify(raw_password, self.password)
+    
+    def verifySecurityQuestionAnswer(self, rawSecurityQuestionAnswer):
+        return pbkdf2_sha256.verify(rawSecurityQuestionAnswer, self.securityQuestionAnswer)
 
     def getAverageRatingAsDriver(self):
         reviews = Review.objects.filter(reviewedUserID=self, reviewedUserType='driver')

@@ -1,0 +1,29 @@
+{% extends "rideMeApp/master.html" %}
+{% block content %}
+<div style="text-align: center;">
+
+<div style="text-align: center; margin-top: 20%;">
+    <table>
+        {% for message in messages %}
+        <tr>
+            <td class="{{ message.tags }}">{{ message }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <form method="post" >
+        {% csrf_token %}
+        <table class="box" style="margin: auto">
+            {% for field in form %}
+            <tr>
+                <td>{{field.label}}</td>
+                <td>{{field}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <input type="submit" value="Submit">
+    </form>
+
+    <button type="button" class="btn"><a href="{% url 'landingPage' %}">Back</button>
+</div>
+{% endblock %}

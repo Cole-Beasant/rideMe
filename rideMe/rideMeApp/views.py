@@ -10,7 +10,7 @@ from .forms import LoginForm, SignUpForm, ResetPasswordForm
 from django.urls import reverse
 from .forms import SignUpForm, LoginForm, AddPostingForm, StartConversation, AddReviewForm, SendMessageForm
 from .forms import UpdatePickupLocation, UpdateDropoffLocation, UpdateTripDate, UpdateTripTime, UpdateVehicle
-from .forms import UpdateNumAvailableSeats, UpdatePriceForm
+from .forms import UpdateNumAvailableSeats, UpdatePriceForm, EnterUsernameForm, AnswerSecurityQuestionForm
 from django.contrib import messages
 import random, datetime
 
@@ -71,6 +71,9 @@ def createUser(request):
         lastName = request.POST['lastName']
         email = request.POST['email']
         encryptPassword = pbkdf2_sha256.encrypt(password, rounds=12000, salt_size=32)
+        securityQuestion = request.POST['securityQuestion']
+        securityQuestionAnswer = request.POST['securityQuestionAnswer']
+        encryptSecurityQuestionAnswer = pbkdf2_sha256.encrypt(securityQuestionAnswer, rounds=12000, salt_size=32)
 
         if form.is_valid():
             try:
@@ -82,7 +85,9 @@ def createUser(request):
                     email = email,
                     numTripsAsDriver = 0,
                     numTripsAsPassenger = 0,
-                    registrationTime = timezone.now()
+                    registrationTime = timezone.now(),
+                    securityQuestion = securityQuestion,
+                    securityQuestionAnswer = encryptSecurityQuestionAnswer
                 )
                 messages.success(request, 'Successfully signed up!')
                 return HttpResponseRedirect(reverse('landingPage'))
@@ -95,10 +100,35 @@ def createUser(request):
 
     return render(request, 'rideMeApp/signup.html', {'form': SignUpForm})
 
+def verifyUsername(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        try:
+            user = User.objects.get(username=username)
+        except:
+            messages.error(request, 'Enter a valid username')
+            return render(request, 'rideMeApp/verifyUsername.html', {'form': EnterUsernameForm})
+        request.session['toReset'] = user.username
+        context = {'user': user, 'form': AnswerSecurityQuestionForm}
+        return HttpResponseRedirect(reverse('securityQuestion'))
+    return render(request, 'rideMeApp/verifyUsername.html', {'form': EnterUsernameForm})
+
+def securityQuestion(request):
+    user = User.objects.get(username=request.session['toReset'])
+    context = {'user': user, 'form': AnswerSecurityQuestionForm}
+    if request.method == 'POST':
+        answer = request.POST['answer']
+
+        if user.verifySecurityQuestionAnswer(answer) == True:
+            return HttpResponseRedirect(reverse('resetPassword'))
+        else:
+            messages.error(request, 'Incorrect answer to security question')
+            return render(request, 'rideMeApp/securityQuestion.html', context)
+
+    return render(request, 'rideMeApp/securityQuestion.html', context)
 
 def resetPassword(request):
     if request.method == 'POST':
-        username = request.POST['username']
         newPassword = request.POST['newPassword']
         confirmNewPassword = request.POST['confirmNewPassword']
 
@@ -107,13 +137,14 @@ def resetPassword(request):
             return render(request, 'rideMeApp/resetPassword.html', {'form': ResetPasswordForm})
 
         try:
-            User.objects.get(username=username)
+            User.objects.get(username=request.session['toReset'])
         except:
                 messages.error(request, 'Enter a valid username')
                 return render(request, 'rideMeApp/resetPassword.html', {'form': ResetPasswordForm})
-        user = User.objects.get(username=username)
+        user = User.objects.get(username=request.session['toReset'])
         user.password = pbkdf2_sha256.encrypt(newPassword, rounds=12000, salt_size=32)
         user.save()
+        del request.session['toReset']
         messages.success(request, 'Password has been successfully reset')
         return HttpResponseRedirect(reverse('landingPage'))
 

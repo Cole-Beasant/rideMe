@@ -24,6 +24,8 @@ urlpatterns = [
     # path('', include('django.contrib.auth.urls')),
     path('', views.login, name='landingPage'),
     path('signup/', views.createUser, name='signup'),
+    path('verifyusername/', views.verifyUsername, name='verifyusername'),
+    path('securityQuestion/', views.securityQuestion, name='securityQuestion'),
     path('resetPassword/', views.resetPassword, name='resetPassword'),
     path('logout/', views.logout, name='logout'),
     path('postings?submitted=True/', views.viewPostings, name='postings'),

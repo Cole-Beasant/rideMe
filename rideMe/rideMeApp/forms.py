@@ -8,15 +8,22 @@ class SignUpForm(forms.Form):
     email = forms.EmailField(label="Enter your email address:")
     password = forms.CharField(label='Enter your password:', widget=forms.PasswordInput)
     confirmPassword = forms.CharField(label='Confirm you password:', widget=forms.PasswordInput)
+    securityQuestion = forms.CharField(label="Enter a security question:")
+    securityQuestionAnswer = forms.CharField(label="Enter the answer to the security question:")
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Enter your username')
     password = forms.CharField(label='Enter your password', widget=forms.PasswordInput)
 
 class ResetPasswordForm(forms.Form):
-    username = forms.CharField(label='Enter your username:')
     newPassword = forms.CharField(label='Enter your new password:', widget=forms.PasswordInput)
     confirmNewPassword = forms.CharField(label='Confirm your new password:', widget=forms.PasswordInput)
+
+class EnterUsernameForm(forms.Form):
+    username = forms.CharField(label='Enter your username')
+
+class AnswerSecurityQuestionForm(forms.Form):
+    answer = forms.CharField(label='Enter the answer to the above security question:')
 
 class AddPostingForm(forms.Form):
     numAvailableSeats = forms.IntegerField(label='Enter the number of available seats for your trip:', widget=forms.NumberInput(attrs={'placeholder':'Number of Seats'}))
