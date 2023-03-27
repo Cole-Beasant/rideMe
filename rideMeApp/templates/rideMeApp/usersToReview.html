@@ -1,0 +1,56 @@
+{% extends "rideMeApp/master.html" %}
+{% block content %}
+
+<table>
+    {% for message in messages %}
+    <tr>
+        <td class="{{ message.tags }}">{{ message }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h1>Users to Review</h1>
+
+{% if usersToReview %}
+
+<table class="box">
+    <tr>
+        <td>User</td>
+        <td></td>
+        <td>Interaction Type</td>
+        <td></td>
+        <td></td>
+        <td>Trip Date</td>
+        <td>Trip Pickup Location</td>
+        <td>Trip Dropoff Location</td>
+    </tr>
+        {% for user in usersToReview %}
+        <tr>
+            <td>{{ user.theInteracter.lastName }}, {{ user.theInteracter.firstName }}</td>
+            <td> <a class="user" href="{% url 'userdetails' user.theInteracter.id %}"> @{{ user.theInteracter.username }}</a></td>
+            {% if user.InteractionType == 'driver' %}
+            <td>My Driver</td>
+            {% else %}
+            <td>My Passenger</td>
+            {% endif %}
+            <td>
+                <button type="button">
+                    <a href="{% url 'addReview' user.id %}" >Leave Review</a>                
+                </button>
+            </td>
+            <td>
+                <button type="button">
+                    <a href="{% url 'dismissReview' user.theInteracter.id %}">Dismiss</a>
+                </button>
+            </td>
+            <td>{{ user.postingID.tripTime }}</td>
+            <td>{{ user.postingID.pickupLocation }}</td>
+            <td>{{ user.postingID.dropoffLocation }}</td>
+        </tr>
+        {% endfor %}
+
+{% else %}
+<p>You have already reviewed all users you have interacted with.</p>
+{% endif %}
+
+{% endblock %}
