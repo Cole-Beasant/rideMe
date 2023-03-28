@@ -2,6 +2,8 @@
 
 Ride sharing app for CSCI485 project
 
+Can be viewed at https://rideme-app.herokuapp.com/ 
+
 The directory of this project is the following:
 
 ```
