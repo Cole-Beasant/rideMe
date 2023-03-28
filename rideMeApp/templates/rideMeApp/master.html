@@ -171,7 +171,7 @@
 </style>
 <title>RideMe</title>
 <link rel="icon" type="image/x-icon" href="https://cdn.discordapp.com/attachments/891732631295754280/1081604741131403456/favicon.ico">
-{% if request.path != '/' and request.path != '/signup/' and request.path != '/resetPassword/' %}
+{% if request.path != '/' and request.path != '/signup/' and request.path != '/resetPassword/' and request.path != '/verifyusername/' and request.path != '/securityQuestion/' %}
 <div class="topnav">
     <a class="{% if request.path == '/postings?submitted=True/' %}active{% endif %}" href="{% url 'postings' %}">Postings</a>
     <a class="{% if request.path == '/postings/addPostings?submitted=True/' %}active{% endif %}" href="{% url 'addPosting' %}" >Add Posting </a>
