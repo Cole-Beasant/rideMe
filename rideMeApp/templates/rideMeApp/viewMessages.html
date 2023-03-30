@@ -34,7 +34,12 @@
             })
             .done(response => {
                 $(response).each(function(index, value) {
-                    $('#message_table').find('tbody').append("<tr><td><a class='msg-left'>"+ value + "</a></td></tr>")
+                    $('#message_table').find('tbody').append("<tr><td><a class='msg-left' id='newMsg'></a></td></tr><tr><td style='color: gray;'' id='newMsgTime'></td></tr>")
+                    $('#newMsg').text(value[0])
+                    $('#newMsgTime').text(value[1])
+                    $('#newMsg').attr('id', 'oldNewMsg')
+                    $('#newMsgTime').attr('id', 'oldNewMsgTime')
+                    
                 })
                 
                 setTimeout( function() {

@@ -102,9 +102,10 @@ class SendMessageForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
         message = cleaned_data.get("message")
-        for letter in message:
-            if letter == '/':
-                self.add_error('message', forms.ValidationError("Slashes are not allowed"))
+        # only needed because of script refreshing messages automatically - '<' introduces vulnerablilty through code injection eg </script>
+        #if "<" in message:
+        #    self.add_error("message", forms.ValidationError("'<' not allowed in messages"))
+        return cleaned_data
         
 
 class UpdatePriceForm(forms.Form):

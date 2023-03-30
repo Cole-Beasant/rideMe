@@ -679,7 +679,10 @@ def getUnreadMessages(request, pk):
         MsgTemp = Message.objects.filter(conversationID = conversation, hasRead = False).order_by('-timeSent')
         for msg in MsgTemp:
             if msg.senderID != user:
-                Msg.append(msg.message)
+                Msg.append([msg.message, msg.timeSent.strftime("%B %d, %Y, %I:%M %p")
+                            .lstrip("0").replace(" 0", " ")
+                            .replace("PM", "p.m.")
+                            .replace("AM","a.m.")])
                 msg.hasRead = True
                 msg.save()
     except:
