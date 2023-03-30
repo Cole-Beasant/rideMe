@@ -99,6 +99,13 @@ class AddReviewForm(forms.Form):
 
 class SendMessageForm(forms.Form):
     message = forms.CharField(max_length=500, label='Enter Message:', widget=forms.TextInput(attrs={'placeholder': 'Message'}))
+    def clean(self):
+        cleaned_data = super().clean()
+        message = cleaned_data.get("message")
+        for letter in message:
+            if letter == '/':
+                self.add_error('message', forms.ValidationError("Slashes are not allowed"))
+        
 
 class UpdatePriceForm(forms.Form):
     tripPrice = forms.DecimalField(label='Enter the price you wish passengers to pay for the trip:', max_digits=6, decimal_places=2, widget=forms.TextInput(attrs={'placeholder': 'Trip Price'}))

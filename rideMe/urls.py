@@ -48,5 +48,6 @@ urlpatterns = [
     path('<int:pk>/cancelPosting?submitted=True/', views.cancelPosting, name='cancelPosting'),
     path('myPassengerPostings?submitted=True/', views.myPassengerPostings, name='myPassengerPostings'),
     path('<int:pk>/removeMyselfAsApprovedPassenger?submitted=True/', views.removeMyselfAsApprovedPassenger, name='removeMyselfAsApprovedPassenger'),
-    path('<int:pk>/confirmRemoveMyselfAsApprovedPassenger?submitted=True/', views.confirmRemoveMyselfAsApprovedPassenger, name='confirmRemoveMyselfAsApprovedPassenger')
+    path('<int:pk>/confirmRemoveMyselfAsApprovedPassenger?submitted=True/', views.confirmRemoveMyselfAsApprovedPassenger, name='confirmRemoveMyselfAsApprovedPassenger'),
+    path('<int:pk>/getUnreadMessages?submitted=True/', views.getUnreadMessages, name='getUnreadMessages'),
 ]
