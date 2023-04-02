@@ -1,0 +1,12 @@
+{% extends "rideMeApp/master.html" %}
+{% block content %}
+
+<p>Are you sure you want to remove yourself as an approved passenger? This action cannot be undone. </p>
+
+<button type="button">
+    <a href="{% url 'myPassengerPostings' %}">No, I would like to remain on the approved passenger list</a>
+</button>
+<button type="button">
+    <a href="{% url 'removeMyselfAsApprovedPassenger' posting.id %}">Yes, please remove me from the approved passenger list</a>
+</button>
+{% endblock %}

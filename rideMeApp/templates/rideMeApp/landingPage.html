@@ -1,0 +1,30 @@
+{% extends "rideMeApp/master.html" %}
+{% block content %}
+
+<div style="text-align: center;">
+<h1>Welcome to RideMe</h1>
+<img src="https://cdn.discordapp.com/attachments/891732631295754280/1078786258375037088/rideMe_logo.jpg" alt="rideMe Logo" style="width:25%; height: auto; ">
+
+<table style="margin-right: auto; margin-left: auto;">
+    {% for message in messages %}
+    <tr>
+        <td class="{{ message.tags }}">{{ message }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<p>Login</p>
+
+<form method="post" >
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>
+
+<p>Don't have an account?</p>
+<button type="button" class="btn"><a href="{% url 'signup' %}">Sign Up</a></button>
+<p>Forgot your password?</p>
+<button type="button" class="btn"><a href="{% url 'verifyusername' %}">Reset Password</a></button>
+</div>
+<a>{{request.path}}</a>
+{% endblock %}

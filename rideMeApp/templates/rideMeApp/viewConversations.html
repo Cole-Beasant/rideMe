@@ -1,0 +1,85 @@
+{% extends "rideMeApp/master.html" %}
+{% block content %}
+
+<h1>My Conversations</h1>
+
+<table>
+    {% for message in messages %}
+    <tr>
+        <td class="{{ message.tags }}">{{ message }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% if conversations %}
+<table class="list">
+    <tr>
+        <th style="border-radius: 25px 0px 0px 0px;">Unread Messages</th>
+        <th>My Post</th>
+        <th>User</th>
+        <th></th>
+        <th>Posting Open</th>
+        <th>Pickup Location</th>
+        <th>Dropoff Location</th>
+        <th>Trip Date</th>
+        <th>Pickup Time</th>
+        <th>Trip Price</th>
+        <th style="border-radius: 0px 25px 0px 0px;"></th>
+    </tr>
+        {% for conversation in conversations %}
+        <tr>
+            {% if conversation.hasUnreadMessagesCurUser == False %}
+            <td>No</td>
+            {% else %}
+            <td>Yes</td>
+            {% endif %}
+
+            {% if user == conversation.passengerID %}
+            <td>No</td>
+            <td style="white-space: nowrap; width: 0px;">
+                <button>
+                    <a href="{% url 'userdetails' conversation.postingID.ownerID.id %}">
+                        {{ conversation.postingID.ownerID.firstName }} {{ conversation.postingID.ownerID.lastName }} ({{conversation.postingID.ownerID.username}})
+                    </a>
+                </button>
+            </td>
+            {% else %}
+            <td>Yes</td>
+            <td style="white-space:nowrap; width: 0px;">
+                <button class="btn" >
+                    <a href="{% url 'userdetails' conversation.passengerID.id %}">
+                        {{ conversation.passengerID.firstName }} {{ conversation.passengerID.lastName }} ({{conversation.passengerID.username}})
+                    </a>
+                </button>
+            </td>
+            {% endif %}
+
+            <td style="white-space:nowrap; width: 0px;">
+                <button type="button" class="btn">
+                    <a href="{% url 'viewMessages' conversation.id %}">View Messages</a>
+                </button>
+            </td>
+            {% if conversation.postingID.isOpen == True %}
+                <td>Yes</td>
+            {% else %}
+                <td>No</td>
+            {% endif %}
+            <td>{{ conversation.postingID.pickupLocation }}</td>
+            <td>{{ conversation.postingID.dropoffLocation }}</td>
+            <td>{{ conversation.postingID.tripDate }}</td>
+            <td>{{ conversation.postingID.tripTime }}</td>
+            <td>${{ conversation.postingID.tripPrice }}</td>
+            <td style="white-space:nowrap; width: 0px;">
+                <button type="button" class="btn">
+                    <a href="{% url 'postingdetails' conversation.postingID.id %}">View Associated Posting</a>
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+</table>
+
+{% else %}
+    <p>You do not have any open conversations</p>
+{% endif %}
+
+{% endblock %}

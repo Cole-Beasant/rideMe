@@ -1,0 +1,134 @@
+{% extends "rideMeApp/master.html" %}
+{% block content %}
+
+<h1>User Details</h1>
+
+{% if user %}
+
+<table class="box">
+    <tr>
+        <td>Username:</td>
+        <td>{{ user.username }}</td>
+    </tr>
+    <tr>
+        <td>User's Name:</td>
+        <td>{{ user.lastName }}, {{ user.firstName }} </td>
+    </tr>
+    <tr>
+        <td>User's Email:</td>
+        <td>{{ user.email }}</td>
+    </tr>
+    <tr>
+        <td>RideMe member since:</td>
+        <td>{{ user.registrationTime }}</td>
+    </tr>
+    <tr>
+        <td>Number of Trips as Driver:</td>
+        <td>{{ user.numTripsAsDriver }}</td>
+    </tr>
+    <tr>
+        <td>Number of Trips as Passenger:</td>
+        <td>{{ user.numTripsAsPassenger }}</td>
+    </tr>
+    <tr>
+        <td>Average Rating as Driver:</td>
+        <td> <div class="stars" style="--rating: {{ user.getAverageRatingAsDriver }};" aria-label="Rating"><a class="tooltiptext">{{ user.getAverageRatingAsDriver }}</a></div></td>
+    </tr>
+    <tr>
+        <td>Average Rating as Passenger:</td>
+        <td><div class="stars" style="--rating: {{ user.getAverageRatingAsPassenger }};" aria-label="Rating"><a class="tooltiptext">{{ user.getAverageRatingAsPassenger }}</a></div></td>
+    </tr>
+</table>
+
+<h2>User Reviews</h2>
+
+<h3>As a Driver</h3>
+
+{% if user.getReviewsAsDriver %}
+<table class="box">
+    {% for review in user.getReviewsAsDriver %}
+    <tr>
+        <td>
+            <div style="padding: 4px;">
+                <a> <br> <button class="user"><a>
+                    @{{ review.0}}
+                </a> </button>
+                <div class="stars" style="--rating: {{review.1}}; padding-top: 0px;"> <a class="tooltiptext">{{review.1}}</a></div>
+                </a>
+                <a style="padding: 4px;">
+                    {{review.3}}
+                </a>
+                <a style="padding: 4px;">
+                    {{review.2}}
+                </a>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+    <p>{{ user.lastName }}, {{ user.firstName }} has not been reviewed as a driver yet</p>
+{% endif %}
+
+<h3>As a Passenger</h3>
+
+{% if user.getReviewsAsPassenger %}
+<table class="box">
+    {% for review in user.getReviewsAsPassenger %}
+    <tr>
+        <td>
+            <div style="padding: 4px;">
+                <a> <br> <button class="user"><a>
+                    @{{ review.0}}
+                </a> </button>
+                <div class="stars" style="--rating: {{review.1}}; padding-top: 0px;"> <a class="tooltiptext">{{review.1}}</a></div>
+                </a>
+                <a style="padding: 4px;">
+                    {{review.3}}
+                </a>
+                <a style="padding: 4px;">
+                    {{review.2}}
+                </a>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+    <p>{{ user.lastName }}, {{ user.firstName }} has not been reviewed as a passenger yet</p>
+{% endif %}
+
+<h2>User Upcoming Driver Trips</h2>
+
+{% if user.getUpcomingDriverTrips %}
+<table class="box">
+    <tr>
+        <td>Pickup Location</td>
+        <td>Dropoff Location</td>
+        <td>Trip Date</td>
+        <td>Pickup Time</td>
+        <td></td>
+    </tr>
+    {% for posting in user.getUpcomingDriverTrips %}
+    <tr>
+        <td>{{ posting.pickupLocation }}</td>
+        <td>{{ posting.dropoffLocation }}</td>
+        <td>{{ posting.tripDate }}</td>
+        <td>{{ posting.tripTime }}</td>
+        <td>
+            <button type="button">
+                <a href="{% url 'postingdetails' posting.id %}" >View Posting </a>                 
+            </button>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% else %}
+<p>{{ user.lastName }}, {{ user.firstName }} does not have any upcoming driver trips</p>
+{% endif %}
+
+{% else %}
+    <p>No user selected</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,220 @@
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+</head>
+<style>
+    /* Updated the color scheme and typography for a more modern look */
+    :root {
+        --primary-color: #1E202A;
+        --secondary-color: #2A2D38;
+        --accent-color: #1E88E5;
+        --text-color: #D6D8DC;
+        --list-background-color: #31344A;
+        --alternating-list-background-color: #393C4F;
+        --font-family: 'Roboto', sans-serif;
+    }
+    
+    /* Import the Roboto font from Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+    /* Modernized the top navigation */
+    .topnav {
+        background-color: var(--primary-color);
+        overflow: hidden;
+        font-family: var(--font-family);
+        display: flex;
+        justify-content: space-between;
+    }
+    .topnav a {
+        float: left;
+        color: var(--text-color);
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+    }
+    /* Change the color of links on hover */
+    .topnav a:hover {
+        background-color: var(--accent-color);
+        color: var(--primary-color);
+    }
+    /* Add a color to the active/current link */
+    .topnav a.active {
+        background-color: var(--accent-color);
+        color: var(--primary-color);
+    }
+    .topnav i {
+        margin-right: 4px;
+    }
+    
+    .btn a {
+        text-decoration: none;
+        color: var(--primary-color) !important;
+    }
+    button a {
+        text-decoration: none;
+        color: var(--primary-color) !important;
+    }
+    body {
+        background-color: var(--secondary-color); /* Dark mode background */
+        font-family: var(--font-family);
+    }
+    h1 {
+        color: var(--text-color);
+        text-align: center;
+    }
+    h2 {
+        color: var(--text-color);
+    }
+    h3 {
+        color: var(--text-color);
+    }
+    .box a {
+        color: var(--text-color);
+    }
+    .box p {
+        color: var(--text-color);
+    }
+    .box tr {
+        color: var(--text-color);
+    }
+    p {
+        color: var(--text-color);
+    }
+
+    .list {
+        width: 90%
+    }
+    .list th {
+        background-color: var(--primary-color);
+        color: var(--text-color);
+        padding-right: 4px;
+        padding-left: 4px;
+        padding-bottom: 4px;
+        padding-top: 4px;
+    }
+    .list td {
+        border-bottom: 1px solid #ddd;
+		color: var(--text-color);
+        padding-right: 4px;
+        padding-left: 4px;
+        padding-bottom: 4px;
+        padding-top: 4px;
+    }
+    .list tr:nth-child(even) {
+        background-color: var(--list-background-color);
+    }
+    .list tr:nth-child(odd) {
+        background-color: var(--alternating-list-background-color);
+    }
+    .list tr:hover {
+        background-color: var(--accent-color);
+    }
+
+    .msg-left {
+        border-radius: 25px 25px 25px 0px;
+        background-color: #ddd;
+        padding: 10px;
+        float: left;
+    }
+    .msg-right {
+        border-radius: 25px 25px 0px 25px;
+        background-color: dodgerblue;
+        padding: 10px;
+        float: right;
+    }
+    .user {
+        border-radius: 25px;
+        padding: 5px;
+        background-color: var(--primary-color);
+        border: none;
+    }
+    .user a {
+        color: var(--text-color) !important;
+    }
+
+    .profile-picture {
+        width: 100px; /* Adjust the size according to your preference */
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%; /* Make the image rounded */
+        border: 2px solid var(--accent-color);
+    }
+
+    :root {
+        --star-size: 30px;
+        --star-color: var(--primary-color);
+        --star-background: var(--accent-color);
+    }
+    .Stars {
+        --percent: calc(var(--rating) / 5 * 100%);
+        display: inline-block;
+        font-size: var(--star-size);
+        font-family: Times;
+        line-height: 1;
+    }
+    .Stars::before {
+        content: '★★★★★';
+        letter-spacing: 3px;
+        background: linear-gradient(90deg, var(--star-background) var(--percent), var(--star-color) var(--percent));
+        background-clip: padding-box ; /* TODO: This probably will break on certain browsers */
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .Stars .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+    }
+    .Stars:hover .tooltiptext {
+        visibility: visible;
+    }
+
+    .INFO {
+        border-radius: 25px;
+        display: inline-block;
+        padding: 5px;
+        background-color: #17a2b8;
+        color: var(--text-color);
+    }
+    .SUCCESS {
+        border-radius: 25px;
+        display: inline-block;
+        padding: 5px;
+        background-color: #28a745;
+        color: var(--text-color);
+    }
+    .WARNING {
+        border-radius: 25px;
+        display: inline-block;
+        padding: 5px;
+        background-color: #ffc107;
+        color: var(--text-color);
+    }
+    .ERROR {
+        border-radius: 25px;
+        display: inline-block;
+        padding: 5px;
+        background-color: #dc3545;
+        color: var(--text-color);
+    }
+</style>
+
+<title>RideMe</title>
+<link rel="icon" type="image/x-icon" href="https://cdn.discordapp.com/attachments/891732631295754280/1081604741131403456/favicon.ico">
+{% if request.path != '/' and request.path != '/signup/' and request.path != '/resetPassword/' and request.path != '/verifyusername/' and request.path != '/securityQuestion/' %}
+<div class="topnav">
+    <a class="{% if request.path == '/postings?submitted=True/' %}active{% endif %}" href="{% url 'postings' %}"><i class="fas fa-list"></i>Postings</a>
+    <a class="{% if request.path == '/postings/addPostings?submitted=True/' %}active{% endif %}" href="{% url 'addPosting' %}" ><i class="fas fa-plus"></i>Add a Posting </a>
+    <a class="{% if request.path == '/usersToReview?submitted=True/' %}active{% endif %}" href="{% url 'usersToReview' %}" ><i class="fas fa-star"></i>Leave a Review </a>
+    <a class="{% if request.path == '/viewConversations?submitted=True/' %}active{% endif %}" href="{% url 'viewConversations' %}"><i class="fas fa-comments"></i>My Conversations</a>
+    <a class="{% if request.path == '/myDriverPostings?submitted=True/' %}active{% endif %}" href="{% url 'myDriverPostings' %}"><i class="fas fa-car-side"></i>My Driver Trips</a>
+    <a class="{% if request.path == '/myPassengerPostings?submitted=True/' %}active{% endif %}" href="{% url 'myPassengerPostings' %}"><i class="fas fa-user-friends"></i>My Passenger Trips</a>
+    <a class="{% if request.path == '/myProfile?submitted=True/' %}active{% endif %}" href="{% url 'myProfile' %}"><i class="fas fa-user-circle"></i>My Profile</a>
+    <a style="float:right" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i>Logout</a>
+</div>
+{% endif %}
+
+{% block content %}
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "rideMeApp/master.html" %}
+
+{% block content %}
+
+
+<h1>Add a Posting</h1>
+
+<div class="box">
+    <table>
+        {% for message in messages %}
+        <tr>
+            <td class="{{ message.tags }}">{{ message }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Enter the following information to add a new posting: </h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <table>
+        {% for field in form %}
+        <tr>
+            <td>{{field.label}}</td>
+            <td>{{field}}</td>
+            <td>{{field.errors.as_text}}</td>
+        </tr>
+        {% endfor %}
+        </table>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+{% endblock %}

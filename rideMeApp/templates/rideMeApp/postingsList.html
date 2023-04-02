@@ -1,0 +1,66 @@
+{% extends "rideMeApp/master.html" %}
+{% block content %}
+{% load static %}
+
+<div style="float: right; width: 50%;">
+    </br>
+    <div style="display: flex; align-items: center;">
+        {% if user.profilePicture %}
+            <img class="profile-picture" src="{{ user.profilePicture.url }}" alt="{{ user.username }}'s profile picture">
+        {% else %}
+            <img class="profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+        {% endif %}
+        <h2 style="color: #ddd; margin-left: 10px;">Hello {{ user.firstName }} </h2>
+    </div>
+    </br>
+    <table>
+        {% for message in messages %}
+        <tr>
+            <td class="{{ message.tags }}">{{ message }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div style="width: 50%; float: right;">
+    <h1>Open Postings</h1>
+
+    {% if postingsList and user.getUpcomingOpenDriverPosting.count != postingsList.count %}
+    <table class="list">
+        <tr>
+            <th>Pickup Location</th>
+            <th>Dropoff Location</th>
+            <th>Trip Date</th>
+            <th>Pickup Time</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+            {% for posting in postingsList %}
+            {% if user != posting.ownerID %}
+            <tr>
+                
+                <td>{{ posting.pickupLocation }}</td>
+                <td>{{ posting.dropoffLocation }}</td>
+                <td>{{ posting.tripDate }}</td>
+                <td>{{ posting.tripTime }}</td>
+                <td>${{ posting.tripPrice }}</td>
+                <td>
+					<button>
+                        <a class="btn" href="{% url 'postingdetails' posting.id %}">View Posting </a>                 
+					</button>
+                </td>
+
+            </tr>
+            {% endif %}
+            {% endfor %}
+    </table>
+    {% else %}
+        <p>No open postings</p>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+
+
+
