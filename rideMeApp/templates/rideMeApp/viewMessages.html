@@ -17,7 +17,7 @@
     table th {
         position: sticky;
         top: 0;
-        background-color: #333;
+        background-color: --secondary-color;
         padding: 4px;
     }
 </style>
@@ -116,7 +116,7 @@
     <tr>
       <td>
          <table cellspacing="0" cellpadding="1" width="100%" >
-           <tr style="color:white;background-color:grey">
+           <tr style="color:white">
             {% if user == conversation.postingID.ownerID %}
             <th><button class="user" style="float:left"><a href="{% url 'userdetails' conversation.passengerID.id %}">@{{conversation.passengerID.username}}</a></button>
             {% else %}
