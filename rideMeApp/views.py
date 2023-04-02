@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from rideMeApp.models import User, Posting, Review, Conversation, Message
 from rideMeApp.models import ApprovedPassengers, UsersInteractedForUsers, UsersInteractedForPostings
 from passlib.hash import pbkdf2_sha256
@@ -670,3 +670,23 @@ def handler500(request, exception, template_name='500.html'):
     response = render(template_name)
     response.status_code = 500
     return response
+
+
+def getUnreadMessages(request, pk):
+    conversation = Conversation.objects.get(pk=pk)
+    posting = conversation.postingID
+    user = User.objects.get(username=request.session['loggedInUser'])
+    try:
+        Msg = []
+        MsgTemp = Message.objects.filter(conversationID = conversation, hasRead = False).order_by('-timeSent')
+        for msg in MsgTemp:
+            if msg.senderID != user:
+                Msg.append([msg.message, msg.timeSent.strftime("%B %d, %Y, %I:%M %p")
+                            .lstrip("0").replace(" 0", " ")
+                            .replace("PM", "p.m.")
+                            .replace("AM","a.m.")])
+                msg.hasRead = True
+                msg.save()
+    except:
+        Msg = []
+    return JsonResponse(Msg, safe=False)

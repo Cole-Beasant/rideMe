@@ -22,6 +22,34 @@
     }
 </style>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        updateState()
+
+        function updateState() {
+            $.ajax({
+                url:"{% url 'getUnreadMessages' conversation.id %}",
+                type: 'GET'
+            })
+            .done(response => {
+                $(response).each(function(index, value) {
+                    $('#message_table').find('tbody').append("<tr><td><a class='msg-left' id='newMsg'></a></td></tr><tr><td style='color: gray;'' id='newMsgTime'></td></tr>")
+                    $('#newMsg').text(value[0])
+                    $('#newMsgTime').text(value[1])
+                    $('#newMsg').attr('id', 'oldNewMsg')
+                    $('#newMsgTime').attr('id', 'oldNewMsgTime')
+                    
+                })
+                
+                setTimeout( function() {
+                    updateState()
+                }, 1000)
+            })
+        }
+    })
+</script>
+
 <h1>Messages</h1>
 <div style="float:right; width:48%">
 
@@ -101,7 +129,7 @@
     {% endif %}
     {% endif %}
 </div>
-<div style="height: 75%; border: 1px white; border-style: solid; float: left; width: 48%; border-radius: 25px;">
+<div style="height: 75%; border: 1px white; border-style: solid; float: left; width: 48%; border-radius: 25px;" id="message_div">
 {% if user == conversation.postingID.ownerID %}
 <p style="padding: 4px;"> Send a message to {{ conversation.passengerID.username }}</p>
 {% else %}
@@ -130,24 +158,26 @@
     <tr>
       <td>
          <div style="width:99%; overflow:auto; height: 55vh; display: flex; flex-direction: column-reverse; padding: 4px;">
-           <table cellspacing="0" cellpadding="1" width="100%" height="40%" style="table-layout: fixed;">
-            {% for message in Messages.reverse %}
-            {% if message.senderID == user %}
-            <tr>
-                <td><a class="msg-right">{{ message.message }}</a></td>
-            </tr>
-            <tr>
-                <td style="float: right; color: gray;">{{ message.timeSent }}</td>
-            </tr>
-            {% else %}
-            <tr>
-                <td> <a class="msg-left">{{ message.message }}</a></td>
-            </tr>
-            <tr>
-                <td style="color: gray;">{{message.timeSent}}</td>
-            </tr>        
-            {% endif %}
-            {% endfor %}
+           <table cellspacing="0" cellpadding="1" width="100%" height="40%" style="table-layout: fixed;" id="message_table">
+                <tbody>
+                {% for message in Messages.reverse %}
+                {% if message.senderID == user %}
+                <tr>
+                    <td><a class="msg-right">{{ message.message }}</a></td>
+                </tr>
+                <tr>
+                    <td style="float: right; color: gray;">{{ message.timeSent }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td> <a class="msg-left">{{ message.message }}</a></td>
+                </tr>
+                <tr>
+                    <td style="color: gray;">{{message.timeSent}}</td>
+                </tr>        
+                {% endif %}
+                {% endfor %}
+                </tbody>
            </table>  
          </div>
       </td>

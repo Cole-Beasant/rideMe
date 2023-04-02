@@ -100,6 +100,14 @@ class AddReviewForm(forms.Form):
 
 class SendMessageForm(forms.Form):
     message = forms.CharField(max_length=500, label='Enter Message:', widget=forms.TextInput(attrs={'placeholder': 'Message'}))
+    def clean(self):
+        cleaned_data = super().clean()
+        message = cleaned_data.get("message")
+        # only needed because of script refreshing messages automatically - '<' introduces vulnerablilty through code injection eg </script>
+        #if "<" in message:
+        #    self.add_error("message", forms.ValidationError("'<' not allowed in messages"))
+        return cleaned_data
+        
 
 class UpdatePriceForm(forms.Form):
     tripPrice = forms.DecimalField(label='Enter the price you wish passengers to pay for the trip:', max_digits=6, decimal_places=2, widget=forms.TextInput(attrs={'placeholder': 'Trip Price'}))
