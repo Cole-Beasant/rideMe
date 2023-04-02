@@ -55,7 +55,7 @@ def login(request):
 
 def createUser(request):
     if request.method == "POST":
-        form = SignUpForm(request.POST)
+        form = SignUpForm(request.POST, request.FILES)
         if request.POST['password'] != request.POST['confirmPassword']:
             messages.error(request, 'Passwords do not match')
             return render(request, 'rideMeApp/signup.html', {'form': SignUpForm})
@@ -74,6 +74,7 @@ def createUser(request):
         securityQuestion = request.POST['securityQuestion']
         securityQuestionAnswer = request.POST['securityQuestionAnswer']
         encryptSecurityQuestionAnswer = pbkdf2_sha256.encrypt(securityQuestionAnswer, rounds=12000, salt_size=32)
+        profilePicture = request.FILES.get('profilePicture', None)
 
         if form.is_valid():
             try:
@@ -87,7 +88,8 @@ def createUser(request):
                     numTripsAsPassenger = 0,
                     registrationTime = timezone.now(),
                     securityQuestion = securityQuestion,
-                    securityQuestionAnswer = encryptSecurityQuestionAnswer
+                    securityQuestionAnswer = encryptSecurityQuestionAnswer,
+                    profilePicture = profilePicture
                 )
                 messages.success(request, 'Successfully signed up!')
                 return HttpResponseRedirect(reverse('landingPage'))

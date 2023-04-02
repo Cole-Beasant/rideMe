@@ -3,7 +3,7 @@
 {% block content %}
 
 
-<h1>Add Posting</h1>
+<h1>Add a Posting</h1>
 
 <div class="box">
     <table>
@@ -14,7 +14,7 @@
         {% endfor %}
     </table>
 
-    <p>Enter the following information to add a new posting: </p>
+    <h2>Enter the following information to add a new posting: </h2>
 
     <form method="post">
         {% csrf_token %}
@@ -27,7 +27,7 @@
         </tr>
         {% endfor %}
         </table>
-        <input type="submit" value="submit">
+        <input type="submit" value="Submit">
     </form>
 </div>
 {% endblock %}

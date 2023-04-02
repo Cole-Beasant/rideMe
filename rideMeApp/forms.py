@@ -10,6 +10,7 @@ class SignUpForm(forms.Form):
     confirmPassword = forms.CharField(label='Confirm you password:', widget=forms.PasswordInput)
     securityQuestion = forms.CharField(label="Enter a security question:")
     securityQuestionAnswer = forms.CharField(label="Enter the answer to the security question:")
+    profilePicture = forms.ImageField(label="Upload your profile picture (optional):", required=False)
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Enter your username')

@@ -5,6 +5,15 @@
 
 {% if user %}
 
+{% load static %}
+{% if user.profilePicture %}
+    <img class="profile-picture" src="{{ user.profilePicture.url }}" alt="{{ user.username }}'s profile picture">
+{% else %}
+    <img class="profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+{% endif %}
+
+<br></br>
+
 <table class="box">
     <tr>
         <td>Username:</td>

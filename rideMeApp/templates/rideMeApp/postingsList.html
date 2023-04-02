@@ -1,8 +1,18 @@
 {% extends "rideMeApp/master.html" %}
 {% block content %}
+{% load static %}
 
 <div style="float: right; width: 50%;">
-    <h2 style="color: #ddd">Hello {{ user.firstName }} </h2>
+    </br>
+    <div style="display: flex; align-items: center;">
+        {% if user.profilePicture %}
+            <img class="profile-picture" src="{{ user.profilePicture.url }}" alt="{{ user.username }}'s profile picture">
+        {% else %}
+            <img class="profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+        {% endif %}
+        <h2 style="color: #ddd; margin-left: 10px;">Hello {{ user.firstName }} </h2>
+    </div>
+    </br>
     <table>
         {% for message in messages %}
         <tr>

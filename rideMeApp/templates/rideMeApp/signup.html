@@ -11,9 +11,9 @@
     {% endfor %}
 </table>
 
-<p>Enter the following information to register</p>
+<h2>Enter the following information to register:</h2>
 
-<form method="post" >
+<form method="post" enctype="multipart/form-data">
     <table class="box">
     {% csrf_token %}
     {% for field in form %}

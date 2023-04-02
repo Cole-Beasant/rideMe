@@ -2,6 +2,11 @@ from django.db import models
 from django.utils import timezone
 from passlib.hash import pbkdf2_sha256
 import datetime
+from django.utils.text import slugify
+
+def user_directory_path(instance, filename):
+    # File will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return f'user_{instance.pk}/{filename}'
 
 class User(models.Model):
     username = models.CharField(max_length=50)
@@ -14,6 +19,7 @@ class User(models.Model):
     registrationTime = models.DateTimeField(auto_now_add=True)
     securityQuestion = models.CharField(max_length=50, default="What is the name of the site")
     securityQuestionAnswer = models.CharField(max_length=256, default='rideMe')
+    profilePicture = models.ImageField(upload_to=user_directory_path, blank=True, null=True)
 
     # phoneNumber
 
