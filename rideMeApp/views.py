@@ -155,7 +155,7 @@ def resetPassword(request):
 
 
 def viewPostings(request):
-    postingsList = Posting.objects.filter(isOpen=True, tripDate__gt=timezone.now()).order_by('-tripDate') 
+    postingsList = Posting.objects.filter(isOpen=True, tripDate__gt=timezone.now(), isCancelled=False).order_by('-tripDate') 
     user = User.objects.get(username=request.session['loggedInUser'])
 
     numPastDriverTripsNeedingAction = user.getNumPastDriverTripsNeedingAction()

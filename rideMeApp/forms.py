@@ -42,6 +42,7 @@ class AddPostingForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
         date = cleaned_data.get('tripDate')
+        price = cleaned_data.get('tripPrice')
         seats = cleaned_data.get('numAvailableSeats')
         try:
             if int(seats)<1:
@@ -50,6 +51,8 @@ class AddPostingForm(forms.Form):
             self.add_error('numAvailableSeats', forms.ValidationError('The number of available seats must be a positive integer'))
         if not (date > timezone.now()):
             self.add_error('tripDate', forms.ValidationError('Please put a date in the future'))
+        if price < 0:
+            self.add_error('tripPrice', forms.ValidationError('Price cannot be negative'))
         return cleaned_data
 
 class UpdatePickupLocation(forms.Form):
