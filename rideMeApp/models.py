@@ -193,7 +193,7 @@ class User(models.Model):
         return pastApprovedPassengerTrips
     
     def getUpcomingOpenDriverPosting(self):
-        return Posting.objects.filter(ownerID=self, isOpen=True, tripDate__gt = timezone.now()).order_by('-tripDate')
+        return Posting.objects.filter(ownerID=self, isOpen=True, tripDate__gt = timezone.now(), isCancelled = False).order_by('-tripDate')
 
 class Review(models.Model):
     reviewedUserID = models.ForeignKey(User, on_delete=models.CASCADE)
