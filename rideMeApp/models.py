@@ -77,7 +77,7 @@ class User(models.Model):
         for review in Review.objects.all().order_by('-submissionTime'):
             if self == review.reviewedUserID:
                 if review.reviewedUserType == 'driver':
-                    reviews.append((review.reviewerID.username, review.rating, review.description, review.submissionTime))
+                    reviews.append((review.reviewerID, review.rating, review.description, review.submissionTime))
         return reviews
 
     def getReviewsAsPassenger(self):
@@ -85,7 +85,7 @@ class User(models.Model):
         for review in Review.objects.all().order_by('-submissionTime'):
             if self == review.reviewedUserID:
                 if review.reviewedUserType == 'passenger':
-                    reviews.append((review.reviewerID.username, review.rating, review.description, review.submissionTime))
+                    reviews.append((review.reviewerID, review.rating, review.description, review.submissionTime))
         return reviews
 
     def getOwnedPostings(self):

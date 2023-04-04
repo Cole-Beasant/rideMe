@@ -27,7 +27,7 @@
         {% for user in usersToReview %}
         <tr>
             <td style="white-space: nowrap; ">
-                <div style="display: flex; align-items: center;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
                     <a style="margin-right: 10px;">
                 {{ user.theInteracter.lastName }}, {{ user.theInteracter.firstName }}
             </a>
@@ -39,7 +39,7 @@
                         {% else %}
                         <img class="smaller-profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
                         {% endif %}
-                        <a style= "margin-left: 5px;" href="{% url 'userdetails' user.id %}">@{{user.theInteracter.username}}</a>
+                        <a style= "margin-left: 5px;" href="{% url 'userdetails' user.theInteracter.id %}">@{{user.theInteracter.username}}</a>
                     </div>
                 </button>
             </div>
