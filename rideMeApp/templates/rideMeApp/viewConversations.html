@@ -1,5 +1,6 @@
 {% extends "rideMeApp/master.html" %}
 {% block content %}
+{% load static %}
 
 <h1>My Conversations</h1>
 
@@ -33,24 +34,39 @@
             {% else %}
             <td>Yes</td>
             {% endif %}
-
+            
             {% if user == conversation.passengerID %}
             <td>No</td>
             <td style="white-space: nowrap; width: 0px;">
-                <button>
-                    <a href="{% url 'userdetails' conversation.postingID.ownerID.id %}">
-                        {{ conversation.postingID.ownerID.firstName }} {{ conversation.postingID.ownerID.lastName }} ({{conversation.postingID.ownerID.username}})
-                    </a>
-                </button>
+                    <button>
+                        <div style="display: flex; align-items: center;">
+                            {% if conversation.postingID.ownerID.profilePicture %}
+                            <img class="smaller-profile-picture" src="{{ conversation.postingID.ownerID.profilePicture.url }}" alt="{{ conversation.postingID.ownerID.username }}'s profile picture">
+                            {% else %}
+                            <img class="smaller-profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+                            {% endif %}
+                            <a style= "margin-left: 5px;" href="{% url 'userdetails' conversation.postingID.ownerID.id %}">
+                                {{ conversation.postingID.ownerID.firstName }} {{ conversation.postingID.ownerID.lastName }} ({{conversation.postingID.ownerID.username}})
+                            </a>
+                        </div>
+                    </button>
+                </div>
             </td>
             {% else %}
             <td>Yes</td>
             <td style="white-space:nowrap; width: 0px;">
-                <button class="btn" >
-                    <a href="{% url 'userdetails' conversation.passengerID.id %}">
-                        {{ conversation.passengerID.firstName }} {{ conversation.passengerID.lastName }} ({{conversation.passengerID.username}})
-                    </a>
-                </button>
+                    <button class="btn" >
+                        <div style="display: flex; align-items: center;">
+                            {% if conversation.passengerID.profilePicture %}
+                            <img class="smaller-profile-picture" src="{{ conversation.passengerID.profilePicture.url }}" alt="{{ conversation.passengerID.username }}'s profile picture">
+                            {% else %}
+                            <img class="smaller-profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+                            {% endif %}
+                            <a style= "margin-left: 5px;" href="{% url 'userdetails' conversation.passengerID.id %}">
+                                {{ conversation.passengerID.firstName }} {{ conversation.passengerID.lastName }} ({{conversation.passengerID.username}})
+                            </a>
+                        </div>
+                    </button>
             </td>
             {% endif %}
 

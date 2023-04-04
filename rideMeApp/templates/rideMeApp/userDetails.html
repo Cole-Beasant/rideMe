@@ -116,7 +116,7 @@
         <td>Pickup Time</td>
         <td></td>
     </tr>
-    {% for posting in user.getUpcomingDriverTrips %}
+    {% for posting in user.getUpcomingOpenDriverPosting %}
     <tr>
         <td>{{ posting.pickupLocation }}</td>
         <td>{{ posting.dropoffLocation }}</td>

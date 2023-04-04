@@ -1,18 +1,53 @@
 {% extends "rideMeApp/master.html" %}
 {% block content %}
+{% load static %}
+
+<head>
+    <script>
+        function toggleVisibility() {
+            let inputDiv = document.getElementById('inputDiv');
+            inputDiv.style.display = inputDiv.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</head>
 
 <h1>My Profile</h1>
 
 {% if user %}
 
-{% load static %}
 {% if user.profilePicture %}
-    <img class="profile-picture" src="{{ user.profilePicture.url }}" alt="{{ user.username }}'s profile picture">
+<img class="profile-picture" src="{{ user.profilePicture.url }}" alt="{{ user.username }}'s profile picture">
 {% else %}
-    <img class="profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+<img class="profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
 {% endif %}
 
-<br></br>
+<table class="box">
+    <tr>
+        <td>
+            <button onclick="toggleVisibility()">Update profile picture</button>
+            <div id="inputDiv" style="display:none;">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ profilePictureForm.as_p }}
+                    <input type="submit" value="Submit" name="profilePictureButton">
+                </form>
+            </div>
+        </td>
+        <td>{{ profilePictureForm.profilePicture.errors }}</td>
+    </tr>
+</table>
+
+<div style="float: right; width: 100%; text-align: right;">
+    <table>
+        {% for message in messages %}
+        <tr>
+            <td class="{{ message.tags }}">{{ message }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+</br>
 
 <table class="box">
     <tr>

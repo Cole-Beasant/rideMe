@@ -1,5 +1,6 @@
 {% extends "rideMeApp/master.html" %}
 {% block content %}
+{% load static %}
 
 <table>
     {% for message in messages %}
@@ -101,7 +102,14 @@
         <tr>
             <td>
                 <button class="user">
-                    <a href="{% url 'userdetails' user.id %}">{{ user.username }}</a>
+                    <div style="display: flex; align-items: center;">
+                        {% if user.profilePicture %}
+                        <img class="smaller-profile-picture" src="{{ user.profilePicture.url }}" alt="{{ user.username }}'s profile picture">
+                        {% else %}
+                        <img class="smaller-profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+                        {% endif %}
+                        <a style= "margin-left: 5px;" href="{% url 'userdetails' user.id %}">{{ user.username }}</a>
+                    </div>
                 </button>
             </td>
         </tr>
@@ -146,11 +154,37 @@
          <table cellspacing="0" cellpadding="1" width="100%" >
            <tr style="color:white">
             {% if user == conversation.postingID.ownerID %}
-            <th><button class="user" style="float:left"><a href="{% url 'userdetails' conversation.passengerID.id %}">@{{conversation.passengerID.username}}</a></button>
+            <th><button class="user" style="float:left">
+                <div style="display: flex; align-items: center;">
+                    {% if conversation.passengerID.profilePicture %}
+                    <img class="smaller-profile-picture" src="{{ conversation.passengerID.profilePicture.url }}" alt="{{ conversation.passengerID.username }}'s profile picture">
+                    {% else %}
+                    <img class="smaller-profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+                    {% endif %}
+                    <a style= "margin-left: 5px;" href="{% url 'userdetails' conversation.passengerID.id %}">@{{conversation.passengerID.username}}</a>
+                </div>
+            </button>
             {% else %}
-            <th><button class="user" style="float:left"><a href="{% url 'userdetails' conversation.postingID.ownerID.id %}">@{{conversation.postingID.ownerID.username}}</a></button>
-            {% endif %}
-            <button class="user" style="float:right"><a href="{% url 'myProfile' %}">@{{user.username}}</a></button></th>
+            <th><button class="user" style="float:left">
+                <div style="display: flex; align-items: center;">
+                    {% if conversation.postingID.ownerID.profilePicture %}
+                    <img class="smaller-profile-picture" src="{{ conversation.postingID.ownerID.profilePicture.url }}" alt="{{ conversation.postingID.ownerID.username }}'s profile picture">
+                    {% else %}
+                    <img class="smaller-profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+                    {% endif %}
+                    <a style= "margin-left: 5px;" href="{% url 'userdetails' conversation.postingID.ownerID.id %}">@{{conversation.postingID.ownerID.username}}</a></button>
+                </div>
+                {% endif %}
+            <button class="user" style="float:right">
+                <div style="display: flex; align-items: center;">
+                    {% if user.profilePicture %}
+                    <img class="smaller-profile-picture" src="{{ user.profilePicture.url }}" alt="{{ user.username }}'s profile picture">
+                    {% else %}
+                    <img class="smaller-profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+                    {% endif %}
+                    <a style= "margin-left: 5px;" href="{% url 'myProfile' %}">@{{user.username}}</a>
+                </div>
+            </button></th>
            </tr>
          </table>
       </td>

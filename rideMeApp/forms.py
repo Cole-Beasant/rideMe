@@ -55,6 +55,9 @@ class AddPostingForm(forms.Form):
             self.add_error('tripPrice', forms.ValidationError('Price cannot be negative'))
         return cleaned_data
 
+class UpdateProfilePicture(forms.Form):
+    profilePicture = forms.ImageField(label="Upload a new profile picture:", required=False)
+
 class UpdatePickupLocation(forms.Form):
     pickupLocation = forms.CharField(max_length=50, label='New pick up location:')
 

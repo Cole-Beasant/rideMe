@@ -10,7 +10,7 @@ from .forms import LoginForm, SignUpForm, ResetPasswordForm
 from django.urls import reverse
 from .forms import SignUpForm, LoginForm, AddPostingForm, StartConversation, AddReviewForm, SendMessageForm
 from .forms import UpdatePickupLocation, UpdateDropoffLocation, UpdateTripDate, UpdateTripTime, UpdateVehicle
-from .forms import UpdateNumAvailableSeats, UpdatePriceForm, EnterUsernameForm, AnswerSecurityQuestionForm
+from .forms import UpdateNumAvailableSeats, UpdatePriceForm, EnterUsernameForm, AnswerSecurityQuestionForm, UpdateProfilePicture
 from django.contrib import messages
 import random, datetime
 
@@ -420,7 +420,17 @@ def viewMessages(request, pk):
 
 def viewMyProfile(request):
     user = User.objects.get(username = request.session['loggedInUser'])
-    context = {'user': user}
+
+    profilePictureForm = UpdateProfilePicture()
+
+    if request.method == 'POST':
+        if 'profilePictureButton' in request.POST:
+            profilePictureForm = UpdateProfilePicture(request.POST, request.FILES)
+            if profilePictureForm.is_valid():
+                user.profilePicture = request.FILES.get('profilePicture', None)
+                user.save()
+                messages.success(request, 'Successfully updated profile picture!')
+    context = {'user': user, 'profilePictureForm': profilePictureForm}
     return render(request, 'rideMeApp/myProfile.html', context)
 
 
@@ -493,7 +503,6 @@ def myDriverPostings(request):
     user = User.objects.get(username=request.session['loggedInUser'])
     context = {'user': user}
     return render(request, 'rideMeApp/myDriverPostings.html', context)
-
 
 def managePosting(request, pk):
     posting = Posting.objects.get(pk=pk)
