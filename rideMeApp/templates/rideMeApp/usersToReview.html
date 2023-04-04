@@ -1,5 +1,6 @@
 {% extends "rideMeApp/master.html" %}
 {% block content %}
+{% load static %}
 
 <table>
     {% for message in messages %}
@@ -13,21 +14,36 @@
 
 {% if usersToReview %}
 
-<table class="box">
+<table class="list" style="width: auto !important">
     <tr>
-        <td>User</td>
-        <td></td>
-        <td>Interaction Type</td>
-        <td></td>
-        <td></td>
-        <td>Trip Date</td>
-        <td>Trip Pickup Location</td>
-        <td>Trip Dropoff Location</td>
+        <th>User</th>
+        <th>Interaction Type</th>
+        <th></th>
+        <th></th>
+        <th>Trip Date</th>
+        <th>Trip Pickup Location</th>
+        <th>Trip Dropoff Location</th>
     </tr>
         {% for user in usersToReview %}
         <tr>
-            <td>{{ user.theInteracter.lastName }}, {{ user.theInteracter.firstName }}</td>
-            <td> <a class="user" href="{% url 'userdetails' user.theInteracter.id %}"> @{{ user.theInteracter.username }}</a></td>
+            <td style="white-space: nowrap; ">
+                <div style="display: flex; align-items: center;">
+                    <a style="margin-right: 10px;">
+                {{ user.theInteracter.lastName }}, {{ user.theInteracter.firstName }}
+            </a>
+
+                <button class="user" style="float:right">
+                    <div style="display: flex; align-items: center;">
+                        {% if user.theInteracter.profilePicture %}
+                        <img class="smaller-profile-picture" src="{{ user.theInteracter.profilePicture.url }}" alt="{{ user.theInteracter.username }}'s profile picture">
+                        {% else %}
+                        <img class="smaller-profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+                        {% endif %}
+                        <a style= "margin-left: 5px;" href="{% url 'userdetails' user.id %}">@{{user.theInteracter.username}}</a>
+                    </div>
+                </button>
+            </div>
+            </td>
             {% if user.InteractionType == 'driver' %}
             <td>My Driver</td>
             {% else %}

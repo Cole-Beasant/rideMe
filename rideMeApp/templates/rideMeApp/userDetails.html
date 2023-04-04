@@ -108,13 +108,13 @@
 <h2>User Upcoming Driver Trips</h2>
 
 {% if user.getUpcomingDriverTrips %}
-<table class="box">
+<table class="list" style="width: auto !important">
     <tr>
-        <td>Pickup Location</td>
-        <td>Dropoff Location</td>
-        <td>Trip Date</td>
-        <td>Pickup Time</td>
-        <td></td>
+        <th>Pickup Location</th>
+        <th>Dropoff Location</th>
+        <th>Trip Date</th>
+        <th>Pickup Time</th>
+        <th></th>
     </tr>
     {% for posting in user.getUpcomingOpenDriverPosting %}
     <tr>

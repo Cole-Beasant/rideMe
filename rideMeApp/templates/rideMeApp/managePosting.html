@@ -1,5 +1,6 @@
 {% extends "rideMeApp/master.html" %}
 {% block content %}
+{% load static %}
 
 <h1>Manage Posting</h1>
 
@@ -66,8 +67,19 @@
     {% for user in posting.getApprovedPassengers %}
     <tr>
         <td>
-            <a>{{user.firstName}} {{user.lastName}} ( </a><a href="{% url 'userdetails' user.id %}">{{ user.username }}</a> <a>)</a>
+
+            <button class="user" style="float:left">
+                <div style="display: flex; align-items: center;">
+                    {% if user.profilePicture %}
+                    <img class="smaller-profile-picture" src="{{ user.profilePicture.url }}" alt="{{ user.username }}'s profile picture">
+                    {% else %}
+                    <img class="smaller-profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+                    {% endif %}
+                    <a style= "margin-left: 5px;" href="{% url 'userdetails' user.id %}">@{{user.username}}</a>
+                </div>
+                </button>
         </td>
+
     </tr>
     {% endfor %}
 </table>
@@ -75,9 +87,10 @@
 <p>You have not approved anyone to be a passenger for this trip</p>
 {% endif %}
 
+
 <h3>Associated Conversations</h3>
 {% if posting.getAssociatedConversations %}
-<table class="box" style="text-decoration: none;">
+<table class="list" style="width: auto !important">
     <th>Unread Messages</th>
     <th>User</th>
     <th>Approved?</th>
@@ -86,21 +99,36 @@
     <tr>
         <tr>
             {% if conversation.hasUnreadMessagesCurUser == False %}
-            <td>No</td>
+            <td style="white-space: nowrap; width: 0px;">No</td>
             {% else %}
-            <td>Yes</td>
+            <td style="white-space: nowrap; width: 0px;">Yes</td>
             {% endif %}
-            <td style="white-space: nowrap; width: 0px;">
-                <button>
-                    <a href="{% url 'userdetails' conversation.passengerID.id %}">
-                        {{ conversation.passengerID.firstName }} {{ conversation.passengerID.lastName }} ({{conversation.passengerID.username}})
+            <td style="white-space: nowrap; ">
+                <div style="display: flex; align-items: center;">
+                    <a style="margin-right: 10px;">
+
+                        {{ conversation.passengerID.firstName }}  {{ conversation.passengerID.lastName }}   
                     </a>
+                     
+            
+
+                <button class="user" style="float:right">
+                    
+                    <div style="display: flex; align-items: center;">
+                        {% if conversation.passengerID.profilePicture %}
+                        <img class="smaller-profile-picture" src="{{ conversation.passengerID.profilePicture.url }}" alt="{{ conversation.passengerID.username }}'s profile picture">
+                        {% else %}
+                        <img class="smaller-profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+                        {% endif %}
+                        <a style= "margin-left: 5px;" href="{% url 'userdetails' conversation.passengerID.id %}">@{{conversation.passengerID.username}}</a>
+                    </div>
                 </button>
+            </div>
             </td>
             {% if conversation.passengerID not in posting.getApprovedPassengers %}
-            <td>No</td>
+            <td style="white-space: nowrap; width: 0px;">No</td>
             {% else %}
-            <td>Yes</td>
+            <td style="white-space: nowrap; width: 0px;">Yes</td>
             {% endif %}
             <td style="white-space:nowrap; width: 0px;">
                 <button type="button" class="btn">

@@ -1,5 +1,6 @@
 {% extends "rideMeApp/master.html" %}
 {% block content %}
+{% load static %}
 
 <table>
     {% for message in messages %}
@@ -15,11 +16,20 @@
 
 <table class="box">
     <tr>
-        <td>Post Owner Name:</td>
+        <td>Post Owner:</td>
         <td>
-            <a href="{% url 'userdetails' posting.ownerID.id %}"  style="color: #ddd"> 
-                {{ posting.ownerID.lastName }}, {{ posting.ownerID.firstName }}  
-            </a>
+            <div style="display: flex; align-items: center;">
+            <button class="user" style="float:left">
+                <div style="display: flex; align-items: center;">
+                    {% if posting.ownerID.profilePicture %}
+                    <img class="smaller-profile-picture" src="{{ posting.ownerID.profilePicture.url }}" alt="{{ posting.ownerID.username }}'s profile picture">
+                    {% else %}
+                    <img class="smaller-profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+                    {% endif %}
+                    <a style= "margin-left: 5px;" href="{% url 'userdetails' posting.ownerID.id %}">@{{posting.ownerID.username}}</a>
+                </div>
+                </button>
+            </div>
         </td>
     </tr>
     <tr>
@@ -73,7 +83,22 @@
     {% for user in posting.getApprovedPassengers %}
     <tr>
         <td>
-            <a>{{user.firstName}} {{user.lastName}} </a><button class="user"><a href="{% url 'userdetails' user.id %}">@{{ user.username }}</a></button>
+            <div style="display: flex; align-items: center;">
+                <a style="margin-right: 10px;">
+
+                    {{ conversation.passengerID.firstName }}  {{ conversation.passengerID.lastName }}   
+                </a>
+            <button class="user" style="float:left">
+                <div style="display: flex; align-items: center;">
+                    {% if user.profilePicture %}
+                    <img class="smaller-profile-picture" src="{{ user.profilePicture.url }}" alt="{{ user.username }}'s profile picture">
+                    {% else %}
+                    <img class="smaller-profile-picture" src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+                    {% endif %}
+                    <a style= "margin-left: 5px;" href="{% url 'userdetails' user.id %}">@{{user.username}}</a>
+                </div>
+                </button>
+            </div>
         </td>
     </tr>
     {% endfor %}

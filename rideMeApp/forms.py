@@ -27,7 +27,7 @@ class AnswerSecurityQuestionForm(forms.Form):
     answer = forms.CharField(label='Enter the answer to the above security question:')
 
 class AddPostingForm(forms.Form):
-    numAvailableSeats = forms.IntegerField(label='Enter the number of available seats for your trip:', widget=forms.NumberInput(attrs={'placeholder':'Number of Seats'}))
+    numAvailableSeats = forms.IntegerField(min_value=1,label='Enter the number of available seats for your trip:', widget=forms.NumberInput(attrs={'placeholder':'Number of Seats'}))
     tripDate = forms.DateTimeField(label='Enter the date the trip will be occuring:', widget=forms.DateInput(
         attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd', 'class': 'form-control'}
     ))   
@@ -36,7 +36,7 @@ class AddPostingForm(forms.Form):
     ))
     pickupLocation = forms.CharField(label='Enter the general location where you can pick up passengers:', max_length=50, widget=forms.TextInput(attrs={'placeholder':'Pickup Location'}))
     dropoffLocation = forms.CharField(label='Enter the general location where you can drop off passengers:', max_length=50, widget=forms.TextInput(attrs={'placeholder':'Dropoff Location'}))
-    tripPrice = forms.DecimalField(label='Enter the price you wish passengers to pay for the trip:', max_digits=6, decimal_places=2, widget=forms.TextInput(attrs={'placeholder': 'Trip Price'}))
+    tripPrice = forms.DecimalField(min_value=0,label='Enter the price you wish passengers to pay for the trip:', max_digits=6, decimal_places=2, widget=forms.TextInput(attrs={'placeholder': 'Trip Price'}))
     vehicle = forms.CharField(label='Enter the make and model of the vehicle you will be making the trip with:', max_length=50, widget=forms.TextInput(attrs={'placeholder':'Vehicle Information'}))
 
     def clean(self):
@@ -83,7 +83,7 @@ class UpdateTripTime(forms.Form):
     ))
 
 class UpdateNumAvailableSeats(forms.Form):
-    numAvailableSeats = forms.IntegerField(label='New number of available seats:')
+    numAvailableSeats = forms.IntegerField(min_value=0, label='New number of available seats:')
     def clean(self):
         cleaned_data = super().clean()
         seats = cleaned_data.get('numAvailableSeats')
@@ -116,4 +116,4 @@ class SendMessageForm(forms.Form):
         
 
 class UpdatePriceForm(forms.Form):
-    tripPrice = forms.DecimalField(label='Enter the price you wish passengers to pay for the trip:', max_digits=6, decimal_places=2, widget=forms.TextInput(attrs={'placeholder': 'Trip Price'}))
+    tripPrice = forms.DecimalField(min_value=0, label='Enter the price you wish passengers to pay for the trip:', max_digits=6, decimal_places=2, widget=forms.TextInput(attrs={'placeholder': 'Trip Price'}))

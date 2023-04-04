@@ -9,8 +9,7 @@
     {% endfor %}
 </table>
 
-<p>Leave a review for {{ userToReview.firstName }} {{ userToReview.lastName }}</p>
-<p>Enter the following to leave the review</p>
+<h2>Leave a review for {{ userToReview.firstName }} {{ userToReview.lastName }}: </h2>
 
 <form method="post" >
     {% csrf_token %}
