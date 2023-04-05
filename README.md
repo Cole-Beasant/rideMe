@@ -6,8 +6,8 @@ Can be viewed at https://rideme-app.herokuapp.com/
 
 ## Running instructions
 
-Ensure that you have a code editor, Python 3.11.2 and PostgreSQL installed on 
-your machine
+Ensure that you have a code editor, Python 3.11.2, and PostgreSQL installed on 
+your machine. Also ensure that PostgreSQL is running on port 5432.
 
 Clone this repository and open in your code editor
 
