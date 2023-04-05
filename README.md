@@ -47,7 +47,7 @@ SECRET_KEY=django-insecure-6)eg-3mzykmw#73!xs!l!(+8w4zan-vw2(r6t+gsh!^et5_a#n
 ```
 
 Now you must migrate the data models to the PostgreSQL database using the following
-commaand
+command
 ```
 python manage.py migrate
 ```
@@ -57,3 +57,15 @@ provide a link in the terminal to the locally running site
 ```
 python manage.py runserver
 ```
+
+## Testing Functionality
+
+Note that it will take 3 days to test all of RideMe's functionality. Say you are testing
+on April 5. The earliest trip date you post have for a posting is April 6. Then you must
+create other accounts to send messages to the post owner, then log back in as the post
+owner to approved the other users as passengers. Then, on April 6, the posting will 
+disappear from the open postings query (unless all the available seats have been filled, 
+in which case the posting will have already been removed). On April 7, the post owner will 
+have the ability to complete the posting and review everyone who messaged them regarding 
+the posting and all those who messaged the post owner regarding the posting will have the 
+ability to review the post owner.
