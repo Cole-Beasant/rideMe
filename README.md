@@ -46,6 +46,16 @@ the file
 SECRET_KEY=django-insecure-6)eg-3mzykmw#73!xs!l!(+8w4zan-vw2(r6t+gsh!^et5_a#n
 ```
 
+Note that if you flip DEBUG mode in settings.py to False, you will need to paste
+the following into the second line in the ".env" in order to make the profile 
+pictures work
+```
+CLOUDINARY_CLOUD_NAME=dx97b0obv
+CLOUDINARY_API_KEY=146265423224441
+CLOUDINARY_API_SECRET=dc1NSKm1t29LP_fyR0QpzgVT06I
+```
+
+
 Now you must migrate the data models to the PostgreSQL database using the following
 command
 ```
@@ -57,6 +67,7 @@ provide a link in the terminal to the locally running site
 ```
 python manage.py runserver
 ```
+
 
 ## Testing Functionality
 
