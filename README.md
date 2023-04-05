@@ -61,11 +61,12 @@ python manage.py runserver
 ## Testing Functionality
 
 Note that it will take 3 days to test all of RideMe's functionality. Say you are testing
-on April 5. The earliest trip date you can have for a posting is April 6. Then you must
-create other accounts to send messages to the post owner, then log back in as the post
-owner to approved the other users as passengers. Then, on April 6, the posting will 
-disappear from the open postings query (unless all the available seats have been filled, 
-in which case the posting will have already been removed). On April 7, the post owner will 
-have the ability to complete the posting and review everyone who messaged them regarding 
-the posting and all those who messaged the post owner regarding the posting will have the 
-ability to review the post owner.
+on April 5. The earliest trip date you can select to add a posting is April 6. After adding
+a posting with a trip date of April 6, you then must create other accounts to send messages 
+to the post owner, then log back in as the post owner to approve the users who messaged the 
+post owner as passengers. Then, on April 6, the posting will disappear from the open postings 
+query (unless all the available seats have been filled, in which case the posting will have 
+already been removed). On April 7, the day after the trip date, the post owner will have the 
+ability to complete the posting and review everyone who messaged them regarding the posting 
+and all those who messaged the post owner regarding the posting will have the ability to 
+review the post owner.
