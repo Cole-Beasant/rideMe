@@ -47,8 +47,7 @@ SECRET_KEY=django-insecure-6)eg-3mzykmw#73!xs!l!(+8w4zan-vw2(r6t+gsh!^et5_a#n
 ```
 
 Note that if you flip DEBUG mode in settings.py to False, you will need to paste
-the following into the second line in the ".env" in order to make the profile 
-pictures work
+the following lines in the ".env" in order to make the profile pictures work
 ```
 CLOUDINARY_CLOUD_NAME=dx97b0obv
 CLOUDINARY_API_KEY=146265423224441
